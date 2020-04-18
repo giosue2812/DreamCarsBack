@@ -21,6 +21,10 @@ class UserForm
      */
     private $password;
     /**
+     * @var string $passwordConfirm
+     */
+    private $passwordConfirm;
+    /**
      * @var string $email
      * @Assert\Email()
      */
@@ -92,6 +96,24 @@ class UserForm
     public function setPassword($password): void
     {
         $this->password = $password;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPasswordConfirm(): ?string
+    {
+        return $this->passwordConfirm;
+    }
+
+    /**
+     * @param string $passwordConfirm
+     * @return UserForm
+     */
+    public function setPasswordConfirm(string $passwordConfirm): UserForm
+    {
+        $this->passwordConfirm = $passwordConfirm;
+        return $this;
     }
 
     /**

@@ -43,6 +43,9 @@ class UserType extends AbstractType
             ->add('password',PasswordType::class,[
                 'required' => true
             ])
+            ->add('passwordConfirm',PasswordType::class,[
+                'required' => true
+            ])
         ;
     }
 
