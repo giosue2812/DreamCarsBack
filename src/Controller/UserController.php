@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\UserType;
 use App\Models\Forms\UserForm;
 use App\Services\UserService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Flex\Response;
 
 
 class UserController extends AbstractFOSRestController
@@ -53,5 +53,16 @@ class UserController extends AbstractFOSRestController
             $this->userService->create($form->getData());
         }
         return 'ok';
+    }
+
+    /**
+     * @param Request $request
+     * @Rest\Get(path="/api/user/{id}")
+     * @Rest\View()
+     * @return User|null
+     */
+    public function userAction(Request $request)
+    {
+        return $this->userService->user($request->get('id'));
     }
 }

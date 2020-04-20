@@ -4,6 +4,7 @@
 namespace App\Services;
 
 
+use App\DTO\UserDetailsDTO;
 use App\Entity\User;
 use App\Models\Forms\UserForm;
 use App\Repository\UserRepository;
@@ -58,5 +59,15 @@ class UserService
         $this->manager->persist($user);
         $this->manager->flush();
         return $user;
+    }
+
+    /**
+     * @param integer $id
+     * @return UserDetailsDTO
+     */
+    public function user($id)
+    {
+        $user =  $this->userRepository->find($id);
+        return new UserDetailsDTO($user);
     }
 }
