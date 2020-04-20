@@ -26,8 +26,6 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        // $product = new Product();
-        // $manager->persist($product);
 
         $date = new \DateTime();
         $user1 = new User();
