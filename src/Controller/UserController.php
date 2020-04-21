@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DTO\UserDetailsDTO;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Models\Forms\UserForm;
@@ -57,12 +58,12 @@ class UserController extends AbstractFOSRestController
 
     /**
      * @param Request $request
-     * @Rest\Get(path="/api/user/{id}")
+     * @Rest\Get(path="/api/user/{username}")
      * @Rest\View()
-     * @return User|null
+     * @return UserDetailsDTO
      */
     public function userAction(Request $request)
     {
-        return $this->userService->user($request->get('id'));
+        return $this->userService->user($request->get('username'));
     }
 }

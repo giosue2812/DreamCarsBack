@@ -62,12 +62,12 @@ class UserService
     }
 
     /**
-     * @param integer $id
+     * @param string $username
      * @return UserDetailsDTO
      */
-    public function user($id)
+    public function user($username)
     {
-        $user =  $this->userRepository->find($id);
+        $user =  $this->userRepository->findOneBy(['email' => $username]);
         return new UserDetailsDTO($user);
     }
 }

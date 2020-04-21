@@ -95,15 +95,6 @@ class UserDetailsDTO
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     * @return UserDetailsDTO
-     */
-    public function setId(int $id): UserDetailsDTO
-    {
-        $this->id = $id;
-        return $this;
-    }
 
     /**
      * @return \DateTime
@@ -113,15 +104,6 @@ class UserDetailsDTO
         return $this->createAt;
     }
 
-    /**
-     * @param \DateTime $createAt
-     * @return UserDetailsDTO
-     */
-    public function setCreateAt(\DateTime $createAt): UserDetailsDTO
-    {
-        $this->createAt = $createAt;
-        return $this;
-    }
 
     /**
      * @return \DateTime
@@ -131,15 +113,7 @@ class UserDetailsDTO
         return $this->updateAt;
     }
 
-    /**
-     * @param \DateTime $updateAt
-     * @return UserDetailsDTO
-     */
-    public function setUpdateAt(\DateTime $updateAt): UserDetailsDTO
-    {
-        $this->updateAt = $updateAt;
-        return $this;
-    }
+
 
     /**
      * @return string
@@ -149,15 +123,6 @@ class UserDetailsDTO
         return $this->firstName;
     }
 
-    /**
-     * @param string $firstName
-     * @return UserDetailsDTO
-     */
-    public function setFirstName(string $firstName): UserDetailsDTO
-    {
-        $this->firstName = $firstName;
-        return $this;
-    }
 
     /**
      * @return string
@@ -167,15 +132,7 @@ class UserDetailsDTO
         return $this->lastName;
     }
 
-    /**
-     * @param string $lastName
-     * @return UserDetailsDTO
-     */
-    public function setLastName(string $lastName): UserDetailsDTO
-    {
-        $this->lastName = $lastName;
-        return $this;
-    }
+
 
     /**
      * @return string
@@ -185,15 +142,7 @@ class UserDetailsDTO
         return $this->email;
     }
 
-    /**
-     * @param string $email
-     * @return UserDetailsDTO
-     */
-    public function setEmail(string $email): UserDetailsDTO
-    {
-        $this->email = $email;
-        return $this;
-    }
+
 
     /**
      * @return string
@@ -203,15 +152,7 @@ class UserDetailsDTO
         return $this->phone;
     }
 
-    /**
-     * @param string $phone
-     * @return UserDetailsDTO
-     */
-    public function setPhone(string $phone): UserDetailsDTO
-    {
-        $this->phone = $phone;
-        return $this;
-    }
+
 
     /**
      * @return string
@@ -221,15 +162,7 @@ class UserDetailsDTO
         return $this->street;
     }
 
-    /**
-     * @param string $street
-     * @return UserDetailsDTO
-     */
-    public function setStreet(string $street): UserDetailsDTO
-    {
-        $this->street = $street;
-        return $this;
-    }
+
 
     /**
      * @return string
@@ -239,15 +172,7 @@ class UserDetailsDTO
         return $this->number;
     }
 
-    /**
-     * @param string $number
-     * @return UserDetailsDTO
-     */
-    public function setNumber(string $number): UserDetailsDTO
-    {
-        $this->number = $number;
-        return $this;
-    }
+
 
     /**
      * @return string
@@ -257,15 +182,7 @@ class UserDetailsDTO
         return $this->postalCode;
     }
 
-    /**
-     * @param string $postalCode
-     * @return UserDetailsDTO
-     */
-    public function setPostalCode(string $postalCode): UserDetailsDTO
-    {
-        $this->postalCode = $postalCode;
-        return $this;
-    }
+
 
     /**
      * @return string
@@ -275,15 +192,6 @@ class UserDetailsDTO
         return $this->country;
     }
 
-    /**
-     * @param string $country
-     * @return UserDetailsDTO
-     */
-    public function setCountry(string $country): UserDetailsDTO
-    {
-        $this->country = $country;
-        return $this;
-    }
 
     /**
      * @return Groupe[]|null
@@ -294,31 +202,11 @@ class UserDetailsDTO
     }
 
     /**
-     * @param Groupe[] $groupe
-     * @return UserDetailsDTO
-     */
-    public function setGroupe(array $groupe): UserDetailsDTO
-    {
-        $this->groupe = $groupe;
-        return $this;
-    }
-
-    /**
      * @return UserRole[]
      */
     public function getUserRoles(): array
     {
         return $this->userRoles;
-    }
-
-    /**
-     * @param UserRole[] $userRoles
-     * @return UserDetailsDTO
-     */
-    public function setUserRoles(array $userRoles): UserDetailsDTO
-    {
-        $this->userRoles = $userRoles;
-        return $this;
     }
 
 }
