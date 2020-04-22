@@ -7,9 +7,11 @@ namespace App\Services;
 use App\DTO\UserDetailsDTO;
 use App\Entity\User;
 use App\Models\Forms\UserForm;
+use App\Models\Forms\UserFormUpdate;
 use App\Repository\UserRepository;
 use App\Utils\MapperAuto;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
+use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -57,8 +59,12 @@ class UserService
         $user->setPostalCode($userForm->getPostalCode());
         $user->setCity($userForm->getCity());
 
-        $this->manager->persist($user);
-        $this->manager->flush();
+        try {
+            $this->manager->persist($user);
+            $this->manager->flush();
+        } catch (PDOException $e){
+            dump($e);
+        }
         return $user;
     }
 
@@ -70,5 +76,32 @@ class UserService
     {
         $user =  $this->userRepository->findOneBy(['email' => $username]);
         return new UserDetailsDTO($user);
+    }
+
+    /**
+     * @param UserFormUpdate $userFormUpdate
+     * @param $userId
+     * @return User|null
+     */
+    public function update(UserFormUpdate $userFormUpdate,$userId)
+    {
+        $userToUpdate = $this->userRepository->find($userId);
+        $userToUpdate
+            ->setFirstName($userFormUpdate->getFirstName())
+            ->setLastName($userFormUpdate->getLastName())
+            ->setEmail($userFormUpdate->getEmail())
+            ->setPhone($userFormUpdate->getPhone())
+            ->setStreet($userFormUpdate->getStreet())
+            ->setNumber($userFormUpdate->getNumber())
+            ->setPostalCode($userFormUpdate->getPostalCode())
+            ->setCity($userFormUpdate->getCity())
+            ->setCountry($userFormUpdate->getCountry());
+
+        try {
+            $this->manager->flush();
+        } catch (PDOException $e) {
+            dump($e);
+        }
+        return $userToUpdate;
     }
 }

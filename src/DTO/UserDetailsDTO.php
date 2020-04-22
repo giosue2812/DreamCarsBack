@@ -50,6 +50,10 @@ class UserDetailsDTO
      */
     private $postalCode;
     /**
+     * @var string $city
+     */
+    private $city;
+    /**
      * @var string $country
      */
     private $country;
@@ -73,6 +77,7 @@ class UserDetailsDTO
         $this->phone = $user->getPhone();
         $this->street = $user->getStreet();
         $this->number = $user->getNumber();
+        $this->city = $user->getCity();
         $this->postalCode = $user->getPostalCode();
         $this->country = $user->getCountry();
 
@@ -173,7 +178,6 @@ class UserDetailsDTO
     }
 
 
-
     /**
      * @return string
      */
@@ -182,6 +186,13 @@ class UserDetailsDTO
         return $this->postalCode;
     }
 
+    /**
+     * @return string
+     */
+    public function getCity(): string
+    {
+        return $this->city;
+    }
 
 
     /**
@@ -191,7 +202,6 @@ class UserDetailsDTO
     {
         return $this->country;
     }
-
 
     /**
      * @return Groupe[]|null

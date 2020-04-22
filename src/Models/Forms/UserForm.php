@@ -63,14 +63,6 @@ class UserForm
     }
 
     /**
-     * @param string $firstName
-     */
-    public function setFirstName(string $firstName): void
-    {
-        $this->firstName = $firstName;
-    }
-
-    /**
      * @return mixed
      */
     public function getLastName(): ?string
@@ -78,13 +70,6 @@ class UserForm
         return $this->lastName;
     }
 
-    /**
-     * @param mixed $lastName
-     */
-    public function setLastName($lastName): void
-    {
-        $this->lastName = $lastName;
-    }
 
     /**
      * @return mixed
@@ -94,13 +79,6 @@ class UserForm
         return $this->password;
     }
 
-    /**
-     * @param mixed $password
-     */
-    public function setPassword($password): void
-    {
-        $this->password = $password;
-    }
 
     /**
      * @return string
@@ -110,15 +88,6 @@ class UserForm
         return $this->passwordConfirm;
     }
 
-    /**
-     * @param string $passwordConfirm
-     * @return UserForm
-     */
-    public function setPasswordConfirm(string $passwordConfirm): UserForm
-    {
-        $this->passwordConfirm = $passwordConfirm;
-        return $this;
-    }
 
     /**
      * @return string
@@ -128,13 +97,6 @@ class UserForm
         return $this->email;
     }
 
-    /**
-     * @param string $email
-     */
-    public function setEmail(string $email): void
-    {
-        $this->email = $email;
-    }
 
     /**
      * @return string
@@ -144,13 +106,6 @@ class UserForm
         return $this->street;
     }
 
-    /**
-     * @param string $street
-     */
-    public function setStreet(string $street): void
-    {
-        $this->street = $street;
-    }
 
     /**
      * @return string
@@ -160,13 +115,6 @@ class UserForm
         return $this->number;
     }
 
-    /**
-     * @param string $number
-     */
-    public function setNumber(string $number): void
-    {
-        $this->number = $number;
-    }
 
     /**
      * @return string
@@ -176,13 +124,6 @@ class UserForm
         return $this->postalCode;
     }
 
-    /**
-     * @param string $postalCode
-     */
-    public function setPostalCode(string $postalCode): void
-    {
-        $this->postalCode = $postalCode;
-    }
 
     /**
      * @return string
@@ -190,16 +131,6 @@ class UserForm
     public function getCity(): ?string
     {
         return $this->city;
-    }
-
-    /**
-     * @param string $city
-     * @return UserForm
-     */
-    public function setCity(string $city): UserForm
-    {
-        $this->city = $city;
-        return $this;
     }
 
     /**
@@ -211,27 +142,11 @@ class UserForm
     }
 
     /**
-     * @param string $country
-     */
-    public function setCountry(string $country): void
-    {
-        $this->country = $country;
-    }
-
-    /**
      * @return string
      */
     public function getPhone(): ?string
     {
         return $this->phone;
-    }
-
-    /**
-     * @param string $phone
-     */
-    public function setPhone(string $phone): void
-    {
-        $this->phone = $phone;
     }
 
 }
