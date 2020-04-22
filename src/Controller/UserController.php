@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\DTO\UserDetailsDTO;
-use App\Entity\User;
 use App\Form\UserType;
 use App\Models\Forms\UserForm;
 use App\Services\UserService;

@@ -37,6 +37,9 @@ class UserType extends AbstractType
             ->add('postalCode',TextType::class,[
                 'required' => true
             ])
+            ->add('city',TextType::class,[
+                'required' => true
+            ])
             ->add('country',TextType::class,[
                 'required' => true
             ])

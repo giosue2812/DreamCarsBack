@@ -42,6 +42,10 @@ class UserForm
      */
     private $postalCode;
     /**
+     * @var string $city
+     */
+    private $city;
+    /**
      * @var string $country
      */
     private $country;
@@ -178,6 +182,24 @@ class UserForm
     public function setPostalCode(string $postalCode): void
     {
         $this->postalCode = $postalCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    /**
+     * @param string $city
+     * @return UserForm
+     */
+    public function setCity(string $city): UserForm
+    {
+        $this->city = $city;
+        return $this;
     }
 
     /**

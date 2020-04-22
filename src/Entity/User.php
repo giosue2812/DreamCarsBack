@@ -49,6 +49,10 @@ class User extends BaseEntity implements UserInterface
     /**
      * @ORM\Column(type="string")
      */
+    private $city;
+    /**
+     * @ORM\Column(type="string")
+     */
     private $country;
 
     /**
@@ -243,6 +247,24 @@ class User extends BaseEntity implements UserInterface
     public function setPostalCode($postalCode)
     {
         $this->postalCode = $postalCode;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * @param mixed $city
+     * @return User
+     */
+    public function setCity($city)
+    {
+        $this->city = $city;
         return $this;
     }
 

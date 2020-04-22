@@ -55,6 +55,7 @@ class UserService
         $user->setStreet($userForm->getStreet());
         $user->setNumber($userForm->getNumber());
         $user->setPostalCode($userForm->getPostalCode());
+        $user->setCity($userForm->getCity());
 
         $this->manager->persist($user);
         $this->manager->flush();
