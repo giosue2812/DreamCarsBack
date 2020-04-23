@@ -104,4 +104,9 @@ class UserService
         }
         return $userToUpdate;
     }
+
+    public function getRole($userId)
+    {
+        return $this->userRepository->find($userId)->getRoles();
+    }
 }

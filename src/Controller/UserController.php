@@ -99,4 +99,15 @@ class UserController extends AbstractFOSRestController
         return $userFormUpdate;
 //        return new Response('Update Success',Response::HTTP_OK,['content-type'=>'application/json']);
     }
+
+    /**
+     * @Rest\Get(path="/api/user/role/{id}")
+     * @Rest\View()
+     * @param Request $request
+     * @return array
+     */
+    public function getRoleAction(Request $request)
+    {
+        return $this->userService->getRole($request->get('id'));
+    }
 }
