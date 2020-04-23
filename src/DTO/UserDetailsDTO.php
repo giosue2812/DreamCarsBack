@@ -6,6 +6,7 @@ namespace App\DTO;
 use App\Entity\Groupe;
 use App\Entity\User;
 use App\Entity\UserRole;
+use JMS\Serializer\Annotation as Serializer;
 
 class UserDetailsDTO
 {
@@ -22,13 +23,15 @@ class UserDetailsDTO
      */
     private $updateAt;
     /**
-     * @var string $firstName
+     * @var string $first_name
+     * @Serializer\SerializedName("firstName")
      */
-    private $firstName;
+    private $first_name;
     /**
-     * @var string $lastName
+     * @var string $last_name
+     * @Serializer\SerializedName("lastName")
      */
-    private $lastName;
+    private $last_name;
     /**
      * @var string $email
      */
@@ -46,9 +49,10 @@ class UserDetailsDTO
      */
     private $number;
     /**
-     * @var string $postalCode
+     * @var string $postal_code
+     * @Serializer\SerializedName("postalCode")
      */
-    private $postalCode;
+    private $postal_code;
     /**
      * @var string $city
      */
@@ -71,14 +75,14 @@ class UserDetailsDTO
         $this->id = $user->getId();
         $this->createAt = $user->getCreateAt();
         $this->updateAt = $user->getUpdateAt();
-        $this->firstName = $user->getFirstName();
-        $this->lastName = $user->getLastName();
+        $this->first_name = $user->getFirstName();
+        $this->last_name = $user->getLastName();
         $this->email = $user->getEmail();
         $this->phone = $user->getPhone();
         $this->street = $user->getStreet();
         $this->number = $user->getNumber();
         $this->city = $user->getCity();
-        $this->postalCode = $user->getPostalCode();
+        $this->postal_code = $user->getPostalCode();
         $this->country = $user->getCountry();
 
         $this->groupe = array_map(function ($gr){
@@ -125,7 +129,7 @@ class UserDetailsDTO
      */
     public function getFirstName(): string
     {
-        return $this->firstName;
+        return $this->first_name;
     }
 
 
@@ -134,7 +138,7 @@ class UserDetailsDTO
      */
     public function getLastName(): string
     {
-        return $this->lastName;
+        return $this->last_name;
     }
 
 
@@ -183,7 +187,7 @@ class UserDetailsDTO
      */
     public function getPostalCode(): string
     {
-        return $this->postalCode;
+        return $this->postal_code;
     }
 
     /**

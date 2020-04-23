@@ -31,7 +31,7 @@ class UserController extends AbstractFOSRestController
     }
 
     /**
-     * @Rest\Post(path="/api/user/create")
+     * @Rest\Post(path="/api/create")
      * @Rest\View()
      * @param Request $request
      * @return mixed
@@ -55,19 +55,20 @@ class UserController extends AbstractFOSRestController
              */
             $this->userService->create($form->getData());
         }
-        return new Response('Creation Success',Response::HTTP_OK,['content-type'=>'application/json']);
+        return $userForm;
+//        return new Response('Creation Success',Response::HTTP_OK,['content-type'=>'application/json']);
     }
 
     /**
      * @param Request $request
      * @Rest\Get(path="/api/user/{username}")
      * @Rest\View()
-     * @return Response
+     * @return UserDetailsDTO
      */
     public function userAction(Request $request)
     {
-        $user = $this->userService->user($request->get('username'));
-        return new Response($user->getEmail(),Response::HTTP_OK,['content-type'=>'application/json']);
+        return $this->userService->user($request->get('username'));
+//        return new Response($user->getEmail(),Response::HTTP_OK,['content-type'=>'application/json']);
     }
 
     /**
@@ -95,6 +96,7 @@ class UserController extends AbstractFOSRestController
              */
             $this->userService->update($form->getData(),$request->get('id'));
         }
-        return new Response('Update Success',Response::HTTP_OK,['content-type'=>'application/json']);
+        return $userFormUpdate;
+//        return new Response('Update Success',Response::HTTP_OK,['content-type'=>'application/json']);
     }
 }
