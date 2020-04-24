@@ -14,6 +14,7 @@ use AutoMapperPlus\Exception\UnregisteredMappingException;
 use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Flex\Response;
 
 class UserService
 {
@@ -103,5 +104,27 @@ class UserService
             dump($e);
         }
         return $userToUpdate;
+    }
+
+    /**
+     * @param string $user
+     * @return array
+     */
+    public function searchUser(string $user)
+    {
+        $user = $this->userRepository->searchUser($user);
+        /**
+         * Array empty to stock each user
+         */
+        $arrayUser = [];
+        foreach ($user as $item)
+        {
+            /**
+             * New DTO to map user
+             */
+            $DTO = new UserDetailsDTO($item);
+            $arrayUser[]=$DTO;
+        }
+        return $arrayUser;
     }
 }

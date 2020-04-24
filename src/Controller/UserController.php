@@ -99,4 +99,14 @@ class UserController extends AbstractFOSRestController
 //        return new Response('Update Success',Response::HTTP_OK,['content-type'=>'application/json']);
     }
 
+    /**
+     * @Rest\Get(path="/api/user/search/{user}")
+     * @Rest\View()
+     * @param Request $request
+     * @return array
+     */
+    public function searchUserAction(Request $request)
+    {
+        return $this->userService->searchUser($request->get('user'));
+    }
 }
