@@ -11,7 +11,6 @@ use App\Services\UserService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 
 class UserController extends AbstractFOSRestController
@@ -100,14 +99,4 @@ class UserController extends AbstractFOSRestController
 //        return new Response('Update Success',Response::HTTP_OK,['content-type'=>'application/json']);
     }
 
-    /**
-     * @Rest\Get(path="/api/user/role/{id}")
-     * @Rest\View()
-     * @param Request $request
-     * @return array
-     */
-    public function getRoleAction(Request $request)
-    {
-        return $this->userService->getRole($request->get('id'));
-    }
 }
