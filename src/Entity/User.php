@@ -21,11 +21,11 @@ class User extends BaseEntity implements UserInterface
     /**
      * @ORM\Column(type="string")
      */
-    private $firstName;
+    private $first_name;
     /**
      * @ORM\Column(type="string")
      */
-    private $lastName;
+    private $last_name;
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      */
@@ -45,7 +45,7 @@ class User extends BaseEntity implements UserInterface
     /**
      * @ORM\Column(type="string")
      */
-    private $postalCode;
+    private $postal_code;
     /**
      * @ORM\Column(type="string")
      */
@@ -147,16 +147,16 @@ class User extends BaseEntity implements UserInterface
      */
     public function getFirstName()
     {
-        return $this->firstName;
+        return $this->first_name;
     }
 
     /**
-     * @param mixed $firstName
+     * @param mixed $first_name
      * @return User
      */
-    public function setFirstName($firstName)
+    public function setFirstName($first_name)
     {
-        $this->firstName = $firstName;
+        $this->first_name = $first_name;
         return $this;
     }
 
@@ -165,16 +165,16 @@ class User extends BaseEntity implements UserInterface
      */
     public function getLastName()
     {
-        return $this->lastName;
+        return $this->last_name;
     }
 
     /**
-     * @param mixed $lastName
+     * @param mixed $last_name
      * @return User
      */
-    public function setLastName($lastName)
+    public function setLastName($last_name)
     {
-        $this->lastName = $lastName;
+        $this->last_name = $last_name;
         return $this;
     }
 
@@ -237,16 +237,16 @@ class User extends BaseEntity implements UserInterface
      */
     public function getPostalCode()
     {
-        return $this->postalCode;
+        return $this->postal_code;
     }
 
     /**
-     * @param mixed $postalCode
+     * @param mixed $postal_code
      * @return User
      */
-    public function setPostalCode($postalCode)
+    public function setPostalCode($postal_code)
     {
-        $this->postalCode = $postalCode;
+        $this->postal_code = $postal_code;
         return $this;
     }
 

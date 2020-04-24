@@ -29,26 +29,38 @@ class AppFixtures extends Fixture
 
         $date = new \DateTime();
         $user1 = new User();
+        $user2 = new User();
+        $user3 = new User();
         $role1 = new Role();
         $role2 = new Role();
-        $group1 = new Groupe();
+        $role3 = new Role();
+        $groupe1 = new Groupe();
+        $groupe2 = new Groupe();
+        $groupe3 = new Groupe();
         $userRole = new UserRole();
 
-        $group1->setGroupe('GROUPE_VENTE');
-        $manager->persist($group1);
+        $groupe1->setGroupe('GROUPE_VENTE');
+        $manager->persist($groupe1);
+        $groupe2->setGroupe('GROUPE_MECANIQUE');
+        $manager->persist($groupe2);
+        $groupe3->setGroupe('GROUPE_DIRECTION');
+        $manager->persist($groupe3);
 
         $role1->setRole('ROLE_VENTE');
         $manager->persist($role1);
-
         $role2->setRole('ROLE_MECANIQUE');
         $manager->persist($role2);
+        $role3->setRole('ROLE_ADMIN');
+        $manager->persist($role3);
 
         $userRole->setUsers($user1);
-        $userRole->setRoles($role2);
+        $userRole->setRoles($role1);
         $userRole->setStartDate($date->setDate('2020','04','14'));
         $manager->persist($userRole);
 
-        $group1->addRole($role1);
+        $groupe1->addRole($role1);
+        $groupe2->addRole($role2);
+        $groupe3->addRole($role3);
 
         $user1->setFirstName('Giosue');
         $user1->setLastName('Liuzzo');
@@ -59,8 +71,36 @@ class AppFixtures extends Fixture
         $user1->setPostalCode('1480');
         $user1->setCountry('Belgique');
         $user1->setPhone('0495905955');
-        $user1->addGroup($group1);
+        $user1->setCity('Saintes');
+        $user1->addGroup($groupe2);
         $manager->persist($user1);
+
+        $user2->setFirstName('Elisa');
+        $user2->setLastName('Natale');
+        $user2->setPassword($this->encoder->encodePassword($user2,'goku1306'));
+        $user2->setEmail('elisa.n@hotmail.be');
+        $user2->setStreet('Residence Julles Trullemans');
+        $user2->setNumber('11');
+        $user2->setPostalCode('1480');
+        $user2->setCountry('Belgique');
+        $user2->setPhone('0498661703');
+        $user2->setCity('Saintes');
+        $user2->addGroup($groupe1);
+        $manager->persist($user2);
+
+        $user3
+            ->setFirstName('Admin')
+            ->setLastName('Admin')
+            ->setPassword($this->encoder->encodePassword($user3,'admin'))
+            ->setEmail('admin@admin.com')
+            ->setStreet('Admin')
+            ->setNumber('10')
+            ->setPostalCode('1245')
+            ->setCountry('Belgique')
+            ->setPhone('04454454')
+            ->setCity('Saintes')
+            ->addGroup($groupe3);
+        $manager->persist($user3);
 
         $manager->flush();
     }

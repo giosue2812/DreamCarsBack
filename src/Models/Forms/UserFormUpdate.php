@@ -9,13 +9,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 class UserFormUpdate
 {
     /**
-     * @var string $firstName
+     * @var string $first_name
      */
-    private $firstName;
+    private $first_name;
     /**
-     * @var string $lastName
+     * @var string $last_name
      */
-    private $lastName;
+    private $last_name;
     /**
      * @var string $email
      * @Assert\Email()
@@ -30,9 +30,9 @@ class UserFormUpdate
      */
     private $number;
     /**
-     * @var string $postalCode
+     * @var string $postal_code
      */
-    private $postalCode;
+    private $postal_code;
     /**
      * @var string $city
      */
@@ -51,34 +51,35 @@ class UserFormUpdate
      */
     public function getFirstName(): ?string
     {
-        return $this->firstName;
+        return $this->first_name;
     }
 
     /**
-     * @param string $firstName
+     * @param string $first_name
      * @return UserFormUpdate
      */
-    public function setFirstName(string $firstName): UserFormUpdate
+    public function setFirstName(string $first_name): UserFormUpdate
     {
-        $this->firstName = $firstName;
+        $this->first_name = $first_name;
         return $this;
     }
+
 
     /**
      * @return string
      */
     public function getLastName(): ?string
     {
-        return $this->lastName;
+        return $this->last_name;
     }
 
     /**
-     * @param string $lastName
+     * @param string $last_name
      * @return UserFormUpdate
      */
-    public function setLastName(string $lastName): UserFormUpdate
+    public function setLastName(string $last_name): UserFormUpdate
     {
-        $this->lastName = $lastName;
+        $this->last_name = $last_name;
         return $this;
     }
 
@@ -141,16 +142,16 @@ class UserFormUpdate
      */
     public function getPostalCode(): ?string
     {
-        return $this->postalCode;
+        return $this->postal_code;
     }
 
     /**
-     * @param string $postalCode
+     * @param string $postal_code
      * @return UserFormUpdate
      */
-    public function setPostalCode(string $postalCode): UserFormUpdate
+    public function setPostalCode(string $postal_code): UserFormUpdate
     {
-        $this->postalCode = $postalCode;
+        $this->postal_code = $postal_code;
         return $this;
     }
 
