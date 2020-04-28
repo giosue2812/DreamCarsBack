@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\DTO\UserDetailsDTO;
+use App\Entity\Groupe;
 use App\Form\UserType;
 use App\Form\UserUpdateType;
 use App\Models\Forms\UserForm;
@@ -108,5 +109,16 @@ class UserController extends AbstractFOSRestController
     public function searchUserAction(Request $request)
     {
         return $this->userService->searchUser($request->get('user'));
+    }
+
+    /**
+     * @Rest\Get(path="/api/user/addGroupe/{userId}/{groupe}")
+     * @Rest\View()
+     * @param Request $request
+     * @return Groupe|null
+     */
+    public function addGroupeAction(Request $request)
+    {
+        return $this->userService->addGroupe($request->get('userId'),$request->get('groupe'));
     }
 }

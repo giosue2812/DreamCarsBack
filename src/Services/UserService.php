@@ -5,9 +5,11 @@ namespace App\Services;
 
 
 use App\DTO\UserDetailsDTO;
+use App\Entity\Groupe;
 use App\Entity\User;
 use App\Models\Forms\UserForm;
 use App\Models\Forms\UserFormUpdate;
+use App\Repository\GroupeRepository;
 use App\Repository\UserRepository;
 use App\Utils\MapperAuto;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
@@ -30,16 +32,22 @@ class UserService
      * @var UserPasswordEncoderInterface $userPasswordEncode
      */
     private $userPasswordEncode;
+    /**
+     * @var GroupeRepository $groupeRepository
+     */
+    private $groupeRepository;
 
     public function __construct(
         EntityManagerInterface $manager,
         UserRepository $userRepository,
-        UserPasswordEncoderInterface $userPasswordEncode
+        UserPasswordEncoderInterface $userPasswordEncode,
+        GroupeRepository $groupeRepository
     )
     {
         $this->manager = $manager;
         $this->userRepository = $userRepository;
         $this->userPasswordEncode = $userPasswordEncode;
+        $this->groupeRepository = $groupeRepository;
     }
 
     /**
@@ -126,5 +134,28 @@ class UserService
             $arrayUser[]=$DTO;
         }
         return $arrayUser;
+    }
+
+    /**
+     * @param $groupe
+     * @param $userId
+     * @return User
+     */
+    public function addGroupe($userId,$groupe)
+    {
+        $user = $this->getUserId($userId);
+        $group = $this->groupeRepository->findOneBy(['groupe'=>$groupe]);
+        $user->addGroup($group);
+        $this->manager->flush();
+        return $user;
+    }
+
+    /**
+     * @param $id
+     * @return User|null
+     */
+    public function getUserId($id)
+    {
+        return $this->userRepository->find($id);
     }
 }

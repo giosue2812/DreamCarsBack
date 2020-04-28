@@ -5,10 +5,7 @@ namespace App\Services;
 
 
 use App\DTO\GroupeDetailsDTO;
-use App\Entity\Groupe;
 use App\Repository\GroupeRepository;
-use App\Repository\RoleRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 
 class GroupeService
