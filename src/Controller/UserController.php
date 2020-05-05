@@ -4,13 +4,19 @@ namespace App\Controller;
 
 use App\DTO\UserDetailsDTO;
 use App\Entity\Groupe;
+use App\Entity\User;
+use App\Form\GroupeType;
 use App\Form\UserType;
 use App\Form\UserUpdateType;
+use App\Models\Forms\GroupeForms;
 use App\Models\Forms\UserForm;
 use App\Models\Forms\UserFormUpdate;
 use App\Services\UserService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 
 
@@ -44,6 +50,9 @@ class UserController extends AbstractFOSRestController
          */
         $data = json_decode($request->getContent(),true);
         $form = $this->createForm(UserType::class,$userForm,[
+            /**
+             * We don't need the protection. Because Angular is in charge of this
+             */
             'csrf_protection' => false
         ]);
         $form->handleRequest($request);
@@ -112,13 +121,24 @@ class UserController extends AbstractFOSRestController
     }
 
     /**
-     * @Rest\Get(path="/api/user/addGroupe/{userId}/{groupe}")
+     * @Rest\Put(path="/api/user/addGroupe/{userId}")
      * @Rest\View()
      * @param Request $request
-     * @return Groupe|null
+     * @return GroupeForms
      */
     public function addGroupeAction(Request $request)
     {
-        return $this->userService->addGroupe($request->get('userId'),$request->get('groupe'));
+        $groupeForm = new GroupeForms();
+        $data = json_decode($request->getContent(), true);
+        $form = $this->createForm(GroupeType::class, $groupeForm, [
+            'csrf_protection' => false
+        ]);
+        $form->handleRequest($request);
+        $form->submit($data);
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $this->userService->addGroupe($request->get('userId'),$form->getData());
+        }
+        return $groupeForm;
     }
 }

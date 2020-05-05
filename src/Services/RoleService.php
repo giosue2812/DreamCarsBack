@@ -20,6 +20,11 @@ class RoleService
      */
     private $repository;
 
+    /**
+     * RoleService constructor.
+     * @param EntityManagerInterface $manager
+     * @param RoleRepository $repository
+     */
     public function __construct(EntityManagerInterface $manager, RoleRepository $repository)
     {
         $this->manager = $manager;
@@ -29,9 +34,15 @@ class RoleService
     public function getRoles()
     {
         $roles = $this->repository->findAll();
+        /**
+         * Array empty to stock each groupe
+         */
         $arrayRole = [];
         foreach ($roles as $role)
         {
+            /**
+             * New DTO map Groupe
+             */
             $DTO = new RoleDetailsDTO($role);
             $arrayRole[]=$DTO;
         }

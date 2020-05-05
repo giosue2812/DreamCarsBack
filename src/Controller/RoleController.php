@@ -16,6 +16,10 @@ class RoleController extends AbstractFOSRestController
      */
     private $roleService;
 
+    /**
+     * RoleController constructor.
+     * @param RoleService $roleService
+     */
     public function __construct(RoleService $roleService)
     {
         $this->roleService = $roleService;

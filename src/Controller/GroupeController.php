@@ -2,12 +2,10 @@
 
 namespace App\Controller;
 
-use App\DTO\GroupeDetailsDTO;
 use App\Services\GroupeService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Flex\Response;
 
 class GroupeController extends AbstractFOSRestController
 {
@@ -16,6 +14,10 @@ class GroupeController extends AbstractFOSRestController
      */
     private $groupeService;
 
+    /**
+     * GroupeController constructor.
+     * @param GroupeService $groupeService
+     */
     public function __construct(GroupeService $groupeService)
     {
         $this->groupeService = $groupeService;
