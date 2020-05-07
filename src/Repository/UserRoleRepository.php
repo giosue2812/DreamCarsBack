@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\UserRole;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+
 
 /**
  * @method UserRole|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,7 +20,6 @@ class UserRoleRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, UserRole::class);
     }
-
     // /**
     //  * @return UserRole[] Returns an array of UserRole objects
     //  */

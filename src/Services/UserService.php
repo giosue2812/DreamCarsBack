@@ -3,10 +3,12 @@
 
 namespace App\Services;
 
+use App\DTO\JsonResponseDTO;
 use App\DTO\UserDetailsDTO;
-use App\Entity\Groupe;
 use App\Entity\User;
-use App\Models\Forms\GroupeForms;
+use App\Entity\UserRole;
+use App\Models\Forms\GroupeForm;
+use App\Models\Forms\RoleForm;
 use App\Models\Forms\UserForm;
 use App\Models\Forms\UserFormUpdate;
 use App\Repository\GroupeRepository;
@@ -20,23 +22,31 @@ class UserService
     /**
      * @var EntityManagerInterface $manager
      */
-    private $manager;
+    private EntityManagerInterface $manager;
     /**
      * @var UserRepository $userRepository
      */
-    private $userRepository;
+    private UserRepository $userRepository;
     /**
      * @var UserPasswordEncoderInterface $userPasswordEncode
      */
-    private $userPasswordEncode;
+    private UserPasswordEncoderInterface $userPasswordEncode;
     /**
      * @var GroupeRepository $groupeRepository
      */
-    private $groupeRepository;
+    private GroupeRepository $groupeRepository;
     /**
      * @var GroupeService $groupeService
      */
-    private $groupeService;
+    private GroupeService $groupeService;
+    /**
+     * @var RoleService $roleService
+     */
+    private RoleService $roleService;
+    /**
+     * @var UserRoleService $userRoleService
+     */
+    private UserRoleService $userRoleService;
 
     /**
      * UserService constructor.
@@ -45,13 +55,17 @@ class UserService
      * @param UserPasswordEncoderInterface $userPasswordEncode
      * @param GroupeRepository $groupeRepository
      * @param GroupeService $groupeService
+     * @param RoleService $roleService
+     * @param UserRoleService $userRoleService
      */
     public function __construct(
         EntityManagerInterface $manager,
         UserRepository $userRepository,
         UserPasswordEncoderInterface $userPasswordEncode,
         GroupeRepository $groupeRepository,
-        GroupeService $groupeService
+        GroupeService $groupeService,
+        RoleService $roleService,
+        UserRoleService $userRoleService
     )
     {
         $this->manager = $manager;
@@ -59,6 +73,8 @@ class UserService
         $this->userPasswordEncode = $userPasswordEncode;
         $this->groupeRepository = $groupeRepository;
         $this->groupeService = $groupeService;
+        $this->roleService = $roleService;
+        $this->userRoleService = $userRoleService;
     }
 
     /**
@@ -95,7 +111,7 @@ class UserService
      * @param string $username
      * @return UserDetailsDTO
      */
-    public function user($username)
+    public function getUserByUserName($username)
     {
         $user =  $this->userRepository->findOneBy(['email' => $username]);
         return new UserDetailsDTO($user);
@@ -108,7 +124,7 @@ class UserService
      */
     public function update(UserFormUpdate $userFormUpdate,$userId)
     {
-        $userToUpdate = $this->getUserId($userId);
+        $userToUpdate = $this->getUserById($userId);
         $userToUpdate
             ->setFirstName($userFormUpdate->getFirstName())
             ->setLastName($userFormUpdate->getLastName())
@@ -131,12 +147,12 @@ class UserService
     }
 
     /**
-     * @param string $user
+     * @param string $keyWord
      * @return array
      */
-    public function searchUser(string $user)
+    public function searchUser(string $keyWord)
     {
-        $user = $this->userRepository->searchUser($user);
+        $user = $this->userRepository->searchUser($keyWord);
         /**
          * Array empty to stock each user
          */
@@ -154,43 +170,167 @@ class UserService
 
     /**
      * @param $userId
-     * @param GroupeForms $groupeForms
-     * @return User
+     * @param GroupeForm $groupeForms
+     * @return JsonResponseDTO
      */
-    public function addGroupe($userId,GroupeForms $groupeForms)
+    public function addGroupe($userId, GroupeForm $groupeForms)
     {
         /**
          * I get the userId from the route
          */
-        $user = $this->getUserId($userId);
+        $user = $this->getUserById($userId);
         /**
          * I get the groupe if exist
          */
         $groupe = $this->groupeService->getGroupe($groupeForms->getGroupe());
-
         /**
-         * Add the group for the user
+         * If the role and user exist
          */
-        $user
-            ->addGroup($groupe);
-        /**
-         * I try if the flush is done
-         */
-        try {
-            $this->manager->flush();
-        } catch (PDOException $e)
+        if (isset($user) && isset($groupe))
         {
-            dump($e);
+            /**
+             * then we call the userservice to found the userRole with param user and param role
+             * Add the group for the user
+             */
+            $user->addGroup($groupe);
+            /**
+             * I try if the flush is done
+             */
+            try {
+                $this->manager->flush();
+            } catch (PDOException $e)
+            {
+                return new JsonResponseDTO('500','Server Error',$e);
+            }
         }
-        return $user;
+        return new JsonResponseDTO('200','Success',"L'utilisate ".$user->getEmail()." appartien au groupe ".$groupe->getGroupe());
     }
 
+    /**
+     * @param $userId
+     * @param RoleForm $roleForm
+     * @return JsonResponseDTO
+     * @throws \Exception
+     */
+    public function addRole($userId,RoleForm $roleForm)
+    {
+        /**
+         * New date instance
+         */
+        $date = new \DateTime();
+        /**
+         * We get the userId
+         */
+        $user = $this->getUserById($userId);
+        $role = $this->roleService->getRole($roleForm->getIdRole());
+        /**
+         * If the role and user exist
+         */
+        if(isset($role)&&isset($user))
+        {
+            /**
+             * then we call the userservice to found the userRole with param user and param role
+             */
+            $userRole = $this->userRoleService->findUserRole($user->getId(),$role->getId());
+            /**
+             * if userrole exist and the userrole is not null
+             */
+            if(isset($userRole) && $userRole != null && $userRole->getEndDate() == null)
+            {
+                return new JsonResponseDTO('401','Failed','This role and this user is already present');
+            }
+            else
+            {
+                /**
+                 * If userrole is not present. New instance Userrole is created.
+                 */
+                $userRole = new UserRole();
+                /**
+                 * Set users and set Roles
+                 */
+                $userRole->setUsers($user);
+                $userRole->setRoles($role);
+                $userRole->setStartDate($date);
+                try {
+                    /**
+                     * Try if the persist is done
+                     */
+                    $this->manager->persist($userRole);
+                    $this->manager->flush();
+                    return new JsonResponseDTO('200','Succes',$user);
+                } catch (PDOException $e)
+                {
+                    return new JsonResponseDTO('500','Server Error',$e);
+                }
+            }
+        }
+        /**
+         * If role and user is not known
+         */
+        else
+        {
+            return new JsonResponseDTO('401','Failed','Role our User is unknonw');
+        }
+    }
+
+    /**
+     * @param $userId
+     * @param $groupe
+     * @return JsonResponseDTO
+     */
+    public function removeGroupe($userId,$groupe)
+    {
+        /**
+         * I get the user and groupe selected
+         */
+        $user = $this->getUserById($userId);
+        $groupe = $this->groupeService->getGroupe($groupe);
+        /**
+         * If user and role exist
+         */
+        if(isset($user) && isset($groupe))
+        {
+            /**
+             * Try to remove group
+             */
+            try {
+                $user->removeGroup($groupe);
+                $this->manager->flush();
+            } catch (PDOException $e)
+            {
+                /**
+                 * Send a Json response if there is an issue
+                 */
+                return new JsonResponseDTO('500','Server Error',$e);
+            }
+            /**
+             * If success we send a 200 success
+             */
+            return new JsonResponseDTO('200','Success',"The groupe ". $groupe->getGroupe() . " has been removed");
+        }
+        else
+        {
+            /**
+             * If the user or role is not present in the data base
+             */
+            return new JsonResponseDTO('400','Failed','User or groupe is unknown');
+        }
+    }
+
+    /**
+     * @param $userId
+     * @param $roleId
+     * @return mixed
+     */
+    public function removeUserRole($userId,$roleId){
+        return $userId;
+    }
     /**
      * @param $id
      * @return User|null
      * Private function because is used only for now by the API
      */
-    private function getUserId($id)
+    private function getUserById($id)
     {
         return $this->userRepository->find($id);
     }

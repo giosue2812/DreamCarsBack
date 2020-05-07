@@ -56,5 +56,4 @@ class GroupeDetailsDTO
         return $this->update_at;
     }
 
-
 }

@@ -6,7 +6,6 @@ namespace App\Services;
 
 use App\DTO\GroupeDetailsDTO;
 use App\Entity\Groupe;
-use App\Models\Forms\GroupeForms;
 use App\Repository\GroupeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -15,11 +14,11 @@ class GroupeService
     /**
      * @var GroupeRepository $repository
      */
-    private $repository;
+    private GroupeRepository $repository;
     /**
      * @var EntityManagerInterface $manager
      */
-    private $manager;
+    private EntityManagerInterface $manager;
 
     /**
      * GroupeService constructor.
@@ -52,7 +51,6 @@ class GroupeService
         }
         return $arrayGroupe;
     }
-
     /**
      * @param $groupe
      * @return Groupe|null

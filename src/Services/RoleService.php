@@ -14,11 +14,11 @@ class RoleService
     /**
      * @var EntityManagerInterface $manager
      */
-    private $manager;
+    private EntityManagerInterface $manager;
     /**
      * @var RoleRepository $repository
      */
-    private $repository;
+    private RoleRepository $repository;
 
     /**
      * RoleService constructor.
@@ -31,6 +31,9 @@ class RoleService
         $this->repository = $repository;
     }
 
+    /**
+     * @return array
+     */
     public function getRoles()
     {
         $roles = $this->repository->findAll();
@@ -38,14 +41,22 @@ class RoleService
          * Array empty to stock each groupe
          */
         $arrayRole = [];
-        foreach ($roles as $role)
-        {
+        foreach ($roles as $role) {
             /**
              * New DTO map Groupe
              */
             $DTO = new RoleDetailsDTO($role);
-            $arrayRole[]=$DTO;
+            $arrayRole[] = $DTO;
         }
         return $arrayRole;
+    }
+
+    /**
+     * @param $id_role
+     * @return Role|null
+     */
+    public function getRole($id_role)
+    {
+        return $this->repository->find($id_role);
     }
 }

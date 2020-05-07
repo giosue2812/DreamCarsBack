@@ -14,7 +14,7 @@ class RoleController extends AbstractFOSRestController
     /**
      * @var RoleService $roleService
      */
-    private $roleService;
+    private RoleService $roleService;
 
     /**
      * RoleController constructor.

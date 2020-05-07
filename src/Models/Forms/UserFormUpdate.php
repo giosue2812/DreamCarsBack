@@ -11,40 +11,40 @@ class UserFormUpdate
     /**
      * @var string $first_name
      */
-    private $first_name;
+    private string $first_name;
     /**
      * @var string $last_name
      */
-    private $last_name;
+    private string $last_name;
     /**
      * @var string $email
      * @Assert\Email()
      */
-    private $email;
+    private string $email;
     /**
      * @var string $street
      */
-    private $street;
+    private string $street;
     /**
      * @var string $number
      */
-    private $number;
+    private string $number;
     /**
      * @var string $postal_code
      */
-    private $postal_code;
+    private string $postal_code;
     /**
      * @var string $city
      */
-    private $city;
+    private string $city;
     /**
      * @var string $country
      */
-    private $country;
+    private string $country;
     /**
      * @var string $phone
      */
-    private $phone;
+    private string $phone;
 
     /**
      * @return string
@@ -208,5 +208,4 @@ class UserFormUpdate
         $this->phone = $phone;
         return $this;
     }
-
 }

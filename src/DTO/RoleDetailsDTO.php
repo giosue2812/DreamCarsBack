@@ -9,9 +9,13 @@ use App\Entity\Role;
 class RoleDetailsDTO
 {
     /**
+     * @var integer $id_role;
+     */
+    private $id_role;
+    /**
      * @var string $role
      */
-    private $role;
+    private ?string $role;
     /**
      * @var \DateTime $create_at
      */
@@ -27,9 +31,18 @@ class RoleDetailsDTO
      */
     public function __construct(Role $role)
     {
+        $this->id_role = $role->getId();
         $this->role = $role->getRole();
         $this->create_at = $role->getCreateAt();
         $this->update_at = $role->getUpdateAt();
+    }
+
+    /**
+     * @return int
+     */
+    public function getIdRole(): int
+    {
+        return $this->id_role;
     }
 
     /**

@@ -6,12 +6,12 @@ namespace App\Models\Forms;
 
 use App\Entity\Groupe;
 
-class GroupeForms
+class GroupeForm
 {
     /**
      * @var string $groupe
      */
-    private $groupe;
+    private string $groupe;
 
     /**
      * @return string
@@ -23,9 +23,9 @@ class GroupeForms
 
     /**
      * @param string $groupe
-     * @return GroupeForms
+     * @return GroupeForm
      */
-    public function setGroupe(string $groupe): GroupeForms
+    public function setGroupe(string $groupe): GroupeForm
     {
         $this->groupe = $groupe;
         return $this;

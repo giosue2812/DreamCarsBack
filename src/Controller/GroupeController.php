@@ -12,7 +12,7 @@ class GroupeController extends AbstractFOSRestController
     /**
      * @var GroupeService $groupeService
      */
-    private $groupeService;
+    private GroupeService $groupeService;
 
     /**
      * GroupeController constructor.

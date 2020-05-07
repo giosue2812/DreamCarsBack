@@ -6,8 +6,6 @@ use App\Entity\Groupe;
 use App\Entity\Role;
 use App\Entity\User;
 use App\Entity\UserRole;
-use App\Repository\UserRoleRepository;
-use Cassandra\Date;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -17,7 +15,7 @@ class AppFixtures extends Fixture
     /**
      * @var UserPasswordEncoderInterface $encoder
      */
-    private $encoder;
+    private UserPasswordEncoderInterface $encoder;
 
     public function __construct(UserPasswordEncoderInterface $encoder)
     {
