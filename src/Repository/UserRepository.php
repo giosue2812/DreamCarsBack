@@ -6,10 +6,12 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
@@ -50,8 +52,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      * @param $user
      * @return mixed
      */
-    public function searchUser($user)
+    public function searchUser($user):array
     {
+//        $query = $this->createQueryBuilder('u')
+//            ->where('u.email = :val')
+//            ->innerJoin('u.userRoles','userRoles','u.id = userRoles.users')
+//            ->setParameter('val', $user)
+//            ->getQuery()
+//            ->getResult();
+//        return $query;
+
         return $this
             ->createQueryBuilder('u')
             ->where('u.first_name LIKE :user')

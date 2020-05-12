@@ -9,7 +9,7 @@ class RoleForm
     /**
      * @var integer $id_role
      */
-    private int $id_role;
+    private $id_role;
 
     /**
      * @return int

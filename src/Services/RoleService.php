@@ -59,4 +59,9 @@ class RoleService
     {
         return $this->repository->find($id_role);
     }
+
+    public function getRoleByName($roleName)
+    {
+        return $this->repository->findOneBy(['role' => $roleName]);
+    }
 }

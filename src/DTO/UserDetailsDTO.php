@@ -96,7 +96,7 @@ class UserDetailsDTO
 
         $this->userRoles = array_map(function($usr){
             /** @var UserRole $usr */
-            return array($usr->getRoles()->getRole(),$usr->getStartDate(),$usr->getEndDate());
+            return [$usr->getId(),$usr->getRoles()->getRole(),$usr->getStartDate(),$usr->getEndDate()];
         },$user->getUserRoles()->getValues());
 
     }

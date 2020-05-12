@@ -110,11 +110,12 @@ class UserController extends AbstractFOSRestController
      * @Rest\Get(path="/api/user/search/{user}")
      * @Rest\View()
      * @param Request $request
-     * @return array
+     * @return JsonResponseDTO
      */
     public function searchUserAction(Request $request)
     {
-        return $this->userService->searchUser($request->get('user'));
+        $user = $this->userService->searchUser($request->get('user'));
+        return new JsonResponseDTO('200','Success',$user);
     }
 
     /**
@@ -196,11 +197,12 @@ class UserController extends AbstractFOSRestController
 
     /**
      * @param Request $request
-     * @Rest\Delete(path="/api/user/updateUserRole/{userId}/{roleId}")
+     * @Rest\Delete(path="/api/user/updateUserRole/{userRoleID}")
      * @Rest\View()
      * @return mixed
+     * @throws \Exception
      */
     public function removeRoleUserAction(Request $request){
-        return $this->userService->removeUserRole($request->get('userId'),$request->get('roleId'));
+        return $this->userService->removeUserRole($request->get('userRoleID'));
     }
 }

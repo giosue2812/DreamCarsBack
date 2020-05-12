@@ -32,14 +32,17 @@ class UserRoleService
         $this->repository = $repository;
     }
 
-    /**
-     * @param $userId
-     * @param $roleId
-     * @return UserRole|null
-     */
-    public function findUserRole($userId,$roleId)
+    public function findUserRoleByRoleAndUser($userId,$roleId)
     {
         return $this->repository->findOneBy(['users'=>$userId,'roles'=>$roleId]);
+    }
+    /**
+     * @param $userRoleID
+     * @return UserRole|null
+     */
+    public function findUserRole($userRoleID)
+    {
+        return $this->repository->find($userRoleID);
     }
 
 }

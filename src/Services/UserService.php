@@ -231,7 +231,7 @@ class UserService
             /**
              * then we call the userservice to found the userRole with param user and param role
              */
-            $userRole = $this->userRoleService->findUserRole($user->getId(),$role->getId());
+            $userRole = $this->userRoleService->findUserRoleByRoleAndUser($user->getId(),$role->getId());
             /**
              * if userrole exist and the userrole is not null
              */
@@ -274,11 +274,11 @@ class UserService
     }
 
     /**
-     * @param $userId
-     * @param $groupe
+     * @param int $userId
+     * @param string $groupe
      * @return JsonResponseDTO
      */
-    public function removeGroupe($userId,$groupe)
+    public function removeGroupe(int $userId, string $groupe)
     {
         /**
          * I get the user and groupe selected
@@ -318,12 +318,37 @@ class UserService
     }
 
     /**
-     * @param $userId
-     * @param $roleId
-     * @return mixed
+     * @param int $userRoleId
+     * @return JsonResponseDTO
+     * @throws \Exception
      */
-    public function removeUserRole($userId,$roleId){
-        return $userId;
+    public function removeUserRole(int $userRoleId){
+        /**
+         * New Instance date
+         */
+        $date = new \DateTime();
+        $userRole = $this->userRoleService->findUserRole($userRoleId);
+        if(isset($userRole))
+            {
+                /**
+                 * I set the end date to
+                 */
+                $userRole->setEndDate($date);
+                /**
+                 * Try to flush in the database
+                 */
+                try {
+                    $this->manager->flush();
+                } catch (PDOException $e)
+                {
+                    return new JsonResponseDTO('500','Server Error',$e);
+                }
+            }
+            else
+            {
+                return new JsonResponseDTO('400','Failed','UserRole is unknown');
+            }
+        return new JsonResponseDTO('200','success','The role '.$userRole->getRoles()->getRole().' for username '.$userRole->getUsers()->getEmail().' has been removed');
     }
     /**
      * @param $id

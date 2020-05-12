@@ -11,7 +11,7 @@ class GroupeForm
     /**
      * @var string $groupe
      */
-    private string $groupe;
+    private $groupe;
 
     /**
      * @return string
