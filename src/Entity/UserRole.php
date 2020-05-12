@@ -94,5 +94,4 @@ class UserRole
         $this->endDate = $endDate;
         return $this;
     }
-
 }

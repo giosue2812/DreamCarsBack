@@ -30,7 +30,7 @@ class BaseEntity
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isActive;
+    private bool $isActive;
 
     /**
      * @return mixed
@@ -86,7 +86,6 @@ class BaseEntity
         return $this;
     }
 
-
     /**
      * @return mixed
      */
@@ -113,6 +112,5 @@ class BaseEntity
         $this->createAt = new \DateTime();
         $this->isActive = true;
     }
-
 
 }

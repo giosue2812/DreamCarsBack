@@ -70,6 +70,10 @@ class UserDetailsDTO
      */
     private $userRoles;
 
+    /**
+     * UserDetailsDTO constructor.
+     * @param User $user
+     */
     public function __construct(User $user)
     {
         $this->id = $user->getId();
@@ -92,8 +96,9 @@ class UserDetailsDTO
 
         $this->userRoles = array_map(function($usr){
             /** @var UserRole $usr */
-            return array($usr->getRoles()->getRole(),$usr->getStartDate(),$usr->getEndDate());
+            return [$usr->getId(),$usr->getRoles()->getRole(),$usr->getStartDate(),$usr->getEndDate()];
         },$user->getUserRoles()->getValues());
+
     }
 
     /**
@@ -122,8 +127,6 @@ class UserDetailsDTO
         return $this->updateAt;
     }
 
-
-
     /**
      * @return string
      */
@@ -142,7 +145,6 @@ class UserDetailsDTO
     }
 
 
-
     /**
      * @return string
      */
@@ -150,7 +152,6 @@ class UserDetailsDTO
     {
         return $this->email;
     }
-
 
 
     /**
@@ -161,8 +162,6 @@ class UserDetailsDTO
         return $this->phone;
     }
 
-
-
     /**
      * @return string
      */
@@ -171,8 +170,6 @@ class UserDetailsDTO
         return $this->street;
     }
 
-
-
     /**
      * @return string
      */
@@ -180,7 +177,6 @@ class UserDetailsDTO
     {
         return $this->number;
     }
-
 
     /**
      * @return string
@@ -197,7 +193,6 @@ class UserDetailsDTO
     {
         return $this->city;
     }
-
 
     /**
      * @return string

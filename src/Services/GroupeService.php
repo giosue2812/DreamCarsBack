@@ -7,8 +7,6 @@ namespace App\Services;
 use App\DTO\GroupeDetailsDTO;
 use App\Entity\Groupe;
 use App\Repository\GroupeRepository;
-use App\Repository\RoleRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 
 class GroupeService
@@ -16,12 +14,17 @@ class GroupeService
     /**
      * @var GroupeRepository $repository
      */
-    private $repository;
+    private GroupeRepository $repository;
     /**
      * @var EntityManagerInterface $manager
      */
-    private $manager;
+    private EntityManagerInterface $manager;
 
+    /**
+     * GroupeService constructor.
+     * @param GroupeRepository $repository
+     * @param EntityManagerInterface $manager
+     */
     public function __construct(GroupeRepository $repository, EntityManagerInterface $manager)
     {
         $this->repository = $repository;
@@ -48,5 +51,12 @@ class GroupeService
         }
         return $arrayGroupe;
     }
-
+    /**
+     * @param $groupe
+     * @return Groupe|null
+     */
+    public function getGroupe($groupe)
+    {
+        return $this->repository->findOneBy(['groupe'=>$groupe]);
+    }
 }

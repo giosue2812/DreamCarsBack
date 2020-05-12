@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
-use App\DTO\UserDetailsDTO;
+use App\DTO\JsonResponseDTO;
+use App\Form\GroupeType;
+use App\Form\RoleType;
 use App\Form\UserType;
 use App\Form\UserUpdateType;
+use App\Models\Forms\GroupeForm;
+use App\Models\Forms\RoleForm;
 use App\Models\Forms\UserForm;
 use App\Models\Forms\UserFormUpdate;
 use App\Services\UserService;
@@ -18,7 +22,7 @@ class UserController extends AbstractFOSRestController
     /**
      * @var UserService $userService
      */
-    private $userService;
+    private UserService $userService;
 
     /**
      * UserController constructor.
@@ -43,6 +47,9 @@ class UserController extends AbstractFOSRestController
          */
         $data = json_decode($request->getContent(),true);
         $form = $this->createForm(UserType::class,$userForm,[
+            /**
+             * We don't need the protection. Because Angular is in charge of this
+             */
             'csrf_protection' => false
         ]);
         $form->handleRequest($request);
@@ -62,12 +69,12 @@ class UserController extends AbstractFOSRestController
      * @param Request $request
      * @Rest\Get(path="/api/user/{username}")
      * @Rest\View()
-     * @return UserDetailsDTO
+     * @return JsonResponseDTO
      */
     public function userAction(Request $request)
     {
-        return $this->userService->user($request->get('username'));
-//        return new Response($user->getEmail(),Response::HTTP_OK,['content-type'=>'application/json']);
+        $user = $this->userService->getUserByUserName($request->get('username'));
+        return new JsonResponseDTO('200','Success',$user);
     }
 
     /**
@@ -103,10 +110,99 @@ class UserController extends AbstractFOSRestController
      * @Rest\Get(path="/api/user/search/{user}")
      * @Rest\View()
      * @param Request $request
-     * @return array
+     * @return JsonResponseDTO
      */
     public function searchUserAction(Request $request)
     {
-        return $this->userService->searchUser($request->get('user'));
+        $user = $this->userService->searchUser($request->get('user'));
+        return new JsonResponseDTO('200','Success',$user);
+    }
+
+    /**
+     * @Rest\Put(path="/api/user/addGroupe/{userId}")
+     * @Rest\View()
+     * @param Request $request
+     * @return JsonResponseDTO
+     */
+    public function addGroupeAction(Request $request)
+    {
+        /**
+         * Ne instance gor groupe form
+         */
+        $groupeForm = new GroupeForm();
+        /**
+         * Deserialization the request body
+         */
+        $data = json_decode($request->getContent(), true);
+        /**
+         * Creation form
+         */
+        $form = $this->createForm(GroupeType::class, $groupeForm, [
+            'csrf_protection' => false
+        ]);
+        $form->handleRequest($request);
+        $form->submit($data);
+        if($form->isSubmitted() && $form->isValid())
+        {
+            /**
+             * we call the user service to add groupe
+             */
+            $addGroupe = $this->userService->addGroupe($request->get('userId'),$form->getData());
+        }
+        return $addGroupe;
+    }
+
+    /**
+     * @param Request $request
+     * @Rest\Put(path="/api/user/addRole/{userId}")
+     * @Rest\View()
+     * @return JsonResponseDTO
+     * @throws \Exception
+     */
+    public function addRoleAction(Request $request){
+        $addRole = "";
+        /**
+         * New instance to add the userRole
+         */
+        $roleForm = new RoleForm();
+        /**
+         * Deserialization the request body
+         */
+        $data = json_decode($request->getContent(),true);
+        $form = $this->createForm(RoleType::class,$roleForm,[
+            'csrf_protection'=>false
+        ]);
+        $form->handleRequest($request);
+        $form->submit($data);
+        if($form->isSubmitted() && $form->isValid())
+        {
+            /**
+             * we call the user service to add role
+             */
+            $addRole = $this->userService->addRole($request->get('userId'),$form->getData());
+        }
+        return $addRole;
+    }
+
+    /**
+     * @param Request $request
+     * @Rest\Delete(path="/api/user/removeGroupe/{userId}/{groupe}")
+     * @Rest\View()
+     * @return JsonResponseDTO
+     */
+    public function removeGroupeAction(Request $request)
+    {
+        return $this->userService->removeGroupe($request->get('userId'),$request->get('groupe'));
+    }
+
+    /**
+     * @param Request $request
+     * @Rest\Delete(path="/api/user/updateUserRole/{userRoleID}")
+     * @Rest\View()
+     * @return mixed
+     * @throws \Exception
+     */
+    public function removeRoleUserAction(Request $request){
+        return $this->userService->removeUserRole($request->get('userRoleID'));
     }
 }
