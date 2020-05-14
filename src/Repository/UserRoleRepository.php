@@ -20,6 +20,7 @@ class UserRoleRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, UserRole::class);
     }
+
     // /**
     //  * @return UserRole[] Returns an array of UserRole objects
     //  */

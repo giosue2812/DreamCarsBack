@@ -6,8 +6,11 @@ namespace App\Services;
 
 use App\DTO\RoleDetailsDTO;
 use App\Entity\Role;
+use App\Models\Forms\RoleFormAdd;
 use App\Repository\RoleRepository;
+use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Validator\Constraints\Date;
 
 class RoleService
 {
@@ -60,8 +63,30 @@ class RoleService
         return $this->repository->find($id_role);
     }
 
+    /**
+     * @param $roleName
+     * @return Role|null
+     */
     public function getRoleByName($roleName)
     {
         return $this->repository->findOneBy(['role' => $roleName]);
+    }
+
+    /**
+     * @param RoleFormAdd $roleFormAdd
+     * @return Role
+     */
+    public function addNewRole(RoleFormAdd $roleFormAdd)
+    {
+        $role = new Role();
+        $role->setRole($roleFormAdd->getRole());
+        try {
+            $this->manager->persist($role);
+            $this->manager->flush();
+        } catch (PDOException $e)
+        {
+            dump($e);
+        }
+        return $role;
     }
 }

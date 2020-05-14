@@ -78,6 +78,17 @@ class UserController extends AbstractFOSRestController
     }
 
     /**
+     * @Rest\Get(path="api/userID/{id}")
+     * @Rest\View()
+     * @param Request $request
+     * @return JsonResponseDTO
+     */
+    public function userById(Request $request)
+    {
+        return $this->userService->getUser($request->get('id'));
+    }
+
+    /**
      * @param Request $request
      * @Rest\Put(path="/api/user/update/{id}")
      * @Rest\View()
