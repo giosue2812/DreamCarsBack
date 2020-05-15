@@ -4,6 +4,7 @@
 namespace App\Services;
 
 
+use App\DTO\JsonResponseDTO;
 use App\DTO\RoleDetailsDTO;
 use App\Entity\Role;
 use App\Models\Forms\RoleFormAdd;
@@ -35,7 +36,7 @@ class RoleService
     }
 
     /**
-     * @return array
+     * @return JsonResponseDTO
      */
     public function getRoles()
     {
@@ -51,7 +52,7 @@ class RoleService
             $DTO = new RoleDetailsDTO($role);
             $arrayRole[] = $DTO;
         }
-        return $arrayRole;
+        return new JsonResponseDTO('200','success',$arrayRole);
     }
 
     /**
@@ -74,7 +75,7 @@ class RoleService
 
     /**
      * @param RoleFormAdd $roleFormAdd
-     * @return Role
+     * @return JsonResponseDTO
      */
     public function addNewRole(RoleFormAdd $roleFormAdd)
     {
@@ -87,6 +88,29 @@ class RoleService
         {
             dump($e);
         }
-        return $role;
+        $arrayRole = $this->getRoles();
+        return $arrayRole;
+    }
+
+    /**
+     * @param $idRole
+     * @param RoleFormAdd $roleFormAdd
+     * @return JsonResponseDTO
+     * @throws \Exception
+     */
+    public function updateRole($idRole,RoleFormAdd $roleFormAdd)
+    {
+        $date = new \DateTime();
+        $role = $this->repository->find($idRole);
+        $role->setRole($roleFormAdd->getRole());
+        $role->setUpdateAt($date);
+        try {
+            $this->manager->flush();
+        } catch (PDOException $e)
+        {
+            dump($e);
+        }
+        $arrayRole = $this->getRoles();
+        return $arrayRole;
     }
 }

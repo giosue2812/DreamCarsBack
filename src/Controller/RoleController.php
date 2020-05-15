@@ -4,6 +4,8 @@
 namespace App\Controller;
 
 
+use App\DTO\JsonResponseDTO;
+use App\Entity\Role;
 use App\Form\RoleFormAddType;
 use App\Form\RoleType;
 use App\Models\Forms\RoleForm;
@@ -45,7 +47,7 @@ class RoleController extends AbstractFOSRestController
      * @Rest\Post(path="api/role/addRole")
      * @Rest\View()
      * @IsGranted("ROLE_ADMIN")
-     * @return RoleFormAdd
+     * @return JsonResponseDTO
      */
     public function addNewRoleAction(Request $request)
     {
@@ -58,8 +60,32 @@ class RoleController extends AbstractFOSRestController
         $form->submit($data);
         if ($form->isSubmitted() && $form->isValid())
         {
-            return $this->roleService->addNewRole($form->getData());
+            $role = $this->roleService->addNewRole($form->getData());
         }
-        return $roleFormAdd;
+        return $role;
+    }
+
+    /**
+     * @Rest\Put(path="api/role/updateRole/{idRole}")
+     * @Rest\View()
+     * @IsGranted("ROLE_ADMIN")
+     * @param Request $request
+     * @return JsonResponseDTO
+     * @throws \Exception
+     */
+    public function updateRoleAction(Request $request)
+    {
+        $roleFormUpdate = new RoleFormAdd();
+        $data = json_decode($request->getContent(),true);
+        $form = $this->createForm(RoleFormAddType::class, $roleFormUpdate,[
+            'csrf_protection' => false
+        ]);
+        $form->handleRequest($request);
+        $form->submit($data);
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $role = $this->roleService->updateRole($request->get('idRole'),$form->getData());
+        }
+        return $role;
     }
 }
