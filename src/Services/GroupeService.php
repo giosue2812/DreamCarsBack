@@ -111,6 +111,26 @@ class GroupeService
         }
         return $this->getGroupeAll();
     }
+
+    /**
+     * @param $idGroupe
+     * @return JsonResponseDTO
+     * @throws \Exception
+     */
+    public function removeGroupe($idGroupe)
+    {
+        $date = new \DateTime();
+        $groupe = $this->repository->find($idGroupe);
+        $groupe->setDeleteAt($date);
+        $groupe->setIsActive(false);
+        try{
+            $this->manager->flush();
+        } catch (PDOException $e)
+        {
+            dump($e);
+        }
+        return $this->getGroupeAll();
+    }
     /**
      * @param $groupe
      * @return Groupe|null

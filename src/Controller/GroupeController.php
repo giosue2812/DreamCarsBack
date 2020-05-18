@@ -83,4 +83,16 @@ class GroupeController extends AbstractFOSRestController
         }
         return $groupe;
     }
+
+    /**
+     * @Rest\Delete(path="api/groupe/removeGroupe/{idGroupe}")
+     * @Rest\View()
+     * @param Request $request
+     * @return JsonResponseDTO
+     * @throws \Exception
+     */
+    public function removeGroupeAction(Request $request)
+    {
+        return $this->groupeService->removeGroupe($request->get('idGroupe'));
+    }
 }
