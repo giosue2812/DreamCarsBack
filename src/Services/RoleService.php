@@ -4,10 +4,14 @@
 namespace App\Services;
 
 
+use App\DTO\JsonResponseDTO;
 use App\DTO\RoleDetailsDTO;
 use App\Entity\Role;
+use App\Models\Forms\RoleFormAdd;
 use App\Repository\RoleRepository;
+use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Validator\Constraints\Date;
 
 class RoleService
 {
@@ -32,7 +36,7 @@ class RoleService
     }
 
     /**
-     * @return array
+     * @return JsonResponseDTO
      */
     public function getRoles()
     {
@@ -48,7 +52,7 @@ class RoleService
             $DTO = new RoleDetailsDTO($role);
             $arrayRole[] = $DTO;
         }
-        return $arrayRole;
+        return new JsonResponseDTO('200','success',$arrayRole);
     }
 
     /**
@@ -60,8 +64,89 @@ class RoleService
         return $this->repository->find($id_role);
     }
 
+    /**
+     * @param $roleName
+     * @return Role|null
+     */
     public function getRoleByName($roleName)
     {
         return $this->repository->findOneBy(['role' => $roleName]);
+    }
+
+    /**
+     * @param RoleFormAdd $roleFormAdd
+     * @return JsonResponseDTO
+     * @throws \Exception
+     */
+    public function addNewRole(RoleFormAdd $roleFormAdd)
+    {
+        $date = new \DateTime();
+        $roleExist = $this->getRoleByName($roleFormAdd->getRole());
+        if($roleExist){
+            $roleExist->setIsActive(true);
+            $roleExist->setDeleteAt(null);
+            $roleExist->setUpdateAt($date);
+
+            try {
+                $this->manager->flush();
+            } catch (PDOException $e)
+            {
+                dump($e);
+            }
+        }
+        else {
+            $role = new Role();
+            $role->setRole($roleFormAdd->getRole());
+            try {
+                $this->manager->persist($role);
+                $this->manager->flush();
+            } catch (PDOException $e) {
+                dump($e);
+            }
+        }
+        $arrayRole = $this->getRoles();
+        return $arrayRole;
+    }
+
+    /**
+     * @param $idRole
+     * @param RoleFormAdd $roleFormAdd
+     * @return JsonResponseDTO
+     * @throws \Exception
+     */
+    public function updateRole($idRole,RoleFormAdd $roleFormAdd)
+    {
+        $date = new \DateTime();
+        $role = $this->repository->find($idRole);
+        $role->setRole($roleFormAdd->getRole());
+        $role->setUpdateAt($date);
+        try {
+            $this->manager->flush();
+        } catch (PDOException $e)
+        {
+            dump($e);
+        }
+        $arrayRole = $this->getRoles();
+        return $arrayRole;
+    }
+
+    /**
+     * @param $idRole
+     * @return JsonResponseDTO
+     * @throws \Exception
+     */
+    public function removeRole($idRole)
+    {
+        $date = new \DateTime();
+        $role = $this->getRole($idRole);
+        $role->setIsActive(false);
+        $role->setDeleteAt($date);
+        try {
+            $this->manager->flush();
+        } catch (PDOException $e)
+        {
+            dump($e);
+        }
+        return $arrayRole = $this->getRoles();
     }
 }

@@ -148,7 +148,7 @@ class UserService
 
     /**
      * @param string $keyWord
-     * @return array
+     * @return UserDetailsDTO
      */
     public function searchUser(string $keyWord)
     {
@@ -165,7 +165,7 @@ class UserService
             $DTO = new UserDetailsDTO($item);
             $arrayUser[]=$DTO;
         }
-        return $arrayUser;
+        return $DTO;
     }
 
     /**
@@ -203,7 +203,7 @@ class UserService
                 return new JsonResponseDTO('500','Server Error',$e);
             }
         }
-        return new JsonResponseDTO('200','Success',"L'utilisate ".$user->getEmail()." appartien au groupe ".$groupe->getGroupe());
+        return new JsonResponseDTO('200','Success',new UserDetailsDTO($user));
     }
 
     /**
@@ -257,7 +257,7 @@ class UserService
                      */
                     $this->manager->persist($userRole);
                     $this->manager->flush();
-                    return new JsonResponseDTO('200','Succes',$user);
+                    return new JsonResponseDTO('200','Succes',new UserDetailsDTO($user));
                 } catch (PDOException $e)
                 {
                     return new JsonResponseDTO('500','Server Error',$e);
@@ -306,7 +306,7 @@ class UserService
             /**
              * If success we send a 200 success
              */
-            return new JsonResponseDTO('200','Success',"The groupe ". $groupe->getGroupe() . " has been removed");
+            return new JsonResponseDTO('200','Success',new UserDetailsDTO($user));
         }
         else
         {
@@ -348,11 +348,26 @@ class UserService
             {
                 return new JsonResponseDTO('400','Failed','UserRole is unknown');
             }
-        return new JsonResponseDTO('200','success','The role '.$userRole->getRoles()->getRole().' for username '.$userRole->getUsers()->getEmail().' has been removed');
+        return new JsonResponseDTO('200','success',new UserDetailsDTO($userRole->getUsers()));
     }
+
     /**
      * @param $id
-     * @return User|null
+     * @return JsonResponseDTO
+     */
+    public function getUser($id)
+    {
+        $user = $this->userRepository->find($id);
+        if(isset($user))
+        {
+            return new JsonResponseDTO('200','success',new UserDetailsDTO($user));
+        }
+        return new JsonResponseDTO('400','fail','Erreur user non trouvé');
+    }
+
+    /**
+     * @param $id
+     * @return User|null Private function because is used only for now by the API
      * Private function because is used only for now by the API
      */
     private function getUserById($id)
