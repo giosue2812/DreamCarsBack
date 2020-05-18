@@ -88,4 +88,16 @@ class RoleController extends AbstractFOSRestController
         }
         return $role;
     }
+
+    /**
+     * @Rest\Delete(path="api/role/removeRole/{idRole}")
+     * @Rest\View()
+     * @param Request $request
+     * @return JsonResponseDTO
+     * @throws \Exception
+     */
+    public function removeRole(Request $request)
+    {
+        return $this->roleService->removeRole($request->get('idRole'));
+    }
 }

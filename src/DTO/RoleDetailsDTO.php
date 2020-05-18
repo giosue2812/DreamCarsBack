@@ -26,15 +26,21 @@ class RoleDetailsDTO
     private $update_at;
 
     /**
+     * @var \DateTime $delete_at
+     */
+    private $delete_at;
+
+    /**
      * RoleDetailsDTO constructor.
      * @param Role $role
      */
     public function __construct(Role $role)
     {
-        $this->id_role = $role->getId();
-        $this->role = $role->getRole();
-        $this->create_at = $role->getCreateAt();
-        $this->update_at = $role->getUpdateAt();
+            $this->id_role = $role->getId();
+            $this->role = $role->getRole();
+            $this->create_at = $role->getCreateAt();
+            $this->update_at = $role->getUpdateAt();
+            $this->delete_at = $role->getDeleteAt();
     }
 
     /**

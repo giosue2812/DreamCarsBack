@@ -113,4 +113,24 @@ class RoleService
         $arrayRole = $this->getRoles();
         return $arrayRole;
     }
+
+    /**
+     * @param $idRole
+     * @return JsonResponseDTO
+     * @throws \Exception
+     */
+    public function removeRole($idRole)
+    {
+        $date = new \DateTime();
+        $role = $this->getRole($idRole);
+        $role->setIsActive(false);
+        $role->setDeleteAt($date);
+        try {
+            $this->manager->flush();
+        } catch (PDOException $e)
+        {
+            dump($e);
+        }
+        return $arrayRole = $this->getRoles();
+    }
 }
