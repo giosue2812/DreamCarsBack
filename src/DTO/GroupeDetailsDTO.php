@@ -9,6 +9,10 @@ use App\Entity\Groupe;
 class GroupeDetailsDTO
 {
     /**
+     * @var int $id_groupe
+     */
+    private $id_groupe;
+    /**
      * @var string $groupe
      */
     private $groupe;
@@ -20,16 +24,21 @@ class GroupeDetailsDTO
      * @var \DateTime $update_at
      */
     private $update_at;
-
+    /**
+     * @var \DateTime $delete_at
+     */
+    private $delete_at;
     /**
      * GroupeDetailsDTO constructor.
      * @param Groupe $groupe
      */
     public function __construct(Groupe $groupe)
     {
+        $this->id_groupe = $groupe->getId();
         $this->groupe = $groupe->getGroupe();
         $this->create_at = $groupe->getCreateAt();
         $this->update_at = $groupe->getUpdateAt();
+        $this->delete_at = $groupe->getDeleteAt();
     }
 
     /**

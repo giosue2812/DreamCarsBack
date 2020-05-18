@@ -5,8 +5,11 @@ namespace App\Services;
 
 
 use App\DTO\GroupeDetailsDTO;
+use App\DTO\JsonResponseDTO;
 use App\Entity\Groupe;
+use App\Models\Forms\GroupeForm;
 use App\Repository\GroupeRepository;
+use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\ORM\EntityManagerInterface;
 
 class GroupeService
@@ -32,7 +35,7 @@ class GroupeService
     }
 
     /**
-     * @return array
+     * @return JsonResponseDTO
      */
     public function getGroupeAll()
     {
@@ -49,7 +52,42 @@ class GroupeService
             $DTO = new GroupeDetailsDTO($groupe);
             $arrayGroupe[]=$DTO;
         }
-        return $arrayGroupe;
+        return new JsonResponseDTO('200','success',$arrayGroupe);
+    }
+
+    /**
+     * @param GroupeForm $groupeForm
+     * @return JsonResponseDTO
+     * @throws \Exception
+     */
+    public function addNewGroupe(GroupeForm $groupeForm)
+    {
+        $date = new \DateTime();
+        $groupeExist = $this->repository->findOneBy(['groupe'=>$groupeForm->getGroupe()]);
+        if($groupeExist)
+        {
+            $groupeExist->setUpdateAt($date);
+            $groupeExist->setDeleteAt(null);
+            $groupeExist->setIsActive(true);
+            try{
+                $this->manager->flush();
+            } catch (PDOException $e)
+            {
+                dump($e);
+            }
+        }
+        else{
+            $groupe = new Groupe();
+            $groupe->setGroupe($groupeForm->getGroupe());
+            try {
+                $this->manager->persist($groupe);
+                $this->manager->flush();
+            } catch (PDOException $e)
+            {
+                dump($e);
+            }
+        }
+        return $this->getGroupeAll();
     }
     /**
      * @param $groupe

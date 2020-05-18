@@ -2,10 +2,14 @@
 
 namespace App\Controller;
 
+use App\DTO\JsonResponseDTO;
+use App\Form\GroupeType;
+use App\Models\Forms\GroupeForm;
 use App\Services\GroupeService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\Request;
 
 class GroupeController extends AbstractFOSRestController
 {
@@ -24,13 +28,36 @@ class GroupeController extends AbstractFOSRestController
     }
 
     /**
-     * @return array
+     * @return JsonResponseDTO
      * @Rest\Get(path="/api/groupe")
-     * @Rest\View()
      * @IsGranted("ROLE_ADMIN")
+     * @Rest\View()
      */
     public function getGroupeAllAction()
     {
         return $this->groupeService->getGroupeAll();
+    }
+
+    /**
+     * @Rest\Post(path="api/groupe/addGroupe")
+     * @Rest\View()
+     * @IsGranted("ROLE_ADMIN")
+     * @param Request $request
+     * @return JsonResponseDTO
+     * @throws \Exception
+     */
+    public function addGroupeAction(Request $request)
+    {
+        $groupeForm = new GroupeForm();
+        $data = json_decode($request->getContent(),true);
+        $form = $this->createForm(GroupeType::class,$groupeForm,[
+            'csrf_protection' => false
+        ]);
+        $form->submit($data);
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $groupe = $this->groupeService->addNewGroupe($form->getData());
+        }
+        return $groupe;
     }
 }

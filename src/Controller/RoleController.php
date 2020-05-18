@@ -48,6 +48,7 @@ class RoleController extends AbstractFOSRestController
      * @Rest\View()
      * @IsGranted("ROLE_ADMIN")
      * @return JsonResponseDTO
+     * @throws \Exception
      */
     public function addNewRoleAction(Request $request)
     {
