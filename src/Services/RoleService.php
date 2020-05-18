@@ -104,8 +104,7 @@ class RoleService
                 dump($e);
             }
         }
-        $arrayRole = $this->getRoles();
-        return $arrayRole;
+        return $this->getRoles();
     }
 
     /**
@@ -126,8 +125,7 @@ class RoleService
         {
             dump($e);
         }
-        $arrayRole = $this->getRoles();
-        return $arrayRole;
+        return $this->getRoles();
     }
 
     /**
@@ -147,6 +145,6 @@ class RoleService
         {
             dump($e);
         }
-        return $arrayRole = $this->getRoles();
+        return $this->getRoles();
     }
 }
