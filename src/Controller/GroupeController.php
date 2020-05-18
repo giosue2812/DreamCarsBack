@@ -60,4 +60,27 @@ class GroupeController extends AbstractFOSRestController
         }
         return $groupe;
     }
+
+    /**
+     * @Rest\Put(path="api/groupe/updateGroupe/{idGroupe}")
+     * @Rest\View()
+     * @IsGranted("ROLE_ADMIN")
+     * @param Request $request
+     * @return JsonResponseDTO
+     * @throws \Exception
+     */
+    public function updateGroupeAction(Request $request)
+    {
+        $groupeForm = new GroupeForm();
+        $data = json_decode($request->getContent(),true);
+        $form = $this->createForm(GroupeType::class,$groupeForm,[
+            'csrf_protection' => false
+        ]);
+        $form->submit($data);
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $groupe = $this->groupeService->updateGroupe($request->get('idGroupe'),$form->getData());
+        }
+        return $groupe;
+    }
 }

@@ -11,6 +11,7 @@ use App\Models\Forms\GroupeForm;
 use App\Repository\GroupeRepository;
 use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class GroupeService
 {
@@ -86,6 +87,27 @@ class GroupeService
             {
                 dump($e);
             }
+        }
+        return $this->getGroupeAll();
+    }
+
+    /**
+     * @param $idGroupe
+     * @param GroupeForm $groupeForm
+     * @return JsonResponseDTO
+     * @throws \Exception
+     */
+    public function updateGroupe($idGroupe,GroupeForm $groupeForm)
+    {
+        $date = new \DateTime();
+        $groupe = $this->repository->find($idGroupe);
+        $groupe->setGroupe($groupeForm->getGroupe());
+        $groupe->setUpdateAt($date);
+        try {
+            $this->manager->flush();
+        } catch (PDOException $e)
+        {
+            dump($e);
         }
         return $this->getGroupeAll();
     }

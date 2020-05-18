@@ -125,8 +125,7 @@ class RoleService
         {
             dump($e);
         }
-        $arrayRole = $this->getRoles();
-        return $arrayRole;
+        return $this->getRoles();
     }
 
     /**
