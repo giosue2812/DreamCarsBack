@@ -76,17 +76,33 @@ class RoleService
     /**
      * @param RoleFormAdd $roleFormAdd
      * @return JsonResponseDTO
+     * @throws \Exception
      */
     public function addNewRole(RoleFormAdd $roleFormAdd)
     {
-        $role = new Role();
-        $role->setRole($roleFormAdd->getRole());
-        try {
-            $this->manager->persist($role);
-            $this->manager->flush();
-        } catch (PDOException $e)
-        {
-            dump($e);
+        $date = new \DateTime();
+        $roleExist = $this->getRoleByName($roleFormAdd->getRole());
+        if($roleExist){
+            $roleExist->setIsActive(true);
+            $roleExist->setDeleteAt(null);
+            $roleExist->setUpdateAt($date);
+
+            try {
+                $this->manager->flush();
+            } catch (PDOException $e)
+            {
+                dump($e);
+            }
+        }
+        else {
+            $role = new Role();
+            $role->setRole($roleFormAdd->getRole());
+            try {
+                $this->manager->persist($role);
+                $this->manager->flush();
+            } catch (PDOException $e) {
+                dump($e);
+            }
         }
         $arrayRole = $this->getRoles();
         return $arrayRole;
