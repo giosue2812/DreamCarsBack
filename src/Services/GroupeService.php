@@ -11,7 +11,9 @@ use App\Models\Forms\GroupeForm;
 use App\Repository\GroupeRepository;
 use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class GroupeService
 {
@@ -36,98 +38,171 @@ class GroupeService
     }
 
     /**
-     * @return JsonResponseDTO
+     * @return Groupe[]
      */
     public function getGroupeAll()
     {
+        /**
+         * Get all Groups
+         */
         $groupes = $this->repository->findAll();
         /**
-         * Array empty to stock each groupe
+         * Check Groupes is null
          */
-        $arrayGroupe = [];
-        foreach ($groupes as $groupe)
+        if($groupes == null)
         {
             /**
-             * New DTO to map Groupe
+             * If groupes is null
              */
-            $DTO = new GroupeDetailsDTO($groupe);
-            $arrayGroupe[]=$DTO;
+            throw new Exception("Not group found in database");
         }
-        return new JsonResponseDTO('200','success',$arrayGroupe);
+        /**
+         * Service return an array of groupes
+         */
+        return $groupes;
     }
 
     /**
      * @param GroupeForm $groupeForm
-     * @return JsonResponseDTO
+     * @return Groupe[]
      * @throws \Exception
      */
     public function addNewGroupe(GroupeForm $groupeForm)
     {
+        /**
+         * Instance of object date
+         */
         $date = new \DateTime();
+        /**
+         * Get a new groupe from the form
+         */
         $groupeExist = $this->repository->findOneBy(['groupe'=>$groupeForm->getGroupe()]);
-        if($groupeExist)
+        /**
+         * If the groupe exist in the database. only if delete_is not null and isActive is = to false
+         */
+        if($groupeExist && $groupeExist->getDeleteAt()!= null && $groupeExist->getIsActive() == false)
         {
+            /**
+             * set the updateDate
+             */
             $groupeExist->setUpdateAt($date);
+            /**
+             * set the delete date
+             */
             $groupeExist->setDeleteAt(null);
+            /**
+             * set the isActive to true
+             */
             $groupeExist->setIsActive(true);
+            /**
+             * Update the database
+             */
             try{
                 $this->manager->flush();
             } catch (PDOException $e)
             {
-                dump($e);
+                throw new \Exception('Unexpected error',500);
             }
         }
+        /**
+         * if groupe exist in the database and is always active. we send a message error
+         */
+        elseif ($groupeExist && $groupeExist->getDeleteAt()== null && $groupeExist->getIsActive() == true)
+        {
+            throw new \Exception('The groupe exist in the database',404);
+        }
+        /**
+         * Add new groupe in the database
+         */
         else{
+            /**
+             * New instance of groupe
+             */
             $groupe = new Groupe();
+            /**
+             * We set groupe name with groupe from groupe form
+             */
             $groupe->setGroupe($groupeForm->getGroupe());
+            /**
+             * Persist in the database
+             */
             try {
                 $this->manager->persist($groupe);
                 $this->manager->flush();
             } catch (PDOException $e)
             {
-                dump($e);
+                /**
+                 * If error
+                 */
+                throw new \Exception('Unexpected error',500);
             }
         }
+        /**
+         * Service return an array of groupe
+         */
         return $this->getGroupeAll();
     }
 
     /**
      * @param $idGroupe
      * @param GroupeForm $groupeForm
-     * @return JsonResponseDTO
+     * @return Groupe[]
      * @throws \Exception
      */
     public function updateGroupe($idGroupe,GroupeForm $groupeForm)
     {
         $date = new \DateTime();
         $groupe = $this->repository->find($idGroupe);
-        $groupe->setGroupe($groupeForm->getGroupe());
-        $groupe->setUpdateAt($date);
+        if($groupe)
+        {
+            $groupe->setGroupe($groupeForm->getGroupe());
+            $groupe->setUpdateAt($date);
+        }
+        else
+        {
+            throw new \Exception('Groupe not found',404);
+        }
         try {
             $this->manager->flush();
         } catch (PDOException $e)
         {
-            dump($e);
+            throw new \Exception('Unexpected errror',500);
         }
         return $this->getGroupeAll();
     }
 
     /**
      * @param $idGroupe
-     * @return JsonResponseDTO
+     * @return Groupe[]
      * @throws \Exception
      */
     public function removeGroupe($idGroupe)
     {
+        /**
+         * New instance of date
+         */
         $date = new \DateTime();
+        /**
+         * Get groupe to be logical remove
+         */
         $groupe = $this->repository->find($idGroupe);
-        $groupe->setDeleteAt($date);
-        $groupe->setIsActive(false);
-        try{
-            $this->manager->flush();
-        } catch (PDOException $e)
+        /**
+         * Check if groupe exist
+         */
+        if($groupe)
         {
-            dump($e);
+            $groupe->setDeleteAt($date);
+            $groupe->setIsActive(false);
+            try{
+                $this->manager->flush();
+            } catch (PDOException $e)
+            {
+                throw new \Exception('Unexpected error',500);
+            }
+        }
+        else
+        {
+            throw new \Exception('Groupe not found',404);
         }
         return $this->getGroupeAll();
     }

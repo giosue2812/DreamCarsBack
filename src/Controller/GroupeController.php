@@ -2,14 +2,26 @@
 
 namespace App\Controller;
 
+use App\DTO\GroupeDetailsDTO;
 use App\DTO\JsonResponseDTO;
+use App\Entity\Groupe;
 use App\Form\GroupeType;
 use App\Models\Forms\GroupeForm;
 use App\Services\GroupeService;
+use App\Utils\DataManipulation;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use OpenApi\Annotations as OA;
+
+/**
+ * @OA\SecurityScheme(bearerFormat="JWT",type="http",securityScheme="bearerAuth",scheme="bearer")
+ * Class GroupeController
+ * @package App\Controller
+ */
 
 class GroupeController extends AbstractFOSRestController
 {
@@ -28,67 +40,202 @@ class GroupeController extends AbstractFOSRestController
     }
 
     /**
-     * @return JsonResponseDTO
      * @Rest\Get(path="/api/groupe")
      * @IsGranted("ROLE_ADMIN")
      * @Rest\View()
+     *
+     * @OA\Get(
+     *     tags={"Groupes"},
+     *     summary="Array of Groupes",
+     *     path="/groupe",
+     *     security={{"bearerAuth":{}}},
+     *  @OA\Response(
+     *      response="404",
+     *      description="Groupes no found in data-base",
+     *  ),
+     * @OA\Response(
+     *      response="200",
+     *      description="Return an array groupe",
+     *      @OA\JsonContent(ref="#/components/schemas/GroupeDetailsDTO")
+     *  )
+     * )
      */
     public function getGroupeAllAction()
     {
-        return $this->groupeService->getGroupeAll();
+        try
+        {
+            //Get groupes from service
+            $groupes = $this->groupeService->getGroupeAll();
+            //Use utilis to manipulation of data
+            //Return GroupeDetailsDTO
+            return DataManipulation::arrayMap(GroupeDetailsDTO::class,$groupes);
+            //In case of error
+        }
+
+        catch (Exception $exception)
+        {
+            throw  new HttpException(404, $exception->getMessage());
+        }
     }
 
     /**
      * @Rest\Post(path="api/groupe/addGroupe")
      * @Rest\View()
      * @IsGranted("ROLE_ADMIN")
+     *
+     * @OA\Post(
+     *     tags={"Groupes"},
+     *     path="/groupe/addGroupe",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Adds new groupe",
+     *     @OA\RequestBody(
+     *      @OA\MediaType(
+     *          mediaType="application/json",
+     *          @OA\Schema(
+     *              @OA\Property(
+     *                  property="groupe",
+     *                  type="string"
+     *              )
+     *          )
+     *      )
+     *     ),
+     *
+     *     @OA\Response(
+     *      response="400",
+     *      description="Form is invalid",
+     *      ),
+     *     @OA\Response(
+     *      response="404",
+     *      description="Groupe exist in the database"
+     *      )
+     *     @OA\Response(
+     *      response="500",
+     *      description="Unexpeced Error"
+     *     ),
+     *     @OA\Response(
+     *      response="200",
+     *      description="Return an array groupe",
+     *      @OA\JsonContent(ref="#/components/schemas/GroupeDetailsDTO")
+     *      )
+     * )
      * @param Request $request
-     * @return JsonResponseDTO
-     * @throws \Exception
+     * @return array
      */
     public function addGroupeAction(Request $request)
     {
-        $groupeForm = new GroupeForm();
-        $data = json_decode($request->getContent(),true);
-        $form = $this->createForm(GroupeType::class,$groupeForm,[
-            'csrf_protection' => false
-        ]);
-        $form->submit($data);
-        if($form->isSubmitted() && $form->isValid())
+        try
         {
-            $groupe = $this->groupeService->addNewGroupe($form->getData());
+            //New groupeForm
+            $groupeForm = new GroupeForm();
+            //Deserialization of body content
+            $data = json_decode($request->getContent(),true);
+            //Form to add new groupe in the data base
+            $form = $this->createForm(GroupeType::class,$groupeForm,[
+                'csrf_protection' => false
+            ]);
+            //Submition of form with the deserialization
+            $form->submit($data);
+            //Test if the form is valid or not
+
+            if($form->isSubmitted() && $form->isValid())
+            {
+                //Call groupe service to add new groupe
+                $groupe = $this->groupeService->addNewGroupe($form->getData());
+                //Array groupe is returned. ArrayMap to create a new Response DTO
+                return DataManipulation::arrayMap(GroupeDetailsDTO::class,$groupe);
+            }
+
+            else
+            {
+                //Is the form is not valid. Message error.
+                throw new \Exception("Form is Invalid",400);
+            }
+
         }
-        return $groupe;
+        catch (\Exception $exception)
+        {
+            //In case no form valid we send a error 405
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
     }
 
     /**
      * @Rest\Put(path="api/groupe/updateGroupe/{idGroupe}")
      * @Rest\View()
      * @IsGranted("ROLE_ADMIN")
+     * @OA\Put(
+     *     tags={"Groupes"},
+     *     path="/groupe/updateGroupe/{idGroupe}",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Update groupe",
+     *     operationId="updateGroupe",
+     *     @OA\Parameter(
+     *      parameter="idGroupe",
+     *      name="idGroupe",
+     *      in="path",
+     *      description="Id of groupe to be update",
+     *      required=true,
+     *      @OA\Schema(
+     *          type="string"
+     *      )
+     *     ),
+     *     @OA\Response(
+     *      response=400,
+     *      description="Form is invalid"
+     *     ),
+     *     @OA\Response(
+     *      response=404,
+     *      description="Groupe Not found"
+     *     ),
+     *     @OA\Response(
+     *      response=500,
+     *      description="Unexpected Error"
+     *     ),
+     *     @OA\Response(
+     *      response=200,
+     *      description="Groupe is updated",
+     *      @OA\JsonContent(ref="#/components/schemas/GroupeDetailsDTO")
+     *     )
+     * )
      * @param Request $request
-     * @return JsonResponseDTO
+     * @return array
      * @throws \Exception
      */
     public function updateGroupeAction(Request $request)
     {
-        $groupeForm = new GroupeForm();
-        $data = json_decode($request->getContent(),true);
-        $form = $this->createForm(GroupeType::class,$groupeForm,[
-            'csrf_protection' => false
-        ]);
-        $form->submit($data);
-        if($form->isSubmitted() && $form->isValid())
+        try
         {
-            $groupe = $this->groupeService->updateGroupe($request->get('idGroupe'),$form->getData());
+            $groupeForm = new GroupeForm();
+            $data = json_decode($request->getContent(),true);
+            $form = $this->createForm(GroupeType::class,$groupeForm,[
+                'csrf_protection' => false
+            ]);
+            $form->submit($data);
+
+            if($form->isSubmitted() && $form->isValid())
+            {
+                $groupe = $this->groupeService->updateGroupe($request->get('idGroupe'),$form->getData());
+                return DataManipulation::arrayMap(GroupeDetailsDTO::class,$groupe);
+            }
+
+            else
+            {
+                throw new \Exception('Form is invalid',400);
+            }
+
         }
-        return $groupe;
+
+        catch (\Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
     }
 
     /**
      * @Rest\Delete(path="api/groupe/removeGroupe/{idGroupe}")
      * @Rest\View()
      * @param Request $request
-     * @return JsonResponseDTO
+     * @return Groupe[]
      * @throws \Exception
      */
     public function removeGroupeAction(Request $request)

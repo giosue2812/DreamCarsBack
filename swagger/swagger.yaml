@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  title: 'Dream Cars API'
+  version: '0.1'
+servers:
+  -
+    url: 'http://localhost:8080/Formation/DreamsCarsProject/BackEnd/public/api/'
+    description: 'API Dream Cars'
+paths:
+  /groupe:
+    get:
+      tags:
+        - Groupes
+      operationId: 'App\Controller\GroupeController::getGroupeAllAction'
+      responses:
+        '500':
+          description: 'Groupes no found in data-base'
+          content:
+            application/json:
+              schema:
+                description: HttpException
+                type: string
+        '200':
+          description: 'Return an array groupe'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupeDetailsDTO'
+      security:
+        -
+          bearerAuth: []
+components:
+  schemas:
+    GroupeDetailsDTO:
+      title: 'Groupe model'
+      description: 'Groupe model'
+      properties:
+        id_groupe:
+          description: 'Unique identification'
+          type: integer
+        groupe:
+          description: 'Groupe name'
+          type: string
+        create_at:
+          description: 'Creation Date for a new Groupe'
+          type: string
+          format: date
+        update_at:
+          description: 'Update Date for a modification of an existing groupe'
+          type: string
+          format: date
+        delete_at:
+          description: 'Delete date for removing groupe'
+          type: string
+          format: date
+      type: object
+  securitySchemes:
+    bearerAuth:
+      type: http
+      bearerFormat: JWT
+      scheme: bearer

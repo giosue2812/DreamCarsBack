@@ -279,9 +279,6 @@
             "./config/bootstrap.php"
         ]
     },
-    "symfony/debug": {
-        "version": "v4.4.7"
-    },
     "symfony/dependency-injection": {
         "version": "v5.0.7"
     },
@@ -504,5 +501,8 @@
     },
     "willdurand/negotiation": {
         "version": "v2.3.1"
+    },
+    "zircote/swagger-php": {
+        "version": "3.0.4"
     }
 }

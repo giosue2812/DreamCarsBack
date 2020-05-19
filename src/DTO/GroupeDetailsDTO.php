@@ -5,26 +5,65 @@ namespace App\DTO;
 
 
 use App\Entity\Groupe;
+use OpenApi\Annotations as OA;
+
+/**
+ * @OA\Schema(
+ *     description="Groupe model",
+ *     type="object",
+ *     title="Groupe model"
+ * )
+ * Class GroupeDetailsDTO
+ * @package App\DTO
+ */
 
 class GroupeDetailsDTO
 {
     /**
+     * @OA\Property(
+     *     property="id_groupe",
+     *     type="integer",
+     *     description="Unique identification",
+     * )
      * @var int $id_groupe
      */
     private $id_groupe;
     /**
+     * @OA\Property(
+     *     property="groupe",
+     *     type="string",
+     *     description="Groupe name"
+     * )
      * @var string $groupe
      */
     private $groupe;
     /**
+     * @OA\Property(
+     *     property="create_at",
+     *     type="string",
+     *     format="date",
+     *     description="Creation Date for a new Groupe"
+     * )
      * @var \DateTime $create_at
      */
     private $create_at;
     /**
+     * @OA\Property(
+     *     property="update_at",
+     *     type="string",
+     *     format="date",
+     *     description="Update Date for a modification of an existing groupe"
+     * )
      * @var \DateTime $update_at
      */
     private $update_at;
     /**
+     * @OA\Property(
+     *     property="delete_at",
+     *     type="string",
+     *     format="date",
+     *     description="Delete date for removing groupe"
+     * )
      * @var \DateTime $delete_at
      */
     private $delete_at;
