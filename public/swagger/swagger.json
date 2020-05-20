@@ -20,7 +20,14 @@
                 "operationId": "App\\Controller\\GroupeController::getGroupeAllAction",
                 "responses": {
                     "404": {
-                        "description": "Groupes no found in data-base"
+                        "description": "Groupes no found in data-base",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
                     },
                     "200": {
                         "description": "Return an array groupe",
@@ -63,10 +70,34 @@
                 },
                 "responses": {
                     "400": {
-                        "description": "Form is invalid"
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Groupe exist in the database",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
                     },
                     "500": {
-                        "description": "Unexpeced Error"
+                        "description": "Unexpeced Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
                     },
                     "200": {
                         "description": "Return an array groupe",
@@ -101,22 +132,100 @@
                         "description": "Id of groupe to be update",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],
                 "responses": {
                     "400": {
-                        "description": "Form is invalid"
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Groupe Not found"
+                        "description": "Groupe Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
                     },
                     "500": {
-                        "description": "Unexpected Error"
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
                     },
                     "200": {
                         "description": "Groupe is updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GroupeDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/groupe/removeGroupe/{idGroupe}": {
+            "delete": {
+                "tags": [
+                    "Groupes"
+                ],
+                "summary": "Delete one groupe",
+                "operationId": "removeGroupe",
+                "parameters": [
+                    {
+                        "name": "idGroupe",
+                        "in": "path",
+                        "description": "Id of groupe to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Groupe not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Groupe is removed",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -136,6 +245,21 @@
     },
     "components": {
         "schemas": {
+            "ApiErrorResponseDTO": {
+                "title": "ApiErrorReponse Model",
+                "description": "Api Error Response model",
+                "properties": {
+                    "statusCode": {
+                        "description": "Status Error code",
+                        "type": "integer"
+                    },
+                    "message": {
+                        "description": "Error message",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "GroupeDetailsDTO": {
                 "title": "Groupe model",
                 "description": "Groupe model",

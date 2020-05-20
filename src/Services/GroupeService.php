@@ -39,6 +39,7 @@ class GroupeService
 
     /**
      * @return Groupe[]
+     * @throws \Exception
      */
     public function getGroupeAll()
     {
@@ -54,7 +55,7 @@ class GroupeService
             /**
              * If groupes is null
              */
-            throw new Exception("Not group found in database");
+            throw new \Exception("Not group found in database");
         }
         /**
          * Service return an array of groupes
@@ -101,7 +102,7 @@ class GroupeService
                 $this->manager->flush();
             } catch (PDOException $e)
             {
-                throw new \Exception('Unexpected error',500);
+                throw new Exception('Unexpected error',500);
             }
         }
         /**
@@ -109,7 +110,7 @@ class GroupeService
          */
         elseif ($groupeExist && $groupeExist->getDeleteAt()== null && $groupeExist->getIsActive() == true)
         {
-            throw new \Exception('The groupe exist in the database',404);
+            throw new Exception('The groupe exist in the database',404);
         }
         /**
          * Add new groupe in the database
@@ -134,7 +135,7 @@ class GroupeService
                 /**
                  * If error
                  */
-                throw new \Exception('Unexpected error',500);
+                throw new Exception('Unexpected error',500);
             }
         }
         /**
@@ -160,13 +161,13 @@ class GroupeService
         }
         else
         {
-            throw new \Exception('Groupe not found',404);
+            throw new Exception('Groupe not found',404);
         }
         try {
             $this->manager->flush();
         } catch (PDOException $e)
         {
-            throw new \Exception('Unexpected errror',500);
+            throw new Exception('Unexpected error',500);
         }
         return $this->getGroupeAll();
     }
@@ -197,12 +198,12 @@ class GroupeService
                 $this->manager->flush();
             } catch (PDOException $e)
             {
-                throw new \Exception('Unexpected error',500);
+                throw new Exception('Unexpected error',500);
             }
         }
         else
         {
-            throw new \Exception('Groupe not found',404);
+            throw new Exception('Groupe not found',404);
         }
         return $this->getGroupeAll();
     }

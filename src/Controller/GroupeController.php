@@ -16,6 +16,7 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use OpenApi\Annotations as OA;
+use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
  * @OA\SecurityScheme(bearerFormat="JWT",type="http",securityScheme="bearerAuth",scheme="bearer")
@@ -52,6 +53,7 @@ class GroupeController extends AbstractFOSRestController
      *  @OA\Response(
      *      response="404",
      *      description="Groupes no found in data-base",
+     *      @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
      *  ),
      * @OA\Response(
      *      response="200",
@@ -59,6 +61,7 @@ class GroupeController extends AbstractFOSRestController
      *      @OA\JsonContent(ref="#/components/schemas/GroupeDetailsDTO")
      *  )
      * )
+     * @return array
      */
     public function getGroupeAllAction()
     {
@@ -71,7 +74,6 @@ class GroupeController extends AbstractFOSRestController
             return DataManipulation::arrayMap(GroupeDetailsDTO::class,$groupes);
             //In case of error
         }
-
         catch (Exception $exception)
         {
             throw  new HttpException(404, $exception->getMessage());
@@ -103,14 +105,17 @@ class GroupeController extends AbstractFOSRestController
      *     @OA\Response(
      *      response="400",
      *      description="Form is invalid",
+     *      @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
      *      ),
      *     @OA\Response(
      *      response="404",
-     *      description="Groupe exist in the database"
-     *      )
+     *      description="Groupe exist in the database",
+     *      @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *      ),
      *     @OA\Response(
      *      response="500",
-     *      description="Unexpeced Error"
+     *      description="Unexpeced Error",
+     *      @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
      *     ),
      *     @OA\Response(
      *      response="200",
@@ -176,20 +181,23 @@ class GroupeController extends AbstractFOSRestController
      *      description="Id of groupe to be update",
      *      required=true,
      *      @OA\Schema(
-     *          type="string"
+     *          type="integer"
      *      )
      *     ),
      *     @OA\Response(
      *      response=400,
-     *      description="Form is invalid"
+     *      description="Form is invalid",
+     *      @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
      *     ),
      *     @OA\Response(
      *      response=404,
-     *      description="Groupe Not found"
+     *      description="Groupe Not found",
+     *      @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
      *     ),
      *     @OA\Response(
      *      response=500,
-     *      description="Unexpected Error"
+     *      description="Unexpected Error",
+     *      @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
      *     ),
      *     @OA\Response(
      *      response=200,
@@ -234,12 +242,52 @@ class GroupeController extends AbstractFOSRestController
     /**
      * @Rest\Delete(path="api/groupe/removeGroupe/{idGroupe}")
      * @Rest\View()
+     * @OA\Delete(
+     *     tags={"Groupes"},
+     *     path="/groupe/removeGroupe/{idGroupe}",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Delete one groupe",
+     *     operationId="removeGroupe",
+     *     @OA\Parameter(
+     *          name="idGroupe",
+     *          in="path",
+     *          description="Id of groupe to delete",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *           )
+     *      ),
+     *     @OA\Response(
+     *          response=404,
+     *          description="Groupe not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *      ),
+     *     @OA\Response(
+     *          response=500,
+     *          description="Unexpected error",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *      ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="Groupe is removed",
+     *          @OA\JsonContent(ref="#/components/schemas/GroupeDetailsDTO")
+     *      ),
+     * )
      * @param Request $request
      * @return Groupe[]
      * @throws \Exception
      */
     public function removeGroupeAction(Request $request)
     {
-        return $this->groupeService->removeGroupe($request->get('idGroupe'));
+        try
+        {
+            $groupes = $this->groupeService->removeGroupe($request->get('idGroupe'));
+            return DataManipulation::arrayMap(GroupeDetailsDTO::class,$groupes);
+        }
+        catch (\Exception $exception)
+        {
+            throw new HttpException($exception->getCode(), $exception->getMessage());
+        }
+
     }
 }
