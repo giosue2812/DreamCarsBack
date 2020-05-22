@@ -22,7 +22,7 @@ class GroupeForm
     /**
      * @OA\Property(
      *     property="groupe",
-     *     title="string",
+     *     type="string",
      *     description="Groupe to update"
      * )
      * @var string $groupe

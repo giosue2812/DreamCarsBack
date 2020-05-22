@@ -5,43 +5,98 @@ namespace App\Models\Forms;
 
 
 use Symfony\Component\Validator\Constraints as Assert;
+use OpenApi\Annotations as OA;
 
+/**
+ * Class UserFormUpdate
+ * @package App\Models\Forms
+ * @OA\Schema(
+ *     description="User Form update",
+ *     type="object",
+ *     title="User Form Update model"
+ * )
+ */
 class UserFormUpdate
 {
     /**
+     * @OA\Property(
+     *     property="firstName",
+     *     type="string",
+     *     description="First name of update user"
+     * )
      * @var string $first_name
      */
     private $first_name;
     /**
+     * @OA\Property(
+     *     property="lastName",
+     *     type="string",
+     *     description="Last name of update user"
+     * )
      * @var string $last_name
      */
     private $last_name;
     /**
+     * @OA\Property(
+     *     property="email",
+     *     type="string",
+     *     description="Email of update user"
+     * )
      * @var string $email
      * @Assert\Email()
      */
     private $email;
     /**
+     * @OA\Property(
+     *     property="street",
+     *     type="string",
+     *     description="Address of street to update user"
+     * )
      * @var string $street
      */
     private $street;
     /**
+     * @OA\Property(
+     *     property="number",
+     *     type="string",
+     *     description="Address of number to update user"
+     * )
      * @var string $number
      */
     private $number;
     /**
+     * @OA\Property(
+     *     property="postal_code",
+     *     type="string",
+     *     description="Address of postal code to update user"
+     * )
      * @var string $postal_code
      */
     private $postal_code;
     /**
+     * @OA\Property(
+     *     property="city",
+     *     type="string",
+     *     description="Address of city to update user"
+     * )
      * @var string $city
      */
     private $city;
     /**
+     * @OA\Property(
+     *     property="country",
+     *     type="string",
+     *     description="Address of country to update user"
+     * )
      * @var string $country
      */
     private $country;
     /**
+     * @OA\Property(
+     *     property="phone",
+     *     type="string",
+     *     description="Phone number of update user"
+     * )
      * @var string $phone
      */
     private $phone;

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\DTO\JsonResponseDTO;
+use App\DTO\UserDetailsDTO;
 use App\Form\GroupeType;
 use App\Form\RoleType;
 use App\Form\UserType;
@@ -14,8 +15,10 @@ use App\Models\Forms\UserFormUpdate;
 use App\Services\UserService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
-
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use OpenApi\Annotations as OA;
 
 class UserController extends AbstractFOSRestController
 {
@@ -36,85 +39,241 @@ class UserController extends AbstractFOSRestController
     /**
      * @Rest\Post(path="/api/create")
      * @Rest\View()
+     * @OA\Post(
+     *     tags={"User"},
+     *     path="/create",
+     *     summary="Add new User",
+     *     @OA\RequestBody(
+     *          description="Create new User",
+     *          required=true,
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  ref="#/components/schemas/UserForm"
+     *              )
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="400",
+     *          description="Form is invalid",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="500",
+     *          description="Unexpected Error",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Retur user created",
+     *          @OA\JsonContent(ref="#/components/schemas/UserDetailsDTO")
+     *     )
+     * )
      * @param Request $request
      * @return mixed
      */
     public function createAction(Request $request)
     {
-        $userForm = new UserForm();
-        /**
-         * Use Json_decode to deserialize the content
-         */
-        $data = json_decode($request->getContent(),true);
-        $form = $this->createForm(UserType::class,$userForm,[
-            /**
-             * We don't need the protection. Because Angular is in charge of this
-             */
-            'csrf_protection' => false
-        ]);
-        $form->handleRequest($request);
-        $form->submit($data);
-        if($form->isSubmitted() && $form->isValid())
-        {
-            /**
-             * I call service users
-             */
-            $this->userService->create($form->getData());
+        try {
+            $userForm = new UserForm();
+            $data = json_decode($request->getContent(),true);
+            $form = $this->createForm(UserType::class,$userForm,[
+                'csrf_protection' => false
+            ]);
+            $form->handleRequest($request);
+            $form->submit($data);
+            if($form->isSubmitted() && $form->isValid())
+            {
+                /**
+                 * I call service users
+                 */
+                $user = $this->userService->create($form->getData());
+                return new UserDetailsDTO($user);
+            }
+            else
+            {
+                throw new Exception("Form is invalid",400);
+            }
         }
-        return $userForm;
-//        return new Response('Creation Success',Response::HTTP_OK,['content-type'=>'application/json']);
+        catch (\Exception $exception)
+        {
+            throw new HttpException($exception->getCode(), $exception->getMessage());
+        }
     }
 
     /**
      * @param Request $request
      * @Rest\Get(path="/api/user/{username}")
      * @Rest\View()
-     * @return JsonResponseDTO
+     * @OA\Get(
+     *     tags={"User"},
+     *     summary="User",
+     *     path="/user/{username}",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *          parameter="username",
+     *          name="username",
+     *          in="path",
+     *          description="Email To find user profile",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="User not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return user",
+     *          @OA\JsonContent(ref="#/components/schemas/UserDetailsDTO")
+     *     )
+     * )
+     * @return UserDetailsDTO
      */
     public function userAction(Request $request)
     {
-        $user = $this->userService->getUserByUserName($request->get('username'));
-        return new JsonResponseDTO('200','Success',$user);
+        try {
+            $user = $this->userService->getUserByUserName($request->get('username'));
+            return new UserDetailsDTO($user);
+        }
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(), $exception->getMessage());
+        }
+
     }
 
     /**
      * @Rest\Get(path="api/userID/{id}")
      * @Rest\View()
+     * @OA\Get(
+     *     tags={"User"},
+     *     path="/userID/{id}",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Find user by id",
+     *     @OA\Parameter(
+     *          parameter="id",
+     *          name="id",
+     *          in="path",
+     *          description="Id to found user",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="User not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return user",
+     *          @OA\JsonContent(ref="#/components/schemas/UserDetailsDTO")
+     *     )
+     * )
      * @param Request $request
-     * @return JsonResponseDTO
+     * @return UserDetailsDTO
      */
     public function userById(Request $request)
     {
-        return $this->userService->getUser($request->get('id'));
+        try {
+            $user = $this->userService->getUser($request->get('id'));
+            return new UserDetailsDTO($user);
+        }
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
+
     }
 
     /**
      * @param Request $request
      * @Rest\Put(path="/api/user/update/{id}")
+     * @OA\Put(
+     *     tags={"User"},
+     *     path="/user/update/{id}",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Update User",
+     *     operationId="update",
+     *     @OA\RequestBody(
+     *          required=true,
+     *          description="Update user",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  ref="#/components/schemas/UserFormUpdate"
+     *              )
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          parameter="id",
+     *          name="id",
+     *          in="path",
+     *          description="Id of user to be update",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="400",
+     *          description="Form is invalid",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="User not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="500",
+     *          description="Unexpected Error",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="User is updated",
+     *          @OA\JsonContent(ref="#/components/schemas/UserDetailsDTO")
+     *     )
+     * )
      * @Rest\View()
-     * @return mixed
+     * @return UserDetailsDTO
      */
     public function userUpdateAction(Request $request)
     {
-        $userFormUpdate = new UserFormUpdate();
-        /**
-         * Use Json_decode to deserialize the content
-         */
-        $data = json_decode($request->getContent(),true);
-        $form = $this->createForm(UserUpdateType::class,$userFormUpdate,[
-            'csrf_protection' => false
-        ]);
-        $form->handleRequest($request);
-        $form->submit($data);
-        if($form->isSubmitted() && $form->isValid())
-        {
+        try {
+            $userFormUpdate = new UserFormUpdate();
             /**
-             * I call service users
+             * Use Json_decode to deserialize the content
              */
-            $this->userService->update($form->getData(),$request->get('id'));
+            $data = json_decode($request->getContent(),true);
+            $form = $this->createForm(UserUpdateType::class,$userFormUpdate,[
+                'csrf_protection' => false
+            ]);
+            $form->handleRequest($request);
+            $form->submit($data);
+            if($form->isSubmitted() && $form->isValid())
+            {
+                /**
+                 * I call service users
+                 */
+                $user = $this->userService->update($form->getData(),$request->get('id'));
+                return new UserDetailsDTO($user);
+            }
+            else
+            {
+                throw new Exception('Form is invalid',400);
+            }
         }
-        return $userFormUpdate;
-//        return new Response('Update Success',Response::HTTP_OK,['content-type'=>'application/json']);
+        catch (\Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
     }
 
     /**

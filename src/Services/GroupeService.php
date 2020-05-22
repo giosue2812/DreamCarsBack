@@ -15,6 +15,11 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
+
+/**
+ * Class GroupeService
+ * @package App\Services
+ */
 class GroupeService
 {
     /**
@@ -38,8 +43,8 @@ class GroupeService
     }
 
     /**
-     * @return Groupe[]
-     * @throws \Exception
+     * @return Groupe[] if groupe.lenght > 0 else return array []
+     * @throws \Exception if groupe.lenght <=0
      */
     public function getGroupeAll()
     {
@@ -65,8 +70,9 @@ class GroupeService
 
     /**
      * @param GroupeForm $groupeForm
-     * @return Groupe[]
-     * @throws \Exception
+     * @return Groupe[] if groupe.lenght > 0 else return array []
+     * @throws \Exception if \PDOException is rise ||
+     *  Groupe.getGroupe == $groupeForm.getGroupe
      */
     public function addNewGroupe(GroupeForm $groupeForm)
     {
@@ -147,8 +153,9 @@ class GroupeService
     /**
      * @param $idGroupe
      * @param GroupeForm $groupeForm
-     * @return Groupe[]
-     * @throws \Exception
+     * @return Groupe[] if groupe.lenght > 0 else return array []
+     * @throws \Exception if \PDOException is rise ||
+     *  Groupe.lenght <= 0
      */
     public function updateGroupe($idGroupe,GroupeForm $groupeForm)
     {
@@ -174,8 +181,9 @@ class GroupeService
 
     /**
      * @param $idGroupe
-     * @return Groupe[]
-     * @throws \Exception
+     * @return Groupe[] if groupe.lenght > 0 || return array []
+     * @throws \Exception \PDOException is rise ||
+     *  Groupe.lenght <= 0
      */
     public function removeGroupe($idGroupe)
     {
@@ -209,7 +217,7 @@ class GroupeService
     }
     /**
      * @param $groupe
-     * @return Groupe|null
+     * @return Groupe|null If Groupe.lenght > 0 else null
      */
     public function getGroupe($groupe)
     {

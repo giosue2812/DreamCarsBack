@@ -7,65 +7,150 @@ use App\Entity\Groupe;
 use App\Entity\User;
 use App\Entity\UserRole;
 use JMS\Serializer\Annotation as Serializer;
+use OpenApi\Annotations as OA;
+
+/**
+ * Class UserDetailsDTO
+ * @package App\DTO
+ * @OA\Schema(
+ *     description="User model",
+ *     type="object",
+ *     title="User model"
+ * )
+ */
 
 class UserDetailsDTO
 {
     /**
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     description="Id of user"
+     * )
      * @var integer $id
      */
     private $id;
     /**
+     * @OA\Property(
+     *     property="createAt",
+     *     type="string",
+     *     format="date",
+     *     description="Date of creation user"
+     * )
      * @var \DateTime $createAt
      */
     private $createAt;
     /**
+     * @OA\Property(
+     *     property="updateAt",
+     *     type="string",
+     *     format="date",
+     *     description="Date of update user"
+     * )
      * @var \DateTime $updateAt
      */
     private $updateAt;
     /**
+     * @OA\Property(
+     *     property="first_name",
+     *     type="string",
+     *     description="First name of user"
+     * )
      * @var string $first_name
      * @Serializer\SerializedName("firstName")
      */
     private $first_name;
     /**
+     * @OA\Property(
+     *     property="last_name",
+     *     type="string",
+     *     description="Last name of user"
+     * )
      * @var string $last_name
      * @Serializer\SerializedName("lastName")
      */
     private $last_name;
     /**
+     * @OA\Property(
+     *     property="email",
+     *     type="string",
+     *     description="Email for user. Unique identifier"
+     * )
      * @var string $email
      */
     private $email;
     /**
+     * @OA\Property(
+     *     property="phone",
+     *     type="string",
+     *     description="Phone number of user"
+     * )
      * @var string $phone
      */
     private $phone;
     /**
+     * @OA\Property(
+     *     property="street",
+     *     type="string",
+     *     description="Address street of user"
+     * )
      * @var string $street
      */
     private $street;
     /**
+     * @OA\Property(
+     *     property="number",
+     *     type="string",
+     *     description="Address number of user"
+     * )
      * @var string $number
      */
     private $number;
     /**
+     * @OA\Property(
+     *     property="postal_code",
+     *     type="string",
+     *     description="Address postal code of user"
+     * )
      * @var string $postal_code
      * @Serializer\SerializedName("postalCode")
      */
     private $postal_code;
     /**
+     * @OA\Property(
+     *     property="city",
+     *     type="string",
+     *     description="Address city of user"
+     * )
      * @var string $city
      */
     private $city;
     /**
+     * @OA\Property(
+     *     property="country",
+     *     type="string",
+     *     description="Address country of user"
+     * )
      * @var string $country
      */
     private $country;
     /**
+     * @OA\Property(
+     *      property="groupe",
+     *      ref="#/components/schemas/RoleDetailsDTO",
+     *      type="object",
+     *      description="User's groupe"
+     * )
      * @var Groupe[] $groupe
      */
     private $groupe;
     /**
+     * @OA\Property(
+     *     property="userRoles",
+     *     ref="#/components/schemas/UserRoleDetailsDTO",
+     *     type="object",
+     *     description="User's UserRole"
+     * )
      * @var UserRole[] $userRoles
      */
     private $userRoles;

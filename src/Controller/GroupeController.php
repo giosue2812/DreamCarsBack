@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\DTO\GroupeDetailsDTO;
-use App\DTO\JsonResponseDTO;
 use App\Entity\Groupe;
 use App\Form\GroupeType;
 use App\Models\Forms\GroupeForm;
@@ -16,10 +15,8 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use OpenApi\Annotations as OA;
-use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
- * @OA\SecurityScheme(bearerFormat="JWT",type="http",securityScheme="bearerAuth",scheme="bearer")
  * Class GroupeController
  * @package App\Controller
  */
@@ -62,6 +59,7 @@ class GroupeController extends AbstractFOSRestController
      *  )
      * )
      * @return array
+     * @throws \Exception
      */
     public function getGroupeAllAction()
     {
@@ -89,7 +87,7 @@ class GroupeController extends AbstractFOSRestController
      *     tags={"Groupes"},
      *     path="/groupe/addGroupe",
      *     security={{"bearerAuth":{}}},
-     *     summary="Adds new groupe",
+     *     summary="Add new groupe",
      *     @OA\RequestBody(
      *      @OA\MediaType(
      *          mediaType="application/json",
@@ -114,7 +112,7 @@ class GroupeController extends AbstractFOSRestController
      *      ),
      *     @OA\Response(
      *      response="500",
-     *      description="Unexpeced Error",
+     *      description="Unexpected Error",
      *      @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
      *     ),
      *     @OA\Response(
@@ -174,6 +172,19 @@ class GroupeController extends AbstractFOSRestController
      *     security={{"bearerAuth":{}}},
      *     summary="Update groupe",
      *     operationId="updateGroupe",
+     *     @OA\RequestBody(
+     *          required=true,
+     *          description="Update groupe name",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  @OA\Property(
+     *                      property="groupe",
+     *                      type="string"
+     *                  )
+     *              )
+     *          )
+     *     ),
      *     @OA\Parameter(
      *      parameter="idGroupe",
      *      name="idGroupe",

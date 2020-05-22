@@ -15,6 +15,7 @@ use App\Repository\GroupeRepository;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserService
@@ -79,7 +80,8 @@ class UserService
 
     /**
      * @param UserForm $userForm
-     * @return User
+     * @return User if User != null
+     * @throws Exception if PDOException is rise
      */
     public function create(UserForm $userForm)
     {
@@ -102,19 +104,28 @@ class UserService
             $this->manager->persist($user);
             $this->manager->flush();
         } catch (PDOException $e){
-            dump($e);
+            throw new Exception('Unexpected Error',500);
         }
         return $user;
     }
 
     /**
      * @param string $username
-     * @return UserDetailsDTO
+     * @return User if User != null
+     * @throws Exception if User == null
+     * UserName => email
      */
     public function getUserByUserName($username)
     {
         $user =  $this->userRepository->findOneBy(['email' => $username]);
-        return new UserDetailsDTO($user);
+        if($user)
+        {
+            return $user;
+        }
+        else
+        {
+            throw new Exception('User not found',404);
+        }
     }
 
     /**
@@ -125,25 +136,32 @@ class UserService
     public function update(UserFormUpdate $userFormUpdate,$userId)
     {
         $userToUpdate = $this->getUserById($userId);
-        $userToUpdate
-            ->setFirstName($userFormUpdate->getFirstName())
-            ->setLastName($userFormUpdate->getLastName())
-            ->setEmail($userFormUpdate->getEmail())
-            ->setPhone($userFormUpdate->getPhone())
-            ->setStreet($userFormUpdate->getStreet())
-            ->setNumber($userFormUpdate->getNumber())
-            ->setPostalCode($userFormUpdate->getPostalCode())
-            ->setCity($userFormUpdate->getCity())
-            ->setCountry($userFormUpdate->getCountry());
-        /**
-         * I try if the persist and flush is done. If not i receive message error
-         */
-        try {
-            $this->manager->flush();
-        } catch (PDOException $e) {
-            dump($e);
+        if($userToUpdate)
+        {
+            $userToUpdate
+                ->setFirstName($userFormUpdate->getFirstName())
+                ->setLastName($userFormUpdate->getLastName())
+                ->setEmail($userFormUpdate->getEmail())
+                ->setPhone($userFormUpdate->getPhone())
+                ->setStreet($userFormUpdate->getStreet())
+                ->setNumber($userFormUpdate->getNumber())
+                ->setPostalCode($userFormUpdate->getPostalCode())
+                ->setCity($userFormUpdate->getCity())
+                ->setCountry($userFormUpdate->getCountry());
+            /**
+             * I try if the persist and flush is done. If not i receive message error
+             */
+            try {
+                $this->manager->flush();
+            } catch (PDOException $e) {
+                throw new Exception('Unexpected error',500);
+            }
+            return $userToUpdate;
         }
-        return $userToUpdate;
+        else
+        {
+            throw new Exception('User not found',404);
+        }
     }
 
     /**
@@ -353,16 +371,20 @@ class UserService
 
     /**
      * @param $id
-     * @return JsonResponseDTO
+     * @return User if User != null
+     * @throws Exception if User == null
      */
     public function getUser($id)
     {
         $user = $this->userRepository->find($id);
-        if(isset($user))
+        if($user)
         {
-            return new JsonResponseDTO('200','success',new UserDetailsDTO($user));
+            return $user;
         }
-        return new JsonResponseDTO('400','fail','Erreur user non trouvé');
+        else
+        {
+            throw new Exception('User not found',404);
+        }
     }
 
     /**
