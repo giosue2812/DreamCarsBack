@@ -786,7 +786,7 @@
                     "User"
                 ],
                 "summary": "Add Groupe to an user",
-                "operationId": "update",
+                "operationId": "addGroupe",
                 "parameters": [
                     {
                         "parameter": "userId",
@@ -847,6 +847,85 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/UserDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/addRole/{userId}": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Add role for user",
+                "operationId": "addRole",
+                "parameters": [
+                    {
+                        "parameter": "userId",
+                        "name": "userId",
+                        "in": "path",
+                        "description": "User id to add role",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Add Role for user",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RoleForm"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User or role not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Role has been added",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserRoleDetailsDTO"
                                 }
                             }
                         }
@@ -1042,6 +1121,17 @@
                     "groupe": {
                         "description": "Groupe to update",
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "RoleForm": {
+                "title": "Role form",
+                "description": "Role Form",
+                "properties": {
+                    "id_role": {
+                        "description": "Id role for the role selected",
+                        "type": "integer"
                     }
                 },
                 "type": "object"

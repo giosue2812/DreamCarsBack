@@ -217,10 +217,18 @@ class GroupeService
     }
     /**
      * @param $groupe
-     * @return Groupe|null If Groupe.lenght > 0 else null
+     * @return Groupe If Groupe == true
      */
     public function getGroupe($groupe)
     {
-        return $this->repository->findOneBy(['groupe'=>$groupe]);
+        $groupe = $this->repository->findOneBy(['groupe'=>$groupe]);
+        if($groupe)
+        {
+            return $groupe;
+        }
+        else
+        {
+            throw new Exception('Groupe not found',404);
+        }
     }
 }

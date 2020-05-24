@@ -246,7 +246,7 @@ class UserService
         /**
          * If the role and user exist
          */
-        if($role && $user)
+        if($user)
         {
             /**
              * then we call the userservice to found the userRole with param user and param role
@@ -277,7 +277,6 @@ class UserService
                      */
                     $this->manager->persist($userRole);
                     $this->manager->flush();
-                    return $userRole;
                 } catch (PDOException $e)
                 {
                     throw new Exception('Unexpected Error',500);
@@ -289,14 +288,16 @@ class UserService
          */
         else
         {
-            throw new Exception('Role or User is unknonw',404);
+            throw new Exception('User is unknonw',404);
         }
+        return $userRole;
     }
 
     /**
      * @param int $userId
      * @param string $groupe
-     * @return JsonResponseDTO
+     * @return User if getUserById == true and getGroupe == true
+     * @throws PDOException is Rise
      */
     public function removeGroupe(int $userId, string $groupe)
     {
@@ -305,36 +306,20 @@ class UserService
          */
         $user = $this->getUserById($userId);
         $groupe = $this->groupeService->getGroupe($groupe);
-        /**
-         * If user and role exist
-         */
-        if(isset($user) && isset($groupe))
-        {
             /**
              * Try to remove group
              */
             try {
                 $user->removeGroup($groupe);
                 $this->manager->flush();
+                return $user;
             } catch (PDOException $e)
             {
                 /**
                  * Send a Json response if there is an issue
                  */
-                return new JsonResponseDTO('500','Server Error',$e);
+                throw new Exception('Unexpected Error',500);
             }
-            /**
-             * If success we send a 200 success
-             */
-            return new JsonResponseDTO('200','Success',new UserDetailsDTO($user));
-        }
-        else
-        {
-            /**
-             * If the user or role is not present in the data base
-             */
-            return new JsonResponseDTO('400','Failed','User or groupe is unknown');
-        }
     }
 
     /**
@@ -373,8 +358,8 @@ class UserService
 
     /**
      * @param $id
-     * @return User if User != null
-     * @throws Exception if User == null
+     * @return User if User == true
+     * @throws Exception if User == false
      */
     public function getUser($id)
     {
@@ -391,11 +376,19 @@ class UserService
 
     /**
      * @param $id
-     * @return User|null Private function because is used only for now by the API
-     * Private function because is used only for now by the API
+     * @return User if User == true
+     * @throws User if User == false
      */
     private function getUserById($id)
     {
-        return $this->userRepository->find($id);
+        $user = $this->userRepository->find($id);
+        if($user)
+        {
+            return $user;
+        }
+        else
+        {
+            throw new Exception('User not found',404);
+        }
     }
 }

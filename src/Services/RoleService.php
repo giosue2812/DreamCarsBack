@@ -11,6 +11,7 @@ use App\Models\Forms\RoleFormAdd;
 use App\Repository\RoleRepository;
 use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Validator\Constraints\Date;
 
 class RoleService
@@ -73,7 +74,7 @@ class RoleService
         }
         else
         {
-            throw new \Exception('No found the role',404);
+            throw new Exception('No found the role',404);
         }
     }
 

@@ -37,7 +37,7 @@ class UserRoleDetailsDTO
      *     type="object",
      *     description="UserRole's User"
      * )
-     * @var User $user
+     * @var $user
      */
     private $user;
     /**
@@ -47,7 +47,7 @@ class UserRoleDetailsDTO
      *     type="object",
      *     description="UserRole's Role"
      * )
-     * @var Role $role
+     * @var $role
      */
     private $role;
     /**
@@ -74,8 +74,8 @@ class UserRoleDetailsDTO
     public function __construct(UserRole $userRole)
     {
         $this->id = $userRole->getId();
-        $this->role = $userRole->getRoles()->getId();
-        $this->user = $userRole->getUsers()->getId();
+        $this->role = $userRole->getRoles();
+        $this->user = $userRole->getUsers();
         $this->startAt = $userRole->getStartDate();
         $this->endDate = $userRole->getEndDate();
     }

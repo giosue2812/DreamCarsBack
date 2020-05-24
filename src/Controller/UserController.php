@@ -331,7 +331,7 @@ class UserController extends AbstractFOSRestController
      *     path="/user/addGroupe/{userId}",
      *     summary="Add Groupe to an user",
      *     security={{"bearerAuth":{}}},
-     *     operationId="update",
+     *     operationId="addGroupe",
      *     @OA\RequestBody(
      *          required=true,
      *          description="Add groupe for user",
@@ -419,6 +419,53 @@ class UserController extends AbstractFOSRestController
      * @param Request $request
      * @Rest\Put(path="/api/user/addRole/{userId}")
      * @Rest\View()
+     * @OA\Put(
+     *     tags={"User"},
+     *     path="/user/addRole/{userId}",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Add role for user",
+     *     operationId="addRole",
+     *     @OA\RequestBody(
+     *          required=true,
+     *          description="Add Role for user",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  ref="#/components/schemas/RoleForm"
+     *              )
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          parameter="userId",
+     *          name="userId",
+     *          in="path",
+     *          description="User id to add role",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="400",
+     *          description="Form is invalid",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="User or role not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="500",
+     *          description="Unexpected Error",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Role has been added",
+     *          @OA\JsonContent(ref="#/components/schemas/UserRoleDetailsDTO")
+     *     )
+     * )
      * @return UserRoleDetailsDTO
      * @throws \Exception
      */
@@ -461,11 +508,18 @@ class UserController extends AbstractFOSRestController
      * @param Request $request
      * @Rest\Delete(path="/api/user/removeGroupe/{userId}/{groupe}")
      * @Rest\View()
-     * @return JsonResponseDTO
+     * @return UserDetailsDTO
      */
     public function removeGroupeAction(Request $request)
     {
-        return $this->userService->removeGroupe($request->get('userId'),$request->get('groupe'));
+        try {
+            $user = $this->userService->removeGroupe($request->get('userId'),$request->get('groupe'));
+            return new UserDetailsDTO($user);
+        }
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(), $exception->getMessage());
+        }
     }
 
     /**
