@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\DTO\JsonResponseDTO;
 use App\DTO\UserDetailsDTO;
+use App\DTO\UserRoleDetailsDTO;
+use App\Entity\User;
 use App\Form\GroupeType;
 use App\Form\RoleType;
 use App\Form\UserType;
@@ -13,6 +15,7 @@ use App\Models\Forms\RoleForm;
 use App\Models\Forms\UserForm;
 use App\Models\Forms\UserFormUpdate;
 use App\Services\UserService;
+use App\Utils\DataManipulation;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -277,81 +280,181 @@ class UserController extends AbstractFOSRestController
     }
 
     /**
-     * @Rest\Get(path="/api/user/search/{user}")
+     * @Rest\Get(path="/api/user/search/{keyWord}")
      * @Rest\View()
+     * @OA\Get(
+     *     tags={"User"},
+     *     summary="Search user",
+     *     path="/user/search/{keyWord}",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *          parameter="keyWord",
+     *          name="keyWord",
+     *          in="path",
+     *          description="keyWord to find user profile",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="User not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return User",
+     *          @OA\JsonContent(ref="#/components/schemas/UserDetailsDTO")
+     *     )
+     * )
      * @param Request $request
-     * @return JsonResponseDTO
+     * @return array
      */
     public function searchUserAction(Request $request)
     {
-        $user = $this->userService->searchUser($request->get('user'));
-        return new JsonResponseDTO('200','Success',$user);
+        try {
+            $user = $this->userService->searchUser($request->get('keyWord'));
+            return DataManipulation::arrayMap(UserDetailsDTO::class,$user);
+        }
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
     }
 
     /**
      * @Rest\Put(path="/api/user/addGroupe/{userId}")
      * @Rest\View()
+     * @OA\Put(
+     *     tags={"User"},
+     *     path="/user/addGroupe/{userId}",
+     *     summary="Add Groupe to an user",
+     *     security={{"bearerAuth":{}}},
+     *     operationId="update",
+     *     @OA\RequestBody(
+     *          required=true,
+     *          description="Add groupe for user",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  ref="#/components/schemas/GroupeForm"
+     *              )
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          parameter="userId",
+     *          name="userId",
+     *          in="path",
+     *          description="Id of user to add groupe",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="400",
+     *          description="Form is invalid",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="User or groupe not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="500",
+     *          description="Unexpected Error",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Groupe has been add for user",
+     *          @OA\JsonContent(ref="#/components/schemas/UserDetailsDTO")
+     *     )
+     * )
      * @param Request $request
-     * @return JsonResponseDTO
+     * @return UserDetailsDTO
      */
     public function addGroupeAction(Request $request)
     {
-        /**
-         * Ne instance gor groupe form
-         */
-        $groupeForm = new GroupeForm();
-        /**
-         * Deserialization the request body
-         */
-        $data = json_decode($request->getContent(), true);
-        /**
-         * Creation form
-         */
-        $form = $this->createForm(GroupeType::class, $groupeForm, [
-            'csrf_protection' => false
-        ]);
-        $form->handleRequest($request);
-        $form->submit($data);
-        if($form->isSubmitted() && $form->isValid())
-        {
+        try {
             /**
-             * we call the user service to add groupe
+             * Ne instance gor groupe form
              */
-            $addGroupe = $this->userService->addGroupe($request->get('userId'),$form->getData());
+            $groupeForm = new GroupeForm();
+            /**
+             * Deserialization the request body
+             */
+            $data = json_decode($request->getContent(), true);
+            /**
+             * Creation form
+             */
+            $form = $this->createForm(GroupeType::class, $groupeForm, [
+                'csrf_protection' => false
+            ]);
+            $form->handleRequest($request);
+            $form->submit($data);
+            if($form->isSubmitted() && $form->isValid())
+            {
+                /**
+                 * we call the user service to add groupe
+                 */
+                $user = $this->userService->addGroupe($request->get('userId'),$form->getData());
+                return new UserDetailsDTO($user);
+            }
+            else
+            {
+                throw new Exception('Form is invalid',400);
+            }
         }
-        return $addGroupe;
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
+
     }
 
     /**
      * @param Request $request
      * @Rest\Put(path="/api/user/addRole/{userId}")
      * @Rest\View()
-     * @return JsonResponseDTO
+     * @return UserRoleDetailsDTO
      * @throws \Exception
      */
     public function addRoleAction(Request $request){
-        $addRole = "";
-        /**
-         * New instance to add the userRole
-         */
-        $roleForm = new RoleForm();
-        /**
-         * Deserialization the request body
-         */
-        $data = json_decode($request->getContent(),true);
-        $form = $this->createForm(RoleType::class,$roleForm,[
-            'csrf_protection'=>false
-        ]);
-        $form->handleRequest($request);
-        $form->submit($data);
-        if($form->isSubmitted() && $form->isValid())
-        {
+        try {
             /**
-             * we call the user service to add role
+             * New instance to add the userRole
              */
-            $addRole = $this->userService->addRole($request->get('userId'),$form->getData());
+            $roleForm = new RoleForm();
+            /**
+             * Deserialization the request body
+             */
+            $data = json_decode($request->getContent(),true);
+            $form = $this->createForm(RoleType::class,$roleForm,[
+                'csrf_protection'=>false
+            ]);
+            $form->handleRequest($request);
+            $form->submit($data);
+            if($form->isSubmitted() && $form->isValid())
+            {
+                /**
+                 * we call the user service to add role
+                 */
+                $user = $this->userService->addRole($request->get('userId'),$form->getData());
+                return new UserRoleDetailsDTO($user);
+            }
+            else
+            {
+                throw new Exception('Form is invalid',400);
+            }
         }
-        return $addRole;
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
+
     }
 
     /**

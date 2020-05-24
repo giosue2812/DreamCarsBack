@@ -131,7 +131,8 @@ class UserService
     /**
      * @param UserFormUpdate $userFormUpdate
      * @param $userId
-     * @return User|null
+     * @return User if User != null
+     * @throws Exception if User == null
      */
     public function update(UserFormUpdate $userFormUpdate,$userId)
     {
@@ -166,30 +167,27 @@ class UserService
 
     /**
      * @param string $keyWord
-     * @return UserDetailsDTO
+     * @return array if array.lenght > 0
+     * @throws Exception if array.lenght <= 0
      */
     public function searchUser(string $keyWord)
     {
         $user = $this->userRepository->searchUser($keyWord);
-        /**
-         * Array empty to stock each user
-         */
-        $arrayUser = [];
-        foreach ($user as $item)
+        if($user)
         {
-            /**
-             * New DTO to map user
-             */
-            $DTO = new UserDetailsDTO($item);
-            $arrayUser[]=$DTO;
+            return $user;
         }
-        return $DTO;
+        else
+        {
+            throw new Exception('User No found',404);
+        }
     }
 
     /**
      * @param $userId
      * @param GroupeForm $groupeForms
-     * @return JsonResponseDTO
+     * @return User if User and Groupe != null
+     * @throws Exception if User and Groupe == null || PDOException is Rise
      */
     public function addGroupe($userId, GroupeForm $groupeForms)
     {
@@ -204,7 +202,7 @@ class UserService
         /**
          * If the role and user exist
          */
-        if (isset($user) && isset($groupe))
+        if ($user && $groupe)
         {
             /**
              * then we call the userservice to found the userRole with param user and param role
@@ -218,17 +216,21 @@ class UserService
                 $this->manager->flush();
             } catch (PDOException $e)
             {
-                return new JsonResponseDTO('500','Server Error',$e);
+                throw new Exception('Unexpected Error',500);
             }
         }
-        return new JsonResponseDTO('200','Success',new UserDetailsDTO($user));
+        else
+        {
+            throw new Exception('User or Groupe not found',404);
+        }
+        return $user;
     }
 
     /**
      * @param $userId
      * @param RoleForm $roleForm
-     * @return JsonResponseDTO
-     * @throws \Exception
+     * @return UserRole if user && role != null && UserRole == null
+     * @throws \Exception if user && role == null || UserRole != null
      */
     public function addRole($userId,RoleForm $roleForm)
     {
@@ -244,7 +246,7 @@ class UserService
         /**
          * If the role and user exist
          */
-        if(isset($role)&&isset($user))
+        if($role && $user)
         {
             /**
              * then we call the userservice to found the userRole with param user and param role
@@ -253,9 +255,9 @@ class UserService
             /**
              * if userrole exist and the userrole is not null
              */
-            if(isset($userRole) && $userRole != null && $userRole->getEndDate() == null)
+            if($userRole && $userRole != null && $userRole->getEndDate() == null)
             {
-                return new JsonResponseDTO('401','Failed','This role and this user is already present');
+                throw new Exception('Role and User has already in relation',404);
             }
             else
             {
@@ -275,10 +277,10 @@ class UserService
                      */
                     $this->manager->persist($userRole);
                     $this->manager->flush();
-                    return new JsonResponseDTO('200','Succes',new UserDetailsDTO($user));
+                    return $userRole;
                 } catch (PDOException $e)
                 {
-                    return new JsonResponseDTO('500','Server Error',$e);
+                    throw new Exception('Unexpected Error',500);
                 }
             }
         }
@@ -287,7 +289,7 @@ class UserService
          */
         else
         {
-            return new JsonResponseDTO('401','Failed','Role our User is unknonw');
+            throw new Exception('Role or User is unknonw',404);
         }
     }
 
