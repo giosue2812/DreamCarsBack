@@ -297,6 +297,8 @@ class UserService
      * @param int $userId
      * @param string $groupe
      * @return User if getUserById == true and getGroupe == true
+     * @throws Exception getUserById return false
+     * @throws Exception getGroupe return false
      * @throws PDOException is Rise
      */
     public function removeGroupe(int $userId, string $groupe)
@@ -324,8 +326,9 @@ class UserService
 
     /**
      * @param int $userRoleId
-     * @return JsonResponseDTO
-     * @throws \Exception
+     * @return UserRole if findUserRole return true
+     * @throws PDOException is rise
+     * @throws \Exception if findUserRole return false
      */
     public function removeUserRole(int $userRoleId){
         /**
@@ -333,27 +336,20 @@ class UserService
          */
         $date = new \DateTime();
         $userRole = $this->userRoleService->findUserRole($userRoleId);
-        if(isset($userRole))
+            /**
+             * I set the end date to
+             */
+            $userRole->setEndDate($date);
+            /**
+             * Try to flush in the database
+             */
+            try {
+                $this->manager->flush();
+            } catch (PDOException $e)
             {
-                /**
-                 * I set the end date to
-                 */
-                $userRole->setEndDate($date);
-                /**
-                 * Try to flush in the database
-                 */
-                try {
-                    $this->manager->flush();
-                } catch (PDOException $e)
-                {
-                    return new JsonResponseDTO('500','Server Error',$e);
-                }
+                throw new Exception('Unexpected Error',500);
             }
-            else
-            {
-                return new JsonResponseDTO('400','Failed','UserRole is unknown');
-            }
-        return new JsonResponseDTO('200','success',new UserDetailsDTO($userRole->getUsers()));
+            return $userRole;
     }
 
     /**

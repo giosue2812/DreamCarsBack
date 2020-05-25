@@ -937,6 +937,165 @@
                     }
                 ]
             }
+        },
+        "/user/removeGroupe/{userId}/{groupe}": {
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Remove groupe for user",
+                "operationId": "removeGroupe",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "UserId of user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "groupe",
+                        "in": "path",
+                        "description": "Groupe to be remove",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Groupe not found or User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Groupe removed for user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/updateUserRole/{userRoleID}": {
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update User Role",
+                "operationId": "Update User Role",
+                "parameters": [
+                    {
+                        "name": "userRoleID",
+                        "in": "path",
+                        "description": "User Role Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "UserRole not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "UserRole has been remove",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserRoleDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/userRole": {
+            "get": {
+                "tags": [
+                    "UserRoles"
+                ],
+                "summary": "Get UserRoles",
+                "operationId": "App\\Controller\\UserRoleController::getUserRoleAction",
+                "responses": {
+                    "404": {
+                        "description": "UserRole not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "UserRoles",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserRoleDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {

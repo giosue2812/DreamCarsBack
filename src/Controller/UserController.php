@@ -508,6 +508,46 @@ class UserController extends AbstractFOSRestController
      * @param Request $request
      * @Rest\Delete(path="/api/user/removeGroupe/{userId}/{groupe}")
      * @Rest\View()
+     * @OA\Delete(
+     *     tags={"User"},
+     *     path="/user/removeGroupe/{userId}/{groupe}",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Remove groupe for user",
+     *     operationId="removeGroupe",
+     *     @OA\Parameter(
+     *          name="userId",
+     *          in="path",
+     *          description="UserId of user",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          name="groupe",
+     *          in="path",
+     *          description="Groupe to be remove",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Groupe not found or User not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="500",
+     *          description="Unexpected Error",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Groupe removed for user",
+     *          @OA\JsonContent(ref="#/components/schemas/UserDetailsDTO")
+     *     )
+     * )
      * @return UserDetailsDTO
      */
     public function removeGroupeAction(Request $request)
@@ -526,10 +566,48 @@ class UserController extends AbstractFOSRestController
      * @param Request $request
      * @Rest\Delete(path="/api/user/updateUserRole/{userRoleID}")
      * @Rest\View()
+     * @OA\Delete(
+     *     tags={"User"},
+     *     path="/user/updateUserRole/{userRoleID}",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Update User Role",
+     *     operationId="Update User Role",
+     *     @OA\Parameter(
+     *          name="userRoleID",
+     *          in="path",
+     *          description="User Role Id",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="UserRole not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="500",
+     *          description="Unexpected Error",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="UserRole has been remove",
+     *          @OA\JsonContent(ref="#/components/schemas/UserRoleDetailsDTO")
+     *     )
+     * )
      * @return mixed
      * @throws \Exception
      */
     public function removeRoleUserAction(Request $request){
-        return $this->userService->removeUserRole($request->get('userRoleID'));
+        try {
+            $user = $this->userService->removeUserRole($request->get('userRoleID'));
+            return new UserRoleDetailsDTO($user);
+        }
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
     }
 }

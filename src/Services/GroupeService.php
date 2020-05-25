@@ -43,7 +43,7 @@ class GroupeService
     }
 
     /**
-     * @return Groupe[] if groupe.lenght > 0 else return array []
+     * @return Groupe[] if groupe.lenght > 0
      * @throws \Exception if groupe.lenght <=0
      */
     public function getGroupeAll()
@@ -70,7 +70,7 @@ class GroupeService
 
     /**
      * @param GroupeForm $groupeForm
-     * @return Groupe[] if groupe.lenght > 0 else return array []
+     * @return Groupe[] if groupe.lenght > 0 else
      * @throws \Exception if \PDOException is rise ||
      *  Groupe.getGroupe == $groupeForm.getGroupe
      */
@@ -153,7 +153,7 @@ class GroupeService
     /**
      * @param $idGroupe
      * @param GroupeForm $groupeForm
-     * @return Groupe[] if groupe.lenght > 0 else return array []
+     * @return Groupe[] if groupe.lenght > 0 else
      * @throws \Exception if \PDOException is rise ||
      *  Groupe.lenght <= 0
      */
@@ -181,7 +181,7 @@ class GroupeService
 
     /**
      * @param $idGroupe
-     * @return Groupe[] if groupe.lenght > 0 || return array []
+     * @return Groupe[] if groupe.lenght > 0
      * @throws \Exception \PDOException is rise ||
      *  Groupe.lenght <= 0
      */

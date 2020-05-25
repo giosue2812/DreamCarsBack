@@ -37,7 +37,7 @@ class RoleService
     }
 
     /**
-     * @return Role[] if role.lenght > 0 else return array []
+     * @return Role[] if role.lenght > 0
      * @throws \Exception if role.lenght <= 0
      */
     public function getRoles()
@@ -58,7 +58,7 @@ class RoleService
 
     /**
      * @param $id_role
-     * @return Role|null if role != null else return null
+     * @return Role|null if role != null
      * @throws \Exception if role == null
      */
     public function getRole($id_role)
@@ -89,7 +89,7 @@ class RoleService
 
     /**
      * @param RoleFormAdd $roleFormAdd
-     * @return Role[] if role.lenght > 0 else return array []
+     * @return Role[] if role.lenght > 0 else
      * @throws \Exception if \PDOException is rise ||
      *  Role.getRole == $roleFormAdd.getRole
      */
@@ -132,7 +132,7 @@ class RoleService
     /**
      * @param $idRole
      * @param RoleFormAdd $roleFormAdd
-     * @return Role[] if role.length > 0 else return array []
+     * @return Role[] if role.length > 0
      * @throws \Exception if \PDOException is rise ||
      *  role.lenght <= 0
      */
@@ -161,7 +161,7 @@ class RoleService
 
     /**
      * @param $idRole
-     * @return Role[] if role.lenght > 0 else return array []
+     * @return Role[] if role.lenght > 0
      * @throws \Exception if role.lenght <= 0 ||
      * \PDOException is rise
      */

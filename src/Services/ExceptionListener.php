@@ -9,8 +9,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
+/**
+ * Class ExceptionListener
+ * @package App\Services
+ */
 class ExceptionListener
 {
+    /**
+     * @param ExceptionEvent $event
+     */
     public function onKernelException(ExceptionEvent $event)
     {
         $exception = $event->getThrowable();
