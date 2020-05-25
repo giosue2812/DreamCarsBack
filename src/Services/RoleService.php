@@ -11,6 +11,7 @@ use App\Models\Forms\RoleFormAdd;
 use App\Repository\RoleRepository;
 use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Validator\Constraints\Date;
 
 class RoleService
@@ -36,7 +37,8 @@ class RoleService
     }
 
     /**
-     * @return JsonResponseDTO
+     * @return Role[] if role.lenght > 0
+     * @throws \Exception if role.lenght <= 0
      */
     public function getRoles()
     {
@@ -44,24 +46,36 @@ class RoleService
         /**
          * Array empty to stock each groupe
          */
-        $arrayRole = [];
-        foreach ($roles as $role) {
+        if($roles == null)
+        {
             /**
-             * New DTO map Groupe
+             * If roles is null
              */
-            $DTO = new RoleDetailsDTO($role);
-            $arrayRole[] = $DTO;
+            throw new \Exception("Not roles found in database");
         }
-        return new JsonResponseDTO('200','success',$arrayRole);
+        return $roles;
     }
 
     /**
      * @param $id_role
-     * @return Role|null
+     * @return Role|null if role != null
+     * @throws \Exception if role == null
      */
     public function getRole($id_role)
     {
-        return $this->repository->find($id_role);
+        /**
+         * Find role if exist
+         */
+        $role = $this->repository->find($id_role);
+        if(isset($role))
+        {
+            //Return a role. If role exist
+            return $role;
+        }
+        else
+        {
+            throw new Exception('No found the role',404);
+        }
     }
 
     /**
@@ -75,14 +89,15 @@ class RoleService
 
     /**
      * @param RoleFormAdd $roleFormAdd
-     * @return JsonResponseDTO
-     * @throws \Exception
+     * @return Role[] if role.lenght > 0 else
+     * @throws \Exception if \PDOException is rise ||
+     *  Role.getRole == $roleFormAdd.getRole
      */
     public function addNewRole(RoleFormAdd $roleFormAdd)
     {
         $date = new \DateTime();
         $roleExist = $this->getRoleByName($roleFormAdd->getRole());
-        if($roleExist){
+        if($roleExist && $roleExist->getDeleteAt() != null && $roleExist->getIsActive() == false){
             $roleExist->setIsActive(true);
             $roleExist->setDeleteAt(null);
             $roleExist->setUpdateAt($date);
@@ -91,17 +106,24 @@ class RoleService
                 $this->manager->flush();
             } catch (PDOException $e)
             {
-                dump($e);
+                throw new \Exception('Unexpected error',500);
             }
         }
+        elseif ($roleExist && $roleExist->getDeleteAt() == null && $roleExist->getIsActive() == true )
+        {
+            throw new \Exception('The role exist in the database',404);
+        }
         else {
+            /**
+             * New instance of role
+             */
             $role = new Role();
             $role->setRole($roleFormAdd->getRole());
             try {
                 $this->manager->persist($role);
                 $this->manager->flush();
             } catch (PDOException $e) {
-                dump($e);
+                throw new \Exception('Unexpected error',500);
             }
         }
         return $this->getRoles();
@@ -110,41 +132,59 @@ class RoleService
     /**
      * @param $idRole
      * @param RoleFormAdd $roleFormAdd
-     * @return JsonResponseDTO
-     * @throws \Exception
+     * @return Role[] if role.length > 0
+     * @throws \Exception if \PDOException is rise ||
+     *  role.lenght <= 0
      */
     public function updateRole($idRole,RoleFormAdd $roleFormAdd)
     {
         $date = new \DateTime();
         $role = $this->repository->find($idRole);
-        $role->setRole($roleFormAdd->getRole());
-        $role->setUpdateAt($date);
+        if(isset($role))
+        {
+            $role->setRole($roleFormAdd->getRole());
+            $role->setUpdateAt($date);
+        }
+        else
+        {
+            throw new \Exception('Role not found',404);
+        }
+
         try {
             $this->manager->flush();
         } catch (PDOException $e)
         {
-            dump($e);
+            throw new \Exception('Unexpected error',500);
         }
         return $this->getRoles();
     }
 
     /**
      * @param $idRole
-     * @return JsonResponseDTO
-     * @throws \Exception
+     * @return Role[] if role.lenght > 0
+     * @throws \Exception if role.lenght <= 0 ||
+     * \PDOException is rise
      */
     public function removeRole($idRole)
     {
         $date = new \DateTime();
         $role = $this->getRole($idRole);
-        $role->setIsActive(false);
-        $role->setDeleteAt($date);
-        try {
-            $this->manager->flush();
-        } catch (PDOException $e)
+        if($role)
         {
-            dump($e);
+            $role->setIsActive(false);
+            $role->setDeleteAt($date);
+            try {
+                $this->manager->flush();
+            } catch (PDOException $e)
+            {
+                throw new \Exception('Unexpected error',500);
+            }
         }
+        else
+        {
+            throw new \Exception('Role not found',404);
+        }
+
         return $this->getRoles();
     }
 }

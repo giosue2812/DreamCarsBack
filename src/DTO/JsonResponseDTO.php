@@ -3,7 +3,12 @@
 
 namespace App\DTO;
 
+use OpenApi\Annotations as OA;
 
+/**
+ * Class JsonResponseDTO
+ * @package App\DTO
+ */
 class JsonResponseDTO
 {
     /**

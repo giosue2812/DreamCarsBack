@@ -5,54 +5,121 @@ namespace App\Models\Forms;
 
 
 use Symfony\Component\Validator\Constraints as Assert;
+use OpenApi\Annotations as OA;
 
+/**
+ * Class UserForm
+ * @package App\Models\Forms
+ * @OA\Schema(
+ *     description="User Form model",
+ *     type="object",
+ *     title="User Form model"
+ * )
+ */
 class UserForm
 {
     /**
+     * @OA\Property(
+     *     property="firstName",
+     *     type="string",
+     *     description="First name of new user"
+     * )
+     * @Assert\NotNull()
      * @var string $first_name
      */
-    private string $first_name;
+    private $first_name;
     /**
+     * @OA\Property(
+     *     property="lastName",
+     *     type="string",
+     *     description="Last name of new user"
+     * )
+     * @Assert\NotNull()
      * @var string $last_name
      */
-    private string $last_name;
+    private $last_name;
     /**
+     * @OA\Property(
+     *     property="password",
+     *     type="string",
+     *     description="Password of new user"
+     * )
      * @var string $password
      */
-    private string $password;
+    private $password;
     /**
+     * @OA\Property(
+     *     property="passwordConfirm",
+     *     type="string",
+     *     description="passwordConfirm of new user"
+     * )
      * @var string $passwordConfirm
      */
-    private string $passwordConfirm;
+    private $passwordConfirm;
     /**
+     * @OA\Property(
+     *     property="email",
+     *     type="string",
+     *     description="Email of new user"
+     * )
      * @var string $email
      * @Assert\Email()
      */
-    private string $email;
+    private $email;
     /**
+     * @OA\Property(
+     *     property="street",
+     *     type="string",
+     *     description="Address street of new user"
+     * )
      * @var string $street
      */
-    private string $street;
+    private $street;
     /**
+     * @OA\Property(
+     *     property="number",
+     *     type="string",
+     *     description="Address number of new user"
+     * )
      * @var string $number
      */
-    private string $number;
+    private $number;
     /**
+     * @OA\Property(
+     *     property="postalCode",
+     *     type="string",
+     *     description="Address postal code of new user"
+     * )
      * @var string $postal_code
      */
-    private string $postal_code;
+    private $postal_code;
     /**
+     * @OA\Property(
+     *     property="city",
+     *     type="string",
+     *     description="Address city of new user"
+     * )
      * @var string $city
      */
-    private string $city;
+    private $city;
     /**
+     * @OA\Property(
+     *     property="country",
+     *     type="string",
+     *     description="Address country of new user"
+     * )
      * @var string $country
      */
-    private string $country;
+    private $country;
     /**
+     * @OA\Property(
+     *     property="phone",
+     *     type="string",
+     *     description="Phone number of new user"
+     * )
      * @var string $phone
      */
-    private string $phone;
+    private $phone;
 
     /**
      * @return string

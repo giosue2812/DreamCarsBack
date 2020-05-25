@@ -5,11 +5,29 @@ namespace App\Models\Forms;
 
 
 use App\Entity\Groupe;
+use Symfony\Component\Validator\Constraints as Assert;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Schema(
+ *     description="Groupe Form Model",
+ *     type="object",
+ *     title="Groupe Form Model"
+ * )
+ * Class GroupeForm
+ * @package App\Models\Forms
+ */
 class GroupeForm
 {
     /**
+     * @OA\Property(
+     *     property="groupe",
+     *     type="string",
+     *     description="Groupe to update"
+     * )
      * @var string $groupe
+     * @Assert\NotNull()
+     * @Assert\NotBlank()
      */
     private $groupe;
 

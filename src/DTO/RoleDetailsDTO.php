@@ -5,27 +5,66 @@ namespace App\DTO;
 
 
 use App\Entity\Role;
+use OpenApi\Annotations as OA;
+
+/**
+ * Class RoleDetailsDTO
+ * @package App\DTO
+ * @OA\Schema(
+ *     description="Role model",
+ *     type="object",
+ *     title="Role model"
+ * )
+ */
 
 class RoleDetailsDTO
 {
     /**
+     * @OA\Property(
+     *     property="id_role",
+     *     type="integer",
+     *     description="Unique indetification",
+     * )
      * @var integer $id_role;
      */
     private $id_role;
     /**
+     * @OA\Property(
+     *     property="role",
+     *     type="string",*
+     *     description="Role name"
+     * )
      * @var string $role
      */
     private ?string $role;
     /**
+     * @OA\Property(
+     *     property="create_at",
+     *     type="string",
+     *     format="date",
+     *     description="Creation Date for a new role"
+     * )
      * @var \DateTime $create_at
      */
     private $create_at;
     /**
+     * @OA\Property(
+     *     property="update_at",
+     *     type="string",
+     *     format="date",
+     *     description="Update date for a new role"
+     * )
      * @var \DateTime $update_at
      */
     private $update_at;
 
     /**
+     * @OA\Property(
+     *     property="delete_at",
+     *     type="string",
+     *     format="date",
+     *     description="Delete date for a new role"
+     * )
      * @var \DateTime $delete_at
      */
     private $delete_at;

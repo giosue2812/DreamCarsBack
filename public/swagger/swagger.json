@@ -1,0 +1,1412 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Dream Cars API",
+        "version": "0.1"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080/Formation/DreamsCarsProject/BackEnd/public/api/",
+            "description": "API Dream Cars"
+        }
+    ],
+    "paths": {
+        "/groupe": {
+            "get": {
+                "tags": [
+                    "Groupes"
+                ],
+                "summary": "Array of Groupes",
+                "operationId": "App\\Controller\\GroupeController::getGroupeAllAction",
+                "responses": {
+                    "404": {
+                        "description": "Groupes no found in data-base",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return an array groupe",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GroupeDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/groupe/addGroupe": {
+            "post": {
+                "tags": [
+                    "Groupes"
+                ],
+                "summary": "Add new groupe",
+                "operationId": "App\\Controller\\GroupeController::addGroupeAction",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "groupe": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Groupe exist in the database",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return an array groupe",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GroupeDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/groupe/updateGroupe/{idGroupe}": {
+            "put": {
+                "tags": [
+                    "Groupes"
+                ],
+                "summary": "Update groupe",
+                "operationId": "updateGroupe",
+                "parameters": [
+                    {
+                        "parameter": "idGroupe",
+                        "name": "idGroupe",
+                        "in": "path",
+                        "description": "Id of groupe to be update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Update groupe name",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "groupe": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Groupe Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Groupe is updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GroupeDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/groupe/removeGroupe/{idGroupe}": {
+            "delete": {
+                "tags": [
+                    "Groupes"
+                ],
+                "summary": "Delete one groupe",
+                "operationId": "removeGroupe",
+                "parameters": [
+                    {
+                        "name": "idGroupe",
+                        "in": "path",
+                        "description": "Id of groupe to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Groupe not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Groupe is removed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GroupeDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/roles": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Array of roles",
+                "operationId": "App\\Controller\\RoleController::getRolesAction",
+                "responses": {
+                    "404": {
+                        "description": "Roles no found in data-base",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return an array roles",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RoleDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/role/addRole": {
+            "post": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Add new role",
+                "operationId": "App\\Controller\\RoleController::addNewRoleAction",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "role": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Role exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return an array role",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RoleDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/role/updateRole/{idRole}": {
+            "put": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Update role",
+                "operationId": "updateRole",
+                "parameters": [
+                    {
+                        "parameter": "idRole",
+                        "name": "idRole",
+                        "in": "path",
+                        "description": "Id of role to be update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Update role name",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "role": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Role not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Role is updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RoleDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/role/removeRole/{idRole}": {
+            "delete": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Delete one role",
+                "operationId": "removeRole",
+                "parameters": [
+                    {
+                        "name": "idRole",
+                        "in": "path",
+                        "description": "Id of role to be remove",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Role not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Role is removed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RoleDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/create": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Add new User",
+                "operationId": "App\\Controller\\UserController::createAction",
+                "requestBody": {
+                    "description": "Create new User",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserForm"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Retur user created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{username}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User",
+                "operationId": "App\\Controller\\UserController::userAction",
+                "parameters": [
+                    {
+                        "parameter": "username",
+                        "name": "username",
+                        "in": "path",
+                        "description": "Email To find user profile",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/userID/{id}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Find user by id",
+                "operationId": "App\\Controller\\UserController::userById",
+                "parameters": [
+                    {
+                        "parameter": "id",
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id to found user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/update/{id}": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update User",
+                "operationId": "update",
+                "parameters": [
+                    {
+                        "parameter": "id",
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id of user to be update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Update user",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserFormUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "User is updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/search/{keyWord}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Search user",
+                "operationId": "App\\Controller\\UserController::searchUserAction",
+                "parameters": [
+                    {
+                        "parameter": "keyWord",
+                        "name": "keyWord",
+                        "in": "path",
+                        "description": "keyWord to find user profile",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return User",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/addGroupe/{userId}": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Add Groupe to an user",
+                "operationId": "addGroupe",
+                "parameters": [
+                    {
+                        "parameter": "userId",
+                        "name": "userId",
+                        "in": "path",
+                        "description": "Id of user to add groupe",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Add groupe for user",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/GroupeForm"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User or groupe not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Groupe has been add for user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/addRole/{userId}": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Add role for user",
+                "operationId": "addRole",
+                "parameters": [
+                    {
+                        "parameter": "userId",
+                        "name": "userId",
+                        "in": "path",
+                        "description": "User id to add role",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Add Role for user",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RoleForm"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User or role not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Role has been added",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserRoleDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/removeGroupe/{userId}/{groupe}": {
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Remove groupe for user",
+                "operationId": "removeGroupe",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "UserId of user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "groupe",
+                        "in": "path",
+                        "description": "Groupe to be remove",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Groupe not found or User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Groupe removed for user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/updateUserRole/{userRoleID}": {
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update User Role",
+                "operationId": "Update User Role",
+                "parameters": [
+                    {
+                        "name": "userRoleID",
+                        "in": "path",
+                        "description": "User Role Id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "UserRole not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "UserRole has been remove",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserRoleDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/userRole": {
+            "get": {
+                "tags": [
+                    "UserRoles"
+                ],
+                "summary": "Get UserRoles",
+                "operationId": "App\\Controller\\UserRoleController::getUserRoleAction",
+                "responses": {
+                    "404": {
+                        "description": "UserRole not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "UserRoles",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserRoleDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ApiErrorResponseDTO": {
+                "title": "ApiErrorReponse Model",
+                "description": "Api Error Response model",
+                "properties": {
+                    "statusCode": {
+                        "description": "Status Error code",
+                        "type": "integer"
+                    },
+                    "message": {
+                        "description": "Error message",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "GroupeDetailsDTO": {
+                "title": "Groupe model",
+                "description": "Groupe model",
+                "properties": {
+                    "id_groupe": {
+                        "description": "Unique identification",
+                        "type": "integer"
+                    },
+                    "groupe": {
+                        "description": "Groupe name",
+                        "type": "string"
+                    },
+                    "create_at": {
+                        "description": "Creation Date for a new Groupe",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "update_at": {
+                        "description": "Update Date for a modification of an existing groupe",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "delete_at": {
+                        "description": "Delete date for removing groupe",
+                        "type": "string",
+                        "format": "date"
+                    }
+                },
+                "type": "object"
+            },
+            "RoleDetailsDTO": {
+                "title": "Role model",
+                "description": "Role model",
+                "properties": {
+                    "id_role": {
+                        "description": "Unique indetification",
+                        "type": "integer"
+                    },
+                    "role": {
+                        "description": "Role name",
+                        "type": "string"
+                    },
+                    "create_at": {
+                        "description": "Creation Date for a new role",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "update_at": {
+                        "description": "Update date for a new role",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "delete_at": {
+                        "description": "Delete date for a new role",
+                        "type": "string",
+                        "format": "date"
+                    }
+                },
+                "type": "object"
+            },
+            "UserDetailsDTO": {
+                "title": "User model",
+                "description": "User model",
+                "properties": {
+                    "id": {
+                        "description": "Id of user",
+                        "type": "integer"
+                    },
+                    "createAt": {
+                        "description": "Date of creation user",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "updateAt": {
+                        "description": "Date of update user",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "first_name": {
+                        "description": "First name of user",
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "description": "Last name of user",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Email for user. Unique identifier",
+                        "type": "string"
+                    },
+                    "phone": {
+                        "description": "Phone number of user",
+                        "type": "string"
+                    },
+                    "street": {
+                        "description": "Address street of user",
+                        "type": "string"
+                    },
+                    "number": {
+                        "description": "Address number of user",
+                        "type": "string"
+                    },
+                    "postal_code": {
+                        "description": "Address postal code of user",
+                        "type": "string"
+                    },
+                    "city": {
+                        "description": "Address city of user",
+                        "type": "string"
+                    },
+                    "country": {
+                        "description": "Address country of user",
+                        "type": "string"
+                    },
+                    "groupe": {
+                        "description": "User's groupe",
+                        "type": "object",
+                        "$ref": "#/components/schemas/RoleDetailsDTO"
+                    },
+                    "userRoles": {
+                        "description": "User's UserRole",
+                        "type": "object",
+                        "$ref": "#/components/schemas/UserRoleDetailsDTO"
+                    }
+                },
+                "type": "object"
+            },
+            "UserRoleDetailsDTO": {
+                "title": "UserRole Model",
+                "description": "UserRole model",
+                "properties": {
+                    "id": {
+                        "description": "Id of user role",
+                        "type": "integer"
+                    },
+                    "user": {
+                        "description": "UserRole's User",
+                        "type": "object",
+                        "$ref": "#/components/schemas/UserDetailsDTO"
+                    },
+                    "role": {
+                        "description": "UserRole's Role",
+                        "type": "object",
+                        "$ref": "#/components/schemas/RoleDetailsDTO"
+                    },
+                    "startAt": {
+                        "description": "Start date of the user role",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "endDate": {
+                        "description": "End date of the user role",
+                        "type": "string",
+                        "format": "date"
+                    }
+                },
+                "type": "object"
+            },
+            "GroupeForm": {
+                "title": "Groupe Form Model",
+                "description": "Groupe Form Model",
+                "properties": {
+                    "groupe": {
+                        "description": "Groupe to update",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "RoleForm": {
+                "title": "Role form",
+                "description": "Role Form",
+                "properties": {
+                    "id_role": {
+                        "description": "Id role for the role selected",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "RoleFormAdd": {
+                "title": "Role Form add Model",
+                "description": "Role Form add Model",
+                "properties": {
+                    "groupe": {
+                        "description": "Role to update",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UserForm": {
+                "title": "User Form model",
+                "description": "User Form model",
+                "properties": {
+                    "firstName": {
+                        "description": "First name of new user",
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "description": "Last name of new user",
+                        "type": "string"
+                    },
+                    "password": {
+                        "description": "Password of new user",
+                        "type": "string"
+                    },
+                    "passwordConfirm": {
+                        "description": "passwordConfirm of new user",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Email of new user",
+                        "type": "string"
+                    },
+                    "street": {
+                        "description": "Address street of new user",
+                        "type": "string"
+                    },
+                    "number": {
+                        "description": "Address number of new user",
+                        "type": "string"
+                    },
+                    "postalCode": {
+                        "description": "Address postal code of new user",
+                        "type": "string"
+                    },
+                    "city": {
+                        "description": "Address city of new user",
+                        "type": "string"
+                    },
+                    "country": {
+                        "description": "Address country of new user",
+                        "type": "string"
+                    },
+                    "phone": {
+                        "description": "Phone number of new user",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "UserFormUpdate": {
+                "title": "User Form Update model",
+                "description": "User Form update",
+                "properties": {
+                    "firstName": {
+                        "description": "First name of update user",
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "description": "Last name of update user",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Email of update user",
+                        "type": "string"
+                    },
+                    "street": {
+                        "description": "Address of street to update user",
+                        "type": "string"
+                    },
+                    "number": {
+                        "description": "Address of number to update user",
+                        "type": "string"
+                    },
+                    "postal_code": {
+                        "description": "Address of postal code to update user",
+                        "type": "string"
+                    },
+                    "city": {
+                        "description": "Address of city to update user",
+                        "type": "string"
+                    },
+                    "country": {
+                        "description": "Address of country to update user",
+                        "type": "string"
+                    },
+                    "phone": {
+                        "description": "Phone number of update user",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    }
+}

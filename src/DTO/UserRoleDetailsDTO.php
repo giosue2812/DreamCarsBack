@@ -8,25 +8,65 @@ use App\Entity\Role;
 use App\Entity\User;
 use App\Entity\UserRole;
 
+use OpenApi\Annotations as OA;
+
+/**
+ * Class UserRoleDetailsDTO
+ * @package App\DTO
+ * @OA\Schema(
+ *     description="UserRole model",
+ *     type="object",
+ *     title="UserRole Model"
+ * )
+ */
 class UserRoleDetailsDTO
 {
     /**
+     * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     description="Id of user role"
+     * )
      * @var int $id
      */
     private $id;
     /**
-     * @var User $user
+     * @OA\Property(
+     *     property="user",
+     *     ref="#/components/schemas/UserDetailsDTO",
+     *     type="object",
+     *     description="UserRole's User"
+     * )
+     * @var $user
      */
     private $user;
     /**
-     * @var Role $role
+     * @OA\Property(
+     *     property="role",
+     *     ref="#/components/schemas/RoleDetailsDTO",
+     *     type="object",
+     *     description="UserRole's Role"
+     * )
+     * @var $role
      */
     private $role;
     /**
+     * @OA\Property(
+     *     property="startAt",
+     *     type="string",
+     *     format="date",
+     *     description="Start date of the user role"
+     * )
      * @var \DateTime $startAt
      */
     private $startAt;
     /**
+     * @OA\Property(
+     *     property="endDate",
+     *     type="string",
+     *     format="date",
+     *     description="End date of the user role"
+     * )
      * @var \DateTime $endDate
      */
     private $endDate;
@@ -34,8 +74,8 @@ class UserRoleDetailsDTO
     public function __construct(UserRole $userRole)
     {
         $this->id = $userRole->getId();
-        $this->role = $userRole->getRoles()->getId();
-        $this->user = $userRole->getUsers()->getId();
+        $this->role = $userRole->getRoles();
+        $this->user = $userRole->getUsers();
         $this->startAt = $userRole->getStartDate();
         $this->endDate = $userRole->getEndDate();
     }

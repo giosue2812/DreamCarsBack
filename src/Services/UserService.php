@@ -15,6 +15,7 @@ use App\Repository\GroupeRepository;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserService
@@ -79,7 +80,8 @@ class UserService
 
     /**
      * @param UserForm $userForm
-     * @return User
+     * @return User if User != null
+     * @throws Exception if PDOException is rise
      */
     public function create(UserForm $userForm)
     {
@@ -102,76 +104,90 @@ class UserService
             $this->manager->persist($user);
             $this->manager->flush();
         } catch (PDOException $e){
-            dump($e);
+            throw new Exception('Unexpected Error',500);
         }
         return $user;
     }
 
     /**
      * @param string $username
-     * @return UserDetailsDTO
+     * @return User if User != null
+     * @throws Exception if User == null
+     * UserName => email
      */
     public function getUserByUserName($username)
     {
         $user =  $this->userRepository->findOneBy(['email' => $username]);
-        return new UserDetailsDTO($user);
+        if($user)
+        {
+            return $user;
+        }
+        else
+        {
+            throw new Exception('User not found',404);
+        }
     }
 
     /**
      * @param UserFormUpdate $userFormUpdate
      * @param $userId
-     * @return User|null
+     * @return User if User != null
+     * @throws Exception if User == null
      */
     public function update(UserFormUpdate $userFormUpdate,$userId)
     {
         $userToUpdate = $this->getUserById($userId);
-        $userToUpdate
-            ->setFirstName($userFormUpdate->getFirstName())
-            ->setLastName($userFormUpdate->getLastName())
-            ->setEmail($userFormUpdate->getEmail())
-            ->setPhone($userFormUpdate->getPhone())
-            ->setStreet($userFormUpdate->getStreet())
-            ->setNumber($userFormUpdate->getNumber())
-            ->setPostalCode($userFormUpdate->getPostalCode())
-            ->setCity($userFormUpdate->getCity())
-            ->setCountry($userFormUpdate->getCountry());
-        /**
-         * I try if the persist and flush is done. If not i receive message error
-         */
-        try {
-            $this->manager->flush();
-        } catch (PDOException $e) {
-            dump($e);
+        if($userToUpdate)
+        {
+            $userToUpdate
+                ->setFirstName($userFormUpdate->getFirstName())
+                ->setLastName($userFormUpdate->getLastName())
+                ->setEmail($userFormUpdate->getEmail())
+                ->setPhone($userFormUpdate->getPhone())
+                ->setStreet($userFormUpdate->getStreet())
+                ->setNumber($userFormUpdate->getNumber())
+                ->setPostalCode($userFormUpdate->getPostalCode())
+                ->setCity($userFormUpdate->getCity())
+                ->setCountry($userFormUpdate->getCountry());
+            /**
+             * I try if the persist and flush is done. If not i receive message error
+             */
+            try {
+                $this->manager->flush();
+            } catch (PDOException $e) {
+                throw new Exception('Unexpected error',500);
+            }
+            return $userToUpdate;
         }
-        return $userToUpdate;
+        else
+        {
+            throw new Exception('User not found',404);
+        }
     }
 
     /**
      * @param string $keyWord
-     * @return UserDetailsDTO
+     * @return array if array.lenght > 0
+     * @throws Exception if array.lenght <= 0
      */
     public function searchUser(string $keyWord)
     {
         $user = $this->userRepository->searchUser($keyWord);
-        /**
-         * Array empty to stock each user
-         */
-        $arrayUser = [];
-        foreach ($user as $item)
+        if($user)
         {
-            /**
-             * New DTO to map user
-             */
-            $DTO = new UserDetailsDTO($item);
-            $arrayUser[]=$DTO;
+            return $user;
         }
-        return $DTO;
+        else
+        {
+            throw new Exception('User No found',404);
+        }
     }
 
     /**
      * @param $userId
      * @param GroupeForm $groupeForms
-     * @return JsonResponseDTO
+     * @return User if User and Groupe != null
+     * @throws Exception if User and Groupe == null || PDOException is Rise
      */
     public function addGroupe($userId, GroupeForm $groupeForms)
     {
@@ -186,7 +202,7 @@ class UserService
         /**
          * If the role and user exist
          */
-        if (isset($user) && isset($groupe))
+        if ($user && $groupe)
         {
             /**
              * then we call the userservice to found the userRole with param user and param role
@@ -200,17 +216,21 @@ class UserService
                 $this->manager->flush();
             } catch (PDOException $e)
             {
-                return new JsonResponseDTO('500','Server Error',$e);
+                throw new Exception('Unexpected Error',500);
             }
         }
-        return new JsonResponseDTO('200','Success',new UserDetailsDTO($user));
+        else
+        {
+            throw new Exception('User or Groupe not found',404);
+        }
+        return $user;
     }
 
     /**
      * @param $userId
      * @param RoleForm $roleForm
-     * @return JsonResponseDTO
-     * @throws \Exception
+     * @return UserRole if user && role != null && UserRole == null
+     * @throws \Exception if user && role == null || UserRole != null
      */
     public function addRole($userId,RoleForm $roleForm)
     {
@@ -226,7 +246,7 @@ class UserService
         /**
          * If the role and user exist
          */
-        if(isset($role)&&isset($user))
+        if($user)
         {
             /**
              * then we call the userservice to found the userRole with param user and param role
@@ -235,9 +255,9 @@ class UserService
             /**
              * if userrole exist and the userrole is not null
              */
-            if(isset($userRole) && $userRole != null && $userRole->getEndDate() == null)
+            if($userRole && $userRole != null && $userRole->getEndDate() == null)
             {
-                return new JsonResponseDTO('401','Failed','This role and this user is already present');
+                throw new Exception('Role and User has already in relation',404);
             }
             else
             {
@@ -257,10 +277,9 @@ class UserService
                      */
                     $this->manager->persist($userRole);
                     $this->manager->flush();
-                    return new JsonResponseDTO('200','Succes',new UserDetailsDTO($user));
                 } catch (PDOException $e)
                 {
-                    return new JsonResponseDTO('500','Server Error',$e);
+                    throw new Exception('Unexpected Error',500);
                 }
             }
         }
@@ -269,14 +288,18 @@ class UserService
          */
         else
         {
-            return new JsonResponseDTO('401','Failed','Role our User is unknonw');
+            throw new Exception('User is unknonw',404);
         }
+        return $userRole;
     }
 
     /**
      * @param int $userId
      * @param string $groupe
-     * @return JsonResponseDTO
+     * @return User if getUserById == true and getGroupe == true
+     * @throws Exception getUserById return false
+     * @throws Exception getGroupe return false
+     * @throws PDOException is Rise
      */
     public function removeGroupe(int $userId, string $groupe)
     {
@@ -285,42 +308,27 @@ class UserService
          */
         $user = $this->getUserById($userId);
         $groupe = $this->groupeService->getGroupe($groupe);
-        /**
-         * If user and role exist
-         */
-        if(isset($user) && isset($groupe))
-        {
             /**
              * Try to remove group
              */
             try {
                 $user->removeGroup($groupe);
                 $this->manager->flush();
+                return $user;
             } catch (PDOException $e)
             {
                 /**
                  * Send a Json response if there is an issue
                  */
-                return new JsonResponseDTO('500','Server Error',$e);
+                throw new Exception('Unexpected Error',500);
             }
-            /**
-             * If success we send a 200 success
-             */
-            return new JsonResponseDTO('200','Success',new UserDetailsDTO($user));
-        }
-        else
-        {
-            /**
-             * If the user or role is not present in the data base
-             */
-            return new JsonResponseDTO('400','Failed','User or groupe is unknown');
-        }
     }
 
     /**
      * @param int $userRoleId
-     * @return JsonResponseDTO
-     * @throws \Exception
+     * @return UserRole if findUserRole return true
+     * @throws PDOException is rise
+     * @throws \Exception if findUserRole return false
      */
     public function removeUserRole(int $userRoleId){
         /**
@@ -328,50 +336,55 @@ class UserService
          */
         $date = new \DateTime();
         $userRole = $this->userRoleService->findUserRole($userRoleId);
-        if(isset($userRole))
+            /**
+             * I set the end date to
+             */
+            $userRole->setEndDate($date);
+            /**
+             * Try to flush in the database
+             */
+            try {
+                $this->manager->flush();
+            } catch (PDOException $e)
             {
-                /**
-                 * I set the end date to
-                 */
-                $userRole->setEndDate($date);
-                /**
-                 * Try to flush in the database
-                 */
-                try {
-                    $this->manager->flush();
-                } catch (PDOException $e)
-                {
-                    return new JsonResponseDTO('500','Server Error',$e);
-                }
+                throw new Exception('Unexpected Error',500);
             }
-            else
-            {
-                return new JsonResponseDTO('400','Failed','UserRole is unknown');
-            }
-        return new JsonResponseDTO('200','success',new UserDetailsDTO($userRole->getUsers()));
+            return $userRole;
     }
 
     /**
      * @param $id
-     * @return JsonResponseDTO
+     * @return User if User == true
+     * @throws Exception if User == false
      */
     public function getUser($id)
     {
         $user = $this->userRepository->find($id);
-        if(isset($user))
+        if($user)
         {
-            return new JsonResponseDTO('200','success',new UserDetailsDTO($user));
+            return $user;
         }
-        return new JsonResponseDTO('400','fail','Erreur user non trouvé');
+        else
+        {
+            throw new Exception('User not found',404);
+        }
     }
 
     /**
      * @param $id
-     * @return User|null Private function because is used only for now by the API
-     * Private function because is used only for now by the API
+     * @return User if User == true
+     * @throws User if User == false
      */
     private function getUserById($id)
     {
-        return $this->userRepository->find($id);
+        $user = $this->userRepository->find($id);
+        if($user)
+        {
+            return $user;
+        }
+        else
+        {
+            throw new Exception('User not found',404);
+        }
     }
 }
