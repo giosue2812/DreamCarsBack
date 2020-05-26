@@ -1251,14 +1251,12 @@
                         "type": "integer"
                     },
                     "user": {
-                        "description": "UserRole's User",
-                        "type": "object",
-                        "$ref": "#/components/schemas/UserDetailsDTO"
+                        "description": "UserRole's UserId",
+                        "type": "integer"
                     },
                     "role": {
-                        "description": "UserRole's Role",
-                        "type": "object",
-                        "$ref": "#/components/schemas/RoleDetailsDTO"
+                        "description": "UserRole's RoleId",
+                        "type": "integer"
                     },
                     "startAt": {
                         "description": "Start date of the user role",

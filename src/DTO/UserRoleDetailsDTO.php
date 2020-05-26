@@ -33,21 +33,19 @@ class UserRoleDetailsDTO
     /**
      * @OA\Property(
      *     property="user",
-     *     ref="#/components/schemas/UserDetailsDTO",
-     *     type="object",
-     *     description="UserRole's User"
+     *     type="integer",
+     *     description="UserRole's UserId"
      * )
-     * @var $user
+     * @var int $user
      */
     private $user;
     /**
      * @OA\Property(
      *     property="role",
-     *     ref="#/components/schemas/RoleDetailsDTO",
-     *     type="object",
-     *     description="UserRole's Role"
+     *     type="integer",
+     *     description="UserRole's RoleId"
      * )
-     * @var $role
+     * @var int $role
      */
     private $role;
     /**
@@ -74,8 +72,8 @@ class UserRoleDetailsDTO
     public function __construct(UserRole $userRole)
     {
         $this->id = $userRole->getId();
-        $this->role = $userRole->getRoles();
-        $this->user = $userRole->getUsers();
+        $this->role = $userRole->getRoles()->getId();
+        $this->user = $userRole->getUsers()->getId();
         $this->startAt = $userRole->getStartDate();
         $this->endDate = $userRole->getEndDate();
     }
@@ -89,19 +87,49 @@ class UserRoleDetailsDTO
     }
 
     /**
-     * @return User
+     * @param int $id
+     * @return UserRoleDetailsDTO
      */
-    public function getUser(): User
+    public function setId(int $id): UserRoleDetailsDTO
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUser(): int
     {
         return $this->user;
     }
 
     /**
-     * @return Role
+     * @param int $user
+     * @return UserRoleDetailsDTO
      */
-    public function getRole(): Role
+    public function setUser(int $user): UserRoleDetailsDTO
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRole(): int
     {
         return $this->role;
+    }
+
+    /**
+     * @param int $role
+     * @return UserRoleDetailsDTO
+     */
+    public function setRole(int $role): UserRoleDetailsDTO
+    {
+        $this->role = $role;
+        return $this;
     }
 
     /**
@@ -113,6 +141,16 @@ class UserRoleDetailsDTO
     }
 
     /**
+     * @param \DateTime $startAt
+     * @return UserRoleDetailsDTO
+     */
+    public function setStartAt(\DateTime $startAt): UserRoleDetailsDTO
+    {
+        $this->startAt = $startAt;
+        return $this;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getEndDate(): \DateTime
@@ -120,5 +158,14 @@ class UserRoleDetailsDTO
         return $this->endDate;
     }
 
+    /**
+     * @param \DateTime $endDate
+     * @return UserRoleDetailsDTO
+     */
+    public function setEndDate(\DateTime $endDate): UserRoleDetailsDTO
+    {
+        $this->endDate = $endDate;
+        return $this;
+    }
 
 }

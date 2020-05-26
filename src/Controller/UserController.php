@@ -68,7 +68,7 @@ class UserController extends AbstractFOSRestController
      *     ),
      *     @OA\Response(
      *          response="200",
-     *          description="Retur user created",
+     *          description="Retur an array of user created",
      *          @OA\JsonContent(ref="#/components/schemas/UserDetailsDTO")
      *     )
      * )
@@ -91,7 +91,7 @@ class UserController extends AbstractFOSRestController
                  * I call service users
                  */
                 $user = $this->userService->create($form->getData());
-                return new UserDetailsDTO($user);
+                return DataManipulation::arrayMap(UserDetailsDTO::class, $user);
             }
             else
             {
@@ -130,17 +130,17 @@ class UserController extends AbstractFOSRestController
      *     ),
      *     @OA\Response(
      *          response="200",
-     *          description="Return user",
+     *          description="Return an array of user",
      *          @OA\JsonContent(ref="#/components/schemas/UserDetailsDTO")
      *     )
      * )
-     * @return UserDetailsDTO
+     * @return array
      */
     public function userAction(Request $request)
     {
         try {
             $user = $this->userService->getUserByUserName($request->get('username'));
-            return new UserDetailsDTO($user);
+            return DataManipulation::arrayMap(UserDetailsDTO::class,$user);
         }
         catch (Exception $exception)
         {
@@ -174,18 +174,18 @@ class UserController extends AbstractFOSRestController
      *     ),
      *     @OA\Response(
      *          response="200",
-     *          description="Return user",
+     *          description="Return user an array of user",
      *          @OA\JsonContent(ref="#/components/schemas/UserDetailsDTO")
      *     )
      * )
      * @param Request $request
-     * @return UserDetailsDTO
+     * @return array
      */
     public function userById(Request $request)
     {
         try {
             $user = $this->userService->getUser($request->get('id'));
-            return new UserDetailsDTO($user);
+            return DataManipulation::arrayMap(UserDetailsDTO::class,$user);
         }
         catch (Exception $exception)
         {
@@ -240,12 +240,12 @@ class UserController extends AbstractFOSRestController
      *     ),
      *     @OA\Response(
      *          response="200",
-     *          description="User is updated",
+     *          description="array of user updated",
      *          @OA\JsonContent(ref="#/components/schemas/UserDetailsDTO")
      *     )
      * )
      * @Rest\View()
-     * @return UserDetailsDTO
+     * @return array
      */
     public function userUpdateAction(Request $request)
     {
@@ -266,7 +266,7 @@ class UserController extends AbstractFOSRestController
                  * I call service users
                  */
                 $user = $this->userService->update($form->getData(),$request->get('id'));
-                return new UserDetailsDTO($user);
+                return DataManipulation::arrayMap(UserDetailsDTO::class,$user);
             }
             else
             {
@@ -304,7 +304,7 @@ class UserController extends AbstractFOSRestController
      *     ),
      *     @OA\Response(
      *          response="200",
-     *          description="Return User",
+     *          description="Return an array of  User",
      *          @OA\JsonContent(ref="#/components/schemas/UserDetailsDTO")
      *     )
      * )
@@ -369,12 +369,12 @@ class UserController extends AbstractFOSRestController
      *     ),
      *     @OA\Response(
      *          response="200",
-     *          description="Groupe has been add for user",
+     *          description="array of user returned with the groupe added",
      *          @OA\JsonContent(ref="#/components/schemas/UserDetailsDTO")
      *     )
      * )
      * @param Request $request
-     * @return UserDetailsDTO
+     * @return array
      */
     public function addGroupeAction(Request $request)
     {
@@ -401,7 +401,7 @@ class UserController extends AbstractFOSRestController
                  * we call the user service to add groupe
                  */
                 $user = $this->userService->addGroupe($request->get('userId'),$form->getData());
-                return new UserDetailsDTO($user);
+                return DataManipulation::arrayMap(UserDetailsDTO::class,$user);
             }
             else
             {
@@ -462,7 +462,7 @@ class UserController extends AbstractFOSRestController
      *     ),
      *     @OA\Response(
      *          response="200",
-     *          description="Role has been added",
+     *          description="Role has been added return array of user",
      *          @OA\JsonContent(ref="#/components/schemas/UserRoleDetailsDTO")
      *     )
      * )
@@ -544,17 +544,17 @@ class UserController extends AbstractFOSRestController
      *     ),
      *     @OA\Response(
      *          response="200",
-     *          description="Groupe removed for user",
+     *          description="return an user array with role added",
      *          @OA\JsonContent(ref="#/components/schemas/UserDetailsDTO")
      *     )
      * )
-     * @return UserDetailsDTO
+     * @return array
      */
     public function removeGroupeAction(Request $request)
     {
         try {
             $user = $this->userService->removeGroupe($request->get('userId'),$request->get('groupe'));
-            return new UserDetailsDTO($user);
+            return DataManipulation::arrayMap(UserDetailsDTO::class,$user);
         }
         catch (Exception $exception)
         {

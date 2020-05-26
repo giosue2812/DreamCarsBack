@@ -80,11 +80,12 @@ class UserService
 
     /**
      * @param UserForm $userForm
-     * @return User if User != null
+     * @return array if userArray > 0 else userArray []
      * @throws Exception if PDOException is rise
      */
     public function create(UserForm $userForm)
     {
+        $arrayUser = [];
         $user = new User();
         $user->setFirstName($userForm->getFirstName());
         $user->setLastName($userForm->getLastName());
@@ -106,21 +107,24 @@ class UserService
         } catch (PDOException $e){
             throw new Exception('Unexpected Error',500);
         }
-        return $user;
+        $arrayUser[] = $user;
+        return $arrayUser;
     }
 
     /**
      * @param string $username
-     * @return User if User != null
-     * @throws Exception if User == null
+     * @return array userArray.lenght > 0
+     * @throws Exception if userArray.lenght <= 0
      * UserName => email
      */
     public function getUserByUserName($username)
     {
+        $arrayUser = [];
         $user =  $this->userRepository->findOneBy(['email' => $username]);
         if($user)
         {
-            return $user;
+            $arrayUser[] = $user;
+            return $arrayUser;
         }
         else
         {
@@ -131,11 +135,12 @@ class UserService
     /**
      * @param UserFormUpdate $userFormUpdate
      * @param $userId
-     * @return User if User != null
-     * @throws Exception if User == null
+     * @return array userArray.lenght > 0
+     * @throws Exception if userArray.lenght <= 0
      */
     public function update(UserFormUpdate $userFormUpdate,$userId)
     {
+        $arrayUser = [];
         $userToUpdate = $this->getUserById($userId);
         if($userToUpdate)
         {
@@ -157,7 +162,8 @@ class UserService
             } catch (PDOException $e) {
                 throw new Exception('Unexpected error',500);
             }
-            return $userToUpdate;
+            $arrayUser[] = $userToUpdate;
+            return $arrayUser;
         }
         else
         {
@@ -167,8 +173,8 @@ class UserService
 
     /**
      * @param string $keyWord
-     * @return array if array.lenght > 0
-     * @throws Exception if array.lenght <= 0
+     * @return array if user.lenght > 0;
+     * @throws Exception if user.lenght <= 0
      */
     public function searchUser(string $keyWord)
     {
@@ -186,11 +192,12 @@ class UserService
     /**
      * @param $userId
      * @param GroupeForm $groupeForms
-     * @return User if User and Groupe != null
+     * @return array
      * @throws Exception if User and Groupe == null || PDOException is Rise
      */
     public function addGroupe($userId, GroupeForm $groupeForms)
     {
+        $arrayUser = [];
         /**
          * I get the userId from the route
          */
@@ -223,7 +230,8 @@ class UserService
         {
             throw new Exception('User or Groupe not found',404);
         }
-        return $user;
+        $arrayUser[] = $user;
+        return $arrayUser;
     }
 
     /**
@@ -296,13 +304,14 @@ class UserService
     /**
      * @param int $userId
      * @param string $groupe
-     * @return User if getUserById == true and getGroupe == true
+     * @return array if arrayUser.lenght > 0
      * @throws Exception getUserById return false
      * @throws Exception getGroupe return false
      * @throws PDOException is Rise
      */
     public function removeGroupe(int $userId, string $groupe)
     {
+        $arrayUser = [];
         /**
          * I get the user and groupe selected
          */
@@ -314,7 +323,8 @@ class UserService
             try {
                 $user->removeGroup($groupe);
                 $this->manager->flush();
-                return $user;
+                $arrayUser[] = $user;
+                return $arrayUser;
             } catch (PDOException $e)
             {
                 /**
@@ -331,6 +341,7 @@ class UserService
      * @throws \Exception if findUserRole return false
      */
     public function removeUserRole(int $userRoleId){
+
         /**
          * New Instance date
          */
@@ -354,15 +365,17 @@ class UserService
 
     /**
      * @param $id
-     * @return User if User == true
-     * @throws Exception if User == false
+     * @return array userArray.length > 0
+     * @throws Exception if userArray.length <= 0
      */
     public function getUser($id)
     {
+        $arrayUser = [];
         $user = $this->userRepository->find($id);
         if($user)
         {
-            return $user;
+            $arrayUser[] = $user;
+            return $arrayUser;
         }
         else
         {
@@ -377,6 +390,7 @@ class UserService
      */
     private function getUserById($id)
     {
+
         $user = $this->userRepository->find($id);
         if($user)
         {
