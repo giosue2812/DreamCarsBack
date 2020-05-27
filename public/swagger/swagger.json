@@ -258,6 +258,37 @@
                 ]
             }
         },
+        "/product/list": {
+            "get": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Array of product",
+                "operationId": "App\\Controller\\ProductController::productListAction",
+                "responses": {
+                    "404": {
+                        "description": "Product no found in data base",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return an array of product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/roles": {
             "get": {
                 "tags": [
@@ -545,7 +576,7 @@
                         }
                     },
                     "200": {
-                        "description": "Retur user created",
+                        "description": "Retur an array of user created",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -588,7 +619,7 @@
                         }
                     },
                     "200": {
-                        "description": "Return user",
+                        "description": "Return an array of user",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -636,7 +667,7 @@
                         }
                     },
                     "200": {
-                        "description": "Return user",
+                        "description": "Return user an array of user",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -715,7 +746,7 @@
                         }
                     },
                     "200": {
-                        "description": "User is updated",
+                        "description": "array of user updated",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -763,7 +794,7 @@
                         }
                     },
                     "200": {
-                        "description": "Return User",
+                        "description": "Return an array of  User",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -842,7 +873,7 @@
                         }
                     },
                     "200": {
-                        "description": "Groupe has been add for user",
+                        "description": "array of user returned with the groupe added",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -921,7 +952,7 @@
                         }
                     },
                     "200": {
-                        "description": "Role has been added",
+                        "description": "Role has been added return array of user",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -987,7 +1018,7 @@
                         }
                     },
                     "200": {
-                        "description": "Groupe removed for user",
+                        "description": "return an user array with role added",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1141,6 +1172,37 @@
                         "description": "Delete date for removing groupe",
                         "type": "string",
                         "format": "date"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductDTO": {
+                "title": "Product Model",
+                "description": "Product Model",
+                "properties": {
+                    "product": {
+                        "description": "Product name",
+                        "type": "string"
+                    },
+                    "description": {
+                        "description": "Product's description",
+                        "type": "string"
+                    },
+                    "price": {
+                        "description": "Price of product",
+                        "type": "float"
+                    },
+                    "category": {
+                        "description": "Product Category",
+                        "type": "string"
+                    },
+                    "picture": {
+                        "description": "Picture of product",
+                        "type": "string"
+                    },
+                    "avaibility": {
+                        "description": "Stock available for the product",
+                        "type": "boolean"
                     }
                 },
                 "type": "object"
