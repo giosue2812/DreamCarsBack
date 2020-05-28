@@ -42,9 +42,9 @@ class ProductFixtures extends Fixture
         $manager->persist($subCategory);
 
         $product = new Product();
-        $product->setProduct('Frein Bosch');
+        $product->setProduct('Plaquette Bosch');
         $product->setDescription('Frein Bosch Bonne qualité');
-        $product->setCategory($category);
+        $product->setCategory($subCategory);
         $product->setAvaibility(true);
         $product->setPrice(14.15);
         $product->setSupplier($supplier);

@@ -3,11 +3,14 @@
 namespace App\Controller;
 
 use App\DTO\ProductDTO;
+use App\Form\ProductType;
+use App\Models\Forms\ProductForm;
 use App\Services\ProductService;
 use App\Utils\DataManipulation;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use OpenApi\Annotations as OA;
 
@@ -52,6 +55,20 @@ class ProductController extends AbstractFOSRestController
         catch (Exception $exception)
         {
             throw new HttpException($exception->getCode(), $exception->getMessage());
+        }
+
+    }
+    public function productEditAction(Request $request)
+    {
+        $productForm = new ProductForm();
+        $form = $this->createForm(ProductType::class,$productForm);
+        $data = json_decode($request->getContent(),true,[
+            'csrf_protection' => false
+        ]);
+        $form->submit($data);
+        if($form->isSubmitted() && $form->isValid())
+        {
+
         }
 
     }

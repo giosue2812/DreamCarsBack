@@ -20,6 +20,15 @@ class ProductDTO
 {
     /**
      * @OA\Property(
+     *     property="id",
+     *     type="integer",
+     *     description="Product id"
+     * )
+     * @var integer $id
+     */
+    private $id;
+    /**
+     * @OA\Property(
      *     property="product",
      *     type="string",
      *     description="Product name"
@@ -75,6 +84,7 @@ class ProductDTO
 
     public function __construct(Product $product)
     {
+        $this->id = $product->getId();
         $this->product = $product->getProduct();
         $this->description = $product->getDescription();
         $this->price = $product->getPrice();

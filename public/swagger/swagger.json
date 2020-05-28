@@ -1180,6 +1180,10 @@
                 "title": "Product Model",
                 "description": "Product Model",
                 "properties": {
+                    "id": {
+                        "description": "Product id",
+                        "type": "integer"
+                    },
                     "product": {
                         "description": "Product name",
                         "type": "string"
