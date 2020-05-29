@@ -4,6 +4,8 @@
 namespace App\Models\Forms;
 
 
+use App\Entity\Category;
+use App\Entity\Supplier;
 use Symfony\Component\Validator\Constraints as Assert;
 use OpenApi\Annotations as OA;
 
@@ -41,7 +43,6 @@ class ProductForm
     /**
      * @var string $picture
      * @Assert\NotNull()
-     * @Assert\File(binaryFormat="jpg")
      * @OA\Property(
      *     property="picture",
      *     type="string",
@@ -60,6 +61,7 @@ class ProductForm
     private $description;
     /**
      * @var boolean $avaibility
+     * @Assert\NotNull()
      * @OA\Property(
      *     property="avaibility",
      *     type="boolean",
@@ -67,11 +69,34 @@ class ProductForm
      * )
      */
     private $avaibility;
-
+    /**
+     * @var CategoryForm $category
+     * @OA\Property(
+     *     property="category",
+     *     type="object",
+     *     description="Category of user",
+     *     @OA\Schema(
+     *          ref="#/components/schemas/CategoryForm"
+     *     )
+     * )
+     */
+    private $category;
+    /**
+     * @var SupplierForm $supplier
+     * @OA\Property(
+     *     property="supplier",
+     *     type="object",
+     *     description="Supplier of product",
+     *     @OA\Schema(
+     *          ref="#/components/schemas/SupplierForm"
+     *     )
+     * )
+     */
+    private $supplier;
     /**
      * @return string
      */
-    public function getProduct(): string
+    public function getProduct(): ?string
     {
         return $this->product;
     }
@@ -89,7 +114,7 @@ class ProductForm
     /**
      * @return int
      */
-    public function getPrice(): int
+    public function getPrice(): ?int
     {
         return $this->price;
     }
@@ -107,7 +132,7 @@ class ProductForm
     /**
      * @return string
      */
-    public function getPicture(): string
+    public function getPicture(): ?string
     {
         return $this->picture;
     }
@@ -125,7 +150,7 @@ class ProductForm
     /**
      * @return string
      */
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -143,7 +168,7 @@ class ProductForm
     /**
      * @return bool
      */
-    public function isAvaibility(): bool
+    public function isAvaibility(): ?bool
     {
         return $this->avaibility;
     }
@@ -157,4 +182,42 @@ class ProductForm
         $this->avaibility = $avaibility;
         return $this;
     }
+
+    /**
+     * @return CategoryForm
+     */
+    public function getCategory(): ?CategoryForm
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param CategoryForm $category
+     * @return ProductForm
+     */
+    public function setCategory(CategoryForm $category): ProductForm
+    {
+        $this->category = $category;
+        return $this;
+    }
+
+    /**
+     * @return SupplierForm
+     */
+    public function getSupplier(): ?SupplierForm
+    {
+        return $this->supplier;
+    }
+
+    /**
+     * @param SupplierForm $supplier
+     * @return ProductForm
+     */
+    public function setSupplier(SupplierForm $supplier): ProductForm
+    {
+        $this->supplier = $supplier;
+        return $this;
+    }
+
+
 }

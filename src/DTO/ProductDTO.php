@@ -6,6 +6,7 @@ namespace App\DTO;
 
 use App\Entity\Category;
 use App\Entity\Product;
+use App\Entity\Supplier;
 use OpenApi\Annotations as OA;
 /**
  * Class ProductDTO
@@ -73,6 +74,15 @@ class ProductDTO
      */
     private $picture;
     /**
+     * @var Supplier $supplier
+     * @OA\Property(
+     *     property="supplier",
+     *     type="string",
+     *     description="Supplier of product"
+     * )
+     */
+    private $supplier;
+    /**
      * @OA\Property(
      *     property="avaibility",
      *     type="boolean",
@@ -89,8 +99,17 @@ class ProductDTO
         $this->description = $product->getDescription();
         $this->price = $product->getPrice();
         $this->picture = $product->getPicture();
+        $this->supplier = $product->getSupplier();
         $this->avaibility = $product->getAvaibility();
         $this->category = $product->getCategory()->getName();
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
     }
 
     /**
@@ -126,11 +145,27 @@ class ProductDTO
     }
 
     /**
+     * @return Supplier
+     */
+    public function getSupplier(): Supplier
+    {
+        return $this->supplier;
+    }
+
+    /**
      * @return bool
      */
     public function isAvaibility(): ?bool
     {
         return $this->avaibility;
+    }
+
+    /**
+     * @return Category
+     */
+    public function getCategory(): Category
+    {
+        return $this->category;
     }
 
 

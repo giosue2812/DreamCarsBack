@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Supplier;
+use App\Models\Forms\SupplierForm;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -12,10 +13,6 @@ class SupplierType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('createAt')
-            ->add('updateAt')
-            ->add('deleteAt')
-            ->add('isActive')
             ->add('nom')
             ->add('street')
             ->add('number')
@@ -30,7 +27,7 @@ class SupplierType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Supplier::class,
+            'data_class' => SupplierForm::class,
         ]);
     }
 }

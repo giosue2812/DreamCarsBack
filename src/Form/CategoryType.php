@@ -3,7 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Category;
+use App\Models\Forms\CategoryForm;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -12,19 +14,14 @@ class CategoryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('createAt')
-            ->add('updateAt')
-            ->add('deleteAt')
-            ->add('isActive')
-            ->add('name')
-            ->add('sub_Category')
+            ->add('name',TextType::class)
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Category::class,
+            'data_class' => CategoryForm::class,
         ]);
     }
 }

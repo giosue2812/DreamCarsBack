@@ -2,9 +2,17 @@
 
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\Product;
+use App\Entity\Supplier;
+use App\Models\Forms\CategoryForm;
 use App\Models\Forms\ProductForm;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,17 +25,23 @@ class ProductType extends AbstractType
             ->add('product',TextType::class,[
                 'required'=>true
             ])
-            ->add('price', TextType::class,[
+            ->add('price', NumberType::class,[
                 'required'=>true
             ])
             ->add('picture',TextType::class,[
                 'required'=>true
             ])
             ->add('description',TextType::class,[
+                'required'=>false
+            ])
+            ->add('avaibility',CheckboxType::class,[
                 'required'=>true
             ])
-            ->add('avaibility',TextType::class,[
-                'required'=>true
+            ->add('category',CategoryType::class,[
+                'data_class'=>CategoryForm::class
+            ])
+            ->add('supplier',SupplierType::class,[
+                'data_class'=>CategoryForm::class
             ])
         ;
     }

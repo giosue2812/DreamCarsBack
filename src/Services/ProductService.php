@@ -21,11 +21,15 @@ class ProductService
      * @var EntityManagerInterface $manager
      */
     private $manager;
-
-    public function __construct(ProductRepository $repository,EntityManagerInterface $manager)
+    /**
+     * @var CategoryService $categoryService
+     */
+    private $categoryService;
+    public function __construct(ProductRepository $repository,EntityManagerInterface $manager,CategoryService $categoryService)
     {
         $this->repository = $repository;
         $this->manager = $manager;
+        $this->categoryService = $categoryService;
     }
 
     /**
@@ -48,15 +52,17 @@ class ProductService
     /**
      * @param $productId
      * @param ProductForm $productForm
-     * @return void if product.lenght > 0
+     * @return array if array.lenght > 0
      * @throws \Exception if product.lenght <= 0 && PDOException is rise && product == null
      */
     public function productEdit($productId, ProductForm $productForm)
     {
         $date = new \DateTime();
         $product = $this->repository->find($productId);
+        $category = $this->categoryService->getCategory($productForm->getCategory()->getName());
         if($product)
         {
+            $arrayProduct = [];
             try {
                 $product
                     ->setProduct($productForm->getProduct())
@@ -64,7 +70,11 @@ class ProductService
                     ->setPrice($productForm->getPrice())
                     ->setPicture($productForm->getPicture())
                     ->setAvaibility($productForm->isAvaibility())
+                    ->setCategory($category)
                     ->setUpdateAt($date);
+                $this->manager->flush();
+                $arrayProduct[] = $product;
+                return $arrayProduct;
             }
             catch (Exception $exception)
             {

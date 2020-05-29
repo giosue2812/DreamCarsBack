@@ -134,4 +134,12 @@
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.4" />
+  <component name="PhpStepFilterConfiguration">
+    <skipped_functions>
+      <skipped_function name="Symfony\Component\ErrorHandler\DebugClassLoader-&gt;loadClass" />
+      <skipped_function name="Symfony\Component\Config\Resource\ReflectionClassResource-&gt;computeHash" />
+      <skipped_function name="Symfony\Component\Config\ConfigCache-&gt;isFresh" />
+      <skipped_function name="App\Kernel-&gt;initializeContainer" />
+    </skipped_functions>
+  </component>
 </project>
