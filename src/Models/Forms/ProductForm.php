@@ -82,13 +82,13 @@ class ProductForm
      */
     private $category;
     /**
-     * @var SupplierForm $supplier
+     * @var SupplierAddForm $supplier
      * @OA\Property(
      *     property="supplier",
      *     type="object",
      *     description="Supplier of product",
      *     @OA\Schema(
-     *          ref="#/components/schemas/SupplierForm"
+     *          ref="#/components/schemas/SupplierAddForm"
      *     )
      * )
      */
@@ -202,18 +202,18 @@ class ProductForm
     }
 
     /**
-     * @return SupplierForm
+     * @return SupplierAddForm
      */
-    public function getSupplier(): ?SupplierForm
+    public function getSupplier(): ?SupplierAddForm
     {
         return $this->supplier;
     }
 
     /**
-     * @param SupplierForm $supplier
+     * @param SupplierAddForm $supplier
      * @return ProductForm
      */
-    public function setSupplier(SupplierForm $supplier): ProductForm
+    public function setSupplier(SupplierAddForm $supplier): ProductForm
     {
         $this->supplier = $supplier;
         return $this;

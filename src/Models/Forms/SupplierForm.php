@@ -19,7 +19,7 @@ use OpenApi\Annotations as OA;
 class SupplierForm
 {
     /**
-     * @var string $nom
+     * @var string $name
      * @Assert\NotBlank()
      * @Assert\NotNull()
      * @OA\Property(
@@ -28,7 +28,7 @@ class SupplierForm
      *     description="Nom of supplier"
      * )
      */
-    private $nom;
+    private $name;
     /**
      * @var string $street
      * @Assert\NotBlank()
@@ -104,18 +104,18 @@ class SupplierForm
     /**
      * @return string
      */
-    public function getNom(): string
+    public function getName(): string
     {
-        return $this->nom;
+        return $this->name;
     }
 
     /**
-     * @param string $nom
+     * @param string $name
      * @return SupplierForm
      */
-    public function setNom(string $nom): SupplierForm
+    public function setName(string $name): SupplierForm
     {
-        $this->nom = $nom;
+        $this->name = $name;
         return $this;
     }
 

@@ -11,6 +11,42 @@
         }
     ],
     "paths": {
+        "/categories": {
+            "get": {
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Get a lisr of category",
+                "operationId": "category",
+                "responses": {
+                    "404": {
+                        "description": "No found category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return a list of category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoriesChoiceDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/groupe": {
             "get": {
                 "tags": [
@@ -289,6 +325,133 @@
                 }
             }
         },
+        "/product/edit/{productId}": {
+            "put": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Update Product",
+                "operationId": "update",
+                "parameters": [
+                    {
+                        "parameter": "productId",
+                        "name": "productId",
+                        "in": "path",
+                        "description": "Id for the product to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Update Product",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductForm"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "500": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found or Supplier not found or category not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return the product update",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/product/{productId}": {
+            "get": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get a product",
+                "operationId": "product",
+                "parameters": [
+                    {
+                        "parameter": "productId",
+                        "name": "productId",
+                        "in": "path",
+                        "description": "Id for found a Product",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Not found product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return an array of product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/roles": {
             "get": {
                 "tags": [
@@ -524,6 +687,42 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/RoleDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/suppliers": {
+            "get": {
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Get a list of choice supplier",
+                "operationId": "supplier",
+                "responses": {
+                    "404": {
+                        "description": "No found suppliers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return a list of Supplier",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuppliersChoiceDTO"
                                 }
                             }
                         }
@@ -1146,6 +1345,21 @@
                 },
                 "type": "object"
             },
+            "CategoriesChoiceDTO": {
+                "title": "Category model",
+                "description": "Category model",
+                "properties": {
+                    "id": {
+                        "description": "Category Id",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "Category Name",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "GroupeDetailsDTO": {
                 "title": "Groupe model",
                 "description": "Groupe model",
@@ -1194,7 +1408,7 @@
                     },
                     "price": {
                         "description": "Price of product",
-                        "type": "float"
+                        "type": "integer"
                     },
                     "category": {
                         "description": "Product Category",
@@ -1202,6 +1416,10 @@
                     },
                     "picture": {
                         "description": "Picture of product",
+                        "type": "string"
+                    },
+                    "supplier": {
+                        "description": "Supplier of product",
                         "type": "string"
                     },
                     "avaibility": {
@@ -1237,6 +1455,21 @@
                         "description": "Delete date for a new role",
                         "type": "string",
                         "format": "date"
+                    }
+                },
+                "type": "object"
+            },
+            "SuppliersChoiceDTO": {
+                "title": "Supplier Model",
+                "description": "Supplier Model",
+                "properties": {
+                    "id": {
+                        "description": "Product id",
+                        "type": "integer"
+                    },
+                    "name": {
+                        "description": "Product Name",
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -1337,6 +1570,17 @@
                 },
                 "type": "object"
             },
+            "CategoryForm": {
+                "title": "Category form model",
+                "description": "Category form Model",
+                "properties": {
+                    "name": {
+                        "description": "name of category to update",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "GroupeForm": {
                 "title": "Groupe Form Model",
                 "description": "Groupe Form Model",
@@ -1344,6 +1588,41 @@
                     "groupe": {
                         "description": "Groupe to update",
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductForm": {
+                "title": "Product Form Model",
+                "description": "Product Form Model",
+                "properties": {
+                    "product": {
+                        "description": "Product name",
+                        "type": "string"
+                    },
+                    "price": {
+                        "description": "Price of product",
+                        "type": "integer"
+                    },
+                    "picture": {
+                        "description": "Picture of product",
+                        "type": "string"
+                    },
+                    "description": {
+                        "description": "Description of product",
+                        "type": "string"
+                    },
+                    "avaibility": {
+                        "description": "Boolean of product",
+                        "type": "boolean"
+                    },
+                    "category": {
+                        "description": "Category of user",
+                        "type": "object"
+                    },
+                    "supplier": {
+                        "description": "Supplier of product",
+                        "type": "object"
                     }
                 },
                 "type": "object"
@@ -1365,6 +1644,52 @@
                 "properties": {
                     "groupe": {
                         "description": "Role to update",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "SupplierAddForm": {
+                "title": "Supplier form model",
+                "description": "Supplier form model to add for product",
+                "properties": {
+                    "name": {
+                        "description": "Nom of supplier",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "SupplierForm": {
+                "title": "Supplier form model",
+                "description": "Supplier form model",
+                "properties": {
+                    "nom": {
+                        "description": "Nom of supplier",
+                        "type": "string"
+                    },
+                    "street": {
+                        "description": "Street of supplier",
+                        "type": "string"
+                    },
+                    "number": {
+                        "description": "Number of supplier",
+                        "type": "string"
+                    },
+                    "postalCode": {
+                        "description": "Postal code of supplier",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Email of supplier",
+                        "type": "string"
+                    },
+                    "city": {
+                        "description": "City of supplier",
+                        "type": "string"
+                    },
+                    "country": {
+                        "description": "Country of supplier",
                         "type": "string"
                     }
                 },

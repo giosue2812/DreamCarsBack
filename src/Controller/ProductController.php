@@ -65,6 +65,53 @@ class ProductController extends AbstractFOSRestController
     /**
      * @Rest\Put(path="/api/product/edit/{productId}")
      * @Rest\View()
+     * @OA\Put(
+     *     tags={"Product"},
+     *     path="/product/edit/{productId}",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Update Product",
+     *     operationId="update",
+     *     @OA\RequestBody(
+     *          required=true,
+     *          description="Update Product",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  ref="#/components/schemas/ProductForm"
+     *              )
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          parameter="productId",
+     *          name="productId",
+     *          in="path",
+     *          description="Id for the product to update",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="500",
+     *          description="Unexpected error",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="400",
+     *          description="Form is invalid",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Product not found or Supplier not found or category not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return the product update",
+     *          @OA\JsonContent(ref="#/components/schemas/ProductDTO")
+     *     )
+     * )
      * @param Request $request
      * @return array
      */
@@ -90,6 +137,51 @@ class ProductController extends AbstractFOSRestController
         else
         {
             throw new Exception('Form is invalid',400);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     * @Rest\Get(path="/api/product/{productId}")
+     * @Rest\View()
+     * @OA\Get(
+     *     tags={"Product"},
+     *     path="/product/{productId}",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Get a product",
+     *     operationId="product",
+     *     @OA\Parameter(
+     *          parameter="productId",
+     *          name="productId",
+     *          in="path",
+     *          description="Id for found a Product",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Not found product",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return an array of product",
+     *          @OA\JsonContent(ref="#/components/schemas/ProductDTO")
+     *     )
+     * )
+     */
+    public function productAction(Request $request)
+    {
+        try {
+            $product = $this->service->product($request->get('productId'));
+            return DataManipulation::arrayMap(ProductDTO::class,$product);
+        }
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
         }
     }
 }

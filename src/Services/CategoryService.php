@@ -30,7 +30,7 @@ class CategoryService
      * @return Category[] if Category.lenght > 0
      * @throws \Exception if Category.lenght <= 0
      */
-    public function getCategories()
+    public function getCategoriesList()
     {
         $categories = $this->repository->findAll();
         if($categories)

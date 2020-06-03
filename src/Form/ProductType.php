@@ -7,6 +7,7 @@ use App\Entity\Product;
 use App\Entity\Supplier;
 use App\Models\Forms\CategoryForm;
 use App\Models\Forms\ProductForm;
+use App\Models\Forms\SupplierAddForm;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -40,8 +41,8 @@ class ProductType extends AbstractType
             ->add('category',CategoryType::class,[
                 'data_class'=>CategoryForm::class
             ])
-            ->add('supplier',SupplierType::class,[
-                'data_class'=>CategoryForm::class
+            ->add('supplier',SupplierAddType::class,[
+                'data_class'=>SupplierAddForm::class
             ])
         ;
     }

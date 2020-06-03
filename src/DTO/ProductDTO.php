@@ -49,7 +49,7 @@ class ProductDTO
     /**
      * @OA\Property(
      *     property="price",
-     *     type="float",
+     *     type="integer",
      *     description="Price of product"
      * )
      * @var float $price
@@ -102,6 +102,7 @@ class ProductDTO
         $this->supplier = $product->getSupplier();
         $this->avaibility = $product->getAvaibility();
         $this->category = $product->getCategory()->getName();
+        $this->supplier = $product->getSupplier()->getName();
     }
 
     /**
