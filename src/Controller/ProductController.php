@@ -6,8 +6,10 @@ use App\DTO\ProductDTO;
 use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Form\ProductType;
+use App\Form\SearchType;
 use App\Models\Forms\CategoryForm;
 use App\Models\Forms\ProductForm;
+use App\Models\Forms\ProductSearchForm;
 use App\Services\ProductService;
 use App\Utils\DataManipulation;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -62,6 +64,64 @@ class ProductController extends AbstractFOSRestController
 
     }
 
+    /**
+     * @Rest\Post(path="/api/product/create")
+     * @Rest\View()
+     * @OA\Post(
+     *     tags={"Product"},
+     *     path="/product/create",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Add new product",
+     *     @OA\RequestBody(
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(ref="#/components/schemas/ProductForm")
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="400",
+     *          description="Form is invalid",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="500",
+     *          description="Unexpected Error",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return a array of new product",
+     *          @OA\JsonContent(ref="#/components/schemas/ProductDTO")
+     *     )
+     * )
+     * @param Request $request
+     * @return array
+     */
+    public function productCreateAction(Request $request)
+    {
+        try {
+            $productForm = new ProductForm();
+            $data = json_decode($request->getContent(),true);
+            $form = $this->createForm(ProductType::class,$productForm,[
+                'csrf_protection'=>false
+            ]);
+            $form->handleRequest($request);
+            $form->submit($data);
+            if($form->isSubmitted() && $form->isValid())
+            {
+                $product = $this->service->createProduct($form->getData());
+                return DataManipulation::arrayMap(ProductDTO::class,$product);
+            }
+            else
+            {
+                throw new Exception('Form is invalid',400);
+            }
+        }
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
+    }
     /**
      * @Rest\Put(path="/api/product/edit/{productId}")
      * @Rest\View()
@@ -178,6 +238,65 @@ class ProductController extends AbstractFOSRestController
         try {
             $product = $this->service->product($request->get('productId'));
             return DataManipulation::arrayMap(ProductDTO::class,$product);
+        }
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
+    }
+
+    /**
+     * @Rest\Post(path="/api/product/search")
+     * @Rest\View()
+     * @OA\Post(
+     *     tags={"Product"},
+     *     path="/product/search",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Product search",
+     *     @OA\RequestBody(
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  ref="#/components/schemas/ProductSearchForm"
+     *              )
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="400",
+     *          description="Form is invalid",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Product not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return product",
+     *          @OA\JsonContent(ref="#/components/schemas/ProductDTO")
+     *     )
+     * )
+     * @param Request $request
+     * @return array
+     */
+    public function productSearch(Request $request)
+    {
+        try {
+            $productSearchForm = new  ProductSearchForm();
+            $data = json_decode($request->getContent(), true);
+            $form = $this->createForm(SearchType::class, $productSearchForm, [
+                'csrf_protection' => false
+            ]);
+            $form->handleRequest($request);
+            $form->submit($data);
+            if ($form->isValid() && $form->isSubmitted()) {
+                $product = $this->service->productSearch($form->getData());
+                return DataManipulation::arrayMap(ProductDTO::class, $product);
+
+            } else {
+                throw new Exception('Form is invalid', 400);
+            }
         }
         catch (Exception $exception)
         {

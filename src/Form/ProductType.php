@@ -30,7 +30,7 @@ class ProductType extends AbstractType
                 'required'=>true
             ])
             ->add('picture',TextType::class,[
-                'required'=>true
+                'required'=>false
             ])
             ->add('description',TextType::class,[
                 'required'=>false

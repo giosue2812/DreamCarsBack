@@ -325,6 +325,61 @@
                 }
             }
         },
+        "/product/create": {
+            "post": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Add new product",
+                "operationId": "App\\Controller\\ProductController::productCreateAction",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductForm"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return a array of new product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/product/edit/{productId}": {
             "put": {
                 "tags": [
@@ -436,6 +491,61 @@
                     },
                     "200": {
                         "description": "Return an array of product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/product/search": {
+            "post": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Product search",
+                "operationId": "App\\Controller\\ProductController::productSearch",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductSearchForm"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return product",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1623,6 +1733,17 @@
                     "supplier": {
                         "description": "Supplier of product",
                         "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductSearchForm": {
+                "title": "Form Search Model",
+                "description": "Form to search",
+                "properties": {
+                    "keyWord": {
+                        "description": "keyWord to found a product",
+                        "type": "string"
                     }
                 },
                 "type": "object"

@@ -6,7 +6,9 @@ namespace App\Services;
 
 use App\Entity\Product;
 use App\Models\Forms\ProductForm;
+use App\Models\Forms\ProductSearchForm;
 use App\Repository\ProductRepository;
+use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
@@ -58,6 +60,38 @@ class ProductService
         else
         {
             throw new Exception('Products not found in database',404);
+        }
+    }
+
+    /**
+     * @param ProductForm $productForm
+     * @return array if array.lenght > && category == true && supplier == true
+     * @throws Exception if category return false or supplier return false or PDOException is rise and array.lenght <= 0
+     */
+    public function createProduct(ProductForm $productForm)
+    {
+        $arrayProduct = [];
+        $product = new Product();
+        $category = $this->categoryService->getCategory($productForm->getCategory()->getName());
+        $supplier = $this->supplierService->getSupplier($productForm->getSupplier()->getName());
+        $product
+            ->setProduct($productForm->getProduct())
+            ->setPrice($productForm->getPrice())
+            ->setPicture($productForm->getPicture())
+            ->setDescription($productForm->getDescription())
+            ->setAvaibility($productForm->isAvaibility())
+            ->setCategory($category)
+            ->setSupplier($supplier);
+
+        try {
+            $this->manager->persist($product);
+            $this->manager->flush();
+            $arrayProduct[] = $product;
+            return $arrayProduct;
+        }
+        catch (PDOException $PDOException)
+        {
+            throw new Exception('Unexpected error',500);
         }
     }
 
@@ -118,6 +152,24 @@ class ProductService
         else
         {
             throw new Exception('Not found product',404);
+        }
+    }
+
+    /**
+     * @param ProductSearchForm $productSearchForm
+     * @return Product[] Product.lenght > 0
+     * @throws Exception if Product.lenght <= 0
+     */
+    public function productSearch(ProductSearchForm $productSearchForm)
+    {
+        $product = $this->repository->searchProduct($productSearchForm->getKeyWord());
+        if($product)
+        {
+            return $product;
+        }
+        else
+        {
+            throw new Exception('Product not found',404);
         }
     }
 }
