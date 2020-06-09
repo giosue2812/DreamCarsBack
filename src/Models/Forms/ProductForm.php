@@ -4,8 +4,7 @@
 namespace App\Models\Forms;
 
 
-use App\Entity\Category;
-use App\Entity\Supplier;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use OpenApi\Annotations as OA;
 
@@ -40,16 +39,6 @@ class ProductForm
      * )
      */
     private $price;
-    /**
-     * @var string $picture
-     * @Assert\NotNull()
-     * @OA\Property(
-     *     property="picture",
-     *     type="string",
-     *     description="Picture of product"
-     * )
-     */
-    private $picture;
     /**
      * @var string $description
      * @OA\Property(
@@ -126,24 +115,6 @@ class ProductForm
     public function setPrice(int $price): ProductForm
     {
         $this->price = $price;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPicture(): ?string
-    {
-        return $this->picture;
-    }
-
-    /**
-     * @param string $picture
-     * @return ProductForm
-     */
-    public function setPicture(string $picture): ProductForm
-    {
-        $this->picture = $picture;
         return $this;
     }
 

@@ -562,6 +562,73 @@
                 ]
             }
         },
+        "/product/uploadPicture/{productId}": {
+            "post": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Picture upload",
+                "operationId": "App\\Controller\\ProductController::uploadPictureAction",
+                "parameters": [
+                    {
+                        "name": "productId",
+                        "in": "path",
+                        "description": "Id of the product",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "properties": {
+                                    "picture": {
+                                        "description": "Picture to upload",
+                                        "type": "file",
+                                        "format": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "404": {
+                        "description": "Picture not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return arry product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/roles": {
             "get": {
                 "tags": [
@@ -1713,10 +1780,6 @@
                     "price": {
                         "description": "Price of product",
                         "type": "integer"
-                    },
-                    "picture": {
-                        "description": "Picture of product",
-                        "type": "string"
                     },
                     "description": {
                         "description": "Description of product",

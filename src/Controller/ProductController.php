@@ -7,10 +7,13 @@ use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Form\ProductType;
 use App\Form\SearchType;
+use App\Form\UploadFileType;
 use App\Models\Forms\CategoryForm;
 use App\Models\Forms\ProductForm;
 use App\Models\Forms\ProductSearchForm;
+use App\Models\Forms\UploadFileForm;
 use App\Services\ProductService;
+use App\Services\UploadService;
 use App\Utils\DataManipulation;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -18,6 +21,7 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use OpenApi\Annotations as OA;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 class ProductController extends AbstractFOSRestController
 {
@@ -297,6 +301,64 @@ class ProductController extends AbstractFOSRestController
             } else {
                 throw new Exception('Form is invalid', 400);
             }
+        }
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     * @Rest\Post(path="/api/product/uploadPicture/{productId}")
+     * @Rest\View()
+     * @OA\Post(
+     *     tags={"Product"},
+     *     path="/product/uploadPicture/{productId}",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Picture upload",
+     *     @OA\RequestBody(
+     *          @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *              @OA\Schema(
+     *                  @OA\Property(
+     *                      description="Picture to upload",
+     *                      property="picture",
+     *                      type="file",
+     *                      format="file"
+     *                  ),
+     *                      required={"file"}
+     *              )
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          description="Id of the product",
+     *          in="path",
+     *          name="productId",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Picture not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return arry product",
+     *          @OA\JsonContent(ref="#/components/schemas/ProductDTO")
+     *     )
+     * )
+     */
+    public function uploadPictureAction(Request $request)
+    {
+        try {
+                $product = $this->service->uploadPicture($request->files->get('picture'),$request->get('productId'));
+                return DataManipulation::arrayMap(ProductDTO::class,$product);
         }
         catch (Exception $exception)
         {

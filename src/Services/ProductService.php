@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Entity\Product;
 use App\Models\Forms\ProductForm;
 use App\Models\Forms\ProductSearchForm;
+use App\Models\Forms\UploadFileForm;
 use App\Repository\ProductRepository;
 use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,6 +31,10 @@ class ProductService
      * @var SupplierService $supplierService
      */
     private $supplierService;
+    /**
+     * @var UploadService $uploadService
+     */
+    private $uploadService;
 
     /**
      * ProductService constructor.
@@ -37,13 +42,20 @@ class ProductService
      * @param EntityManagerInterface $manager
      * @param CategoryService $categoryService
      * @param SupplierService $supplierService
+     * @param UploadService $uploadService
      */
-    public function __construct(ProductRepository $repository,EntityManagerInterface $manager,CategoryService $categoryService,SupplierService $supplierService)
+    public function __construct(
+        ProductRepository $repository,
+        EntityManagerInterface $manager,
+        CategoryService $categoryService,
+        SupplierService $supplierService,
+        UploadService $uploadService)
     {
         $this->repository = $repository;
         $this->manager = $manager;
         $this->categoryService = $categoryService;
         $this->supplierService = $supplierService;
+        $this->uploadService = $uploadService;
     }
 
     /**
@@ -82,7 +94,6 @@ class ProductService
             ->setAvaibility($productForm->isAvaibility())
             ->setCategory($category)
             ->setSupplier($supplier);
-
         try {
             $this->manager->persist($product);
             $this->manager->flush();
@@ -110,24 +121,23 @@ class ProductService
         if($product)
         {
             $arrayProduct = [];
-            try {
                 $product
                     ->setProduct($productForm->getProduct())
                     ->setDescription($productForm->getDescription())
                     ->setPrice($productForm->getPrice())
-                    ->setPicture($productForm->getPicture())
                     ->setAvaibility($productForm->isAvaibility())
                     ->setCategory($category)
                     ->setSupplier($supplier)
                     ->setUpdateAt($date);
-                $this->manager->flush();
-                $arrayProduct[] = $product;
-                return $arrayProduct;
-            }
-            catch (Exception $exception)
-            {
-                throw new Exception('Unexpected error',500);
-            }
+                try {
+                    $this->manager->flush();
+                    $arrayProduct[] = $product;
+                    return $arrayProduct;
+                }
+                catch (Exception $exception)
+                {
+                    throw new Exception('Unexpected error',500);
+                }
         }
         else
         {
@@ -171,5 +181,29 @@ class ProductService
         {
             throw new Exception('Product not found',404);
         }
+    }
+
+    /**
+     * @param $picture
+     * @param $productId
+     * @return array if array.lenght > 0
+     * @throws Exception if picture == null
+     */
+    public function uploadPicture($picture,$productId)
+    {
+        $arrayProduct = [];
+        $imageName = $this->uploadService->upload($picture);
+        if($imageName)
+        {
+            $product = $this->repository->find($productId);
+            $product->setPicture('http://localhost:8080/Formation/DreamsCarsProject/BackEnd/public/Assets/Images/'.$imageName);
+            $this->manager->flush();
+            $arrayProduct[] = $product;
+        }
+        else
+        {
+            throw new Exception('Image not found',404);
+        }
+        return $arrayProduct;
     }
 }

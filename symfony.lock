@@ -383,11 +383,17 @@
             "./tests/bootstrap.php"
         ]
     },
+    "symfony/polyfill-intl-grapheme": {
+        "version": "v1.17.0"
+    },
     "symfony/polyfill-intl-icu": {
         "version": "v1.15.0"
     },
     "symfony/polyfill-intl-idn": {
         "version": "v1.15.0"
+    },
+    "symfony/polyfill-intl-normalizer": {
+        "version": "v1.17.0"
     },
     "symfony/polyfill-mbstring": {
         "version": "v1.15.0"
@@ -444,6 +450,9 @@
     },
     "symfony/stopwatch": {
         "version": "v5.0.7"
+    },
+    "symfony/string": {
+        "version": "v5.0.9"
     },
     "symfony/translation-contracts": {
         "version": "v2.0.1"
