@@ -227,7 +227,6 @@ class ProductService
      */
     public function removeProduct($productId)
     {
-        $arrayProduct = [];
         $date = new \DateTime();
         $product = $this->repository->find($productId);
         if($product)
@@ -236,8 +235,7 @@ class ProductService
             $product->setIsActive(false);
             try {
                 $this->manager->flush();
-                $arrayProduct[] = $product;
-                return $arrayProduct;
+                return $this->productList();
             }
             catch (PDOException $PDOException)
             {

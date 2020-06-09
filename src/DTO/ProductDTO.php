@@ -7,6 +7,7 @@ namespace App\DTO;
 use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\Supplier;
+use JMS\Serializer\Annotation as Serializer;
 use OpenApi\Annotations as OA;
 /**
  * Class ProductDTO
@@ -92,6 +93,17 @@ class ProductDTO
      */
     private $avaibility;
 
+    /**
+     * @var \DateTime $deleteAt
+     * @OA\Property(
+     *     property="deleteAt",
+     *     type="string",
+     *     description="Delete date"
+     * )
+     * @Serializer\SerializedName("deleteAt")
+     */
+    private $deleteAt;
+
     public function __construct(Product $product)
     {
         $this->id = $product->getId();
@@ -101,6 +113,7 @@ class ProductDTO
         $this->picture = $product->getPicture();
         $this->supplier = $product->getSupplier();
         $this->avaibility = $product->getAvaibility();
+        $this->deleteAt = $product->getDeleteAt();
         $this->category = $product->getCategory()->getName();
         $this->supplier = $product->getSupplier()->getName();
     }
@@ -168,6 +181,15 @@ class ProductDTO
     {
         return $this->category;
     }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDeleteAt(): \DateTime
+    {
+        return $this->deleteAt;
+    }
+
 
 
 }

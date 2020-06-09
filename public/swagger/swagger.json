@@ -1670,6 +1670,10 @@
                     "avaibility": {
                         "description": "Stock available for the product",
                         "type": "boolean"
+                    },
+                    "deleteAt": {
+                        "description": "Delete date",
+                        "type": "string"
                     }
                 },
                 "type": "object"
