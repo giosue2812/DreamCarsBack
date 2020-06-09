@@ -21,6 +21,7 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use OpenApi\Annotations as OA;
+use Symfony\Component\Validator\Constraints as Assert;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
 
 class ProductController extends AbstractFOSRestController
@@ -343,8 +344,13 @@ class ProductController extends AbstractFOSRestController
      *          )
      *     ),
      *     @OA\Response(
+     *          response="500",
+     *          description="Unexpected Error",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
      *          response="404",
-     *          description="Picture not found",
+     *          description="Picture not found or Image not found",
      *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
      *     ),
      *     @OA\Response(
@@ -359,6 +365,56 @@ class ProductController extends AbstractFOSRestController
         try {
                 $product = $this->service->uploadPicture($request->files->get('picture'),$request->get('productId'));
                 return DataManipulation::arrayMap(ProductDTO::class,$product);
+        }
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
+    }
+
+    /**
+     * @Rest\Delete(path="/api/product/remove/{productId}")
+     * @Rest\View()
+     * @OA\Delete(
+     *     tags={"Product"},
+     *     path="product/remove/{productId}",
+     *     summary="Remove product",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *          description="Id of product to remove",
+     *          in="path",
+     *          name="productId",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer",
+     *              format="int64"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="500",
+     *          description="Unexpected Error",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Product not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return array product",
+     *          @OA\JsonContent(ref="#/components/schemas/ProductDTO")
+     *     )
+     * )
+     * @param Request $request
+     * @return array
+     * @throws \Exception
+     */
+    public function removeProductAction(Request $request)
+    {
+        try {
+            $product = $this->service->removeProduct($request->get('productId'));
+            return DataManipulation::arrayMap(ProductDTO::class,$product);
         }
         catch (Exception $exception)
         {

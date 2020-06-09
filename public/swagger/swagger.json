@@ -601,8 +601,18 @@
                     }
                 },
                 "responses": {
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
                     "404": {
-                        "description": "Picture not found",
+                        "description": "Picture not found or Image not found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -613,6 +623,64 @@
                     },
                     "200": {
                         "description": "Return arry product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "product/remove/{productId}": {
+            "delete": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Remove product",
+                "operationId": "App\\Controller\\ProductController::removeProductAction",
+                "parameters": [
+                    {
+                        "name": "productId",
+                        "in": "path",
+                        "description": "Id of product to remove",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return array product",
                         "content": {
                             "application/json": {
                                 "schema": {

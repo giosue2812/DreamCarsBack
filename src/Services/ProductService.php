@@ -186,8 +186,8 @@ class ProductService
     /**
      * @param $picture
      * @param $productId
-     * @return array if array.lenght > 0
-     * @throws Exception if picture == null
+     * @return array if array.lenght > 0 and product != null and imageName != null
+     * @throws Exception if imageName == null or PDOException is rise or product == null
      */
     public function uploadPicture($picture,$productId)
     {
@@ -196,14 +196,57 @@ class ProductService
         if($imageName)
         {
             $product = $this->repository->find($productId);
-            $product->setPicture('http://localhost:8080/Formation/DreamsCarsProject/BackEnd/public/Assets/Images/'.$imageName);
-            $this->manager->flush();
-            $arrayProduct[] = $product;
+            if($product)
+            {
+                $product->setPicture('http://localhost:8080/Formation/DreamsCarsProject/BackEnd/public/Assets/Images/'.$imageName);
+                try {
+                    $this->manager->flush();
+                    $arrayProduct[] = $product;
+                    return $arrayProduct;
+                }
+                catch (PDOException $exception)
+                {
+                    throw new Exception('Unexpected Error',500);
+                }
+            }
+            else
+            {
+                throw new Exception('Product not found',404);
+            }
         }
         else
         {
             throw new Exception('Image not found',404);
         }
-        return $arrayProduct;
+    }
+
+    /**
+     * @param $productId
+     * @return array if array.lenght > 0 and if product != null
+     * @throws \Exception if PDOException is rise or product == null or array.lengh <= 0
+     */
+    public function removeProduct($productId)
+    {
+        $arrayProduct = [];
+        $date = new \DateTime();
+        $product = $this->repository->find($productId);
+        if($product)
+        {
+            $product->setDeleteAt($date);
+            $product->setIsActive(false);
+            try {
+                $this->manager->flush();
+                $arrayProduct[] = $product;
+                return $arrayProduct;
+            }
+            catch (PDOException $PDOException)
+            {
+                throw new Exception('Unexpected Error',500);
+            }
+        }
+        else
+        {
+            throw new Exception('No product found', 404);
+        }
     }
 }
