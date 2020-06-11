@@ -11,6 +11,42 @@
         }
     ],
     "paths": {
+        "/categories": {
+            "get": {
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Get a lisr of category",
+                "operationId": "category",
+                "responses": {
+                    "404": {
+                        "description": "No found category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return a list of category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoriesChoiceDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/groupe": {
             "get": {
                 "tags": [
@@ -246,6 +282,409 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/GroupeDetailsDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/product/list": {
+            "get": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Array of product",
+                "operationId": "App\\Controller\\ProductController::productListAction",
+                "responses": {
+                    "404": {
+                        "description": "Product no found in data base",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return an array of product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDTO"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/product/create": {
+            "post": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Add new product",
+                "operationId": "App\\Controller\\ProductController::productCreateAction",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductForm"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return a array of new product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/product/edit/{productId}": {
+            "put": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Update Product",
+                "operationId": "update",
+                "parameters": [
+                    {
+                        "parameter": "productId",
+                        "name": "productId",
+                        "in": "path",
+                        "description": "Id for the product to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Update Product",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductForm"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "500": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found or Supplier not found or category not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return the product update",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/product/{productId}": {
+            "get": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Get a product",
+                "operationId": "product",
+                "parameters": [
+                    {
+                        "parameter": "productId",
+                        "name": "productId",
+                        "in": "path",
+                        "description": "Id for found a Product",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Not found product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return an array of product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/product/search": {
+            "post": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Product search",
+                "operationId": "App\\Controller\\ProductController::productSearch",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductSearchForm"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/product/uploadPicture/{productId}": {
+            "post": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Picture upload",
+                "operationId": "App\\Controller\\ProductController::uploadPictureAction",
+                "parameters": [
+                    {
+                        "name": "productId",
+                        "in": "path",
+                        "description": "Id of the product",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "properties": {
+                                    "picture": {
+                                        "description": "Picture to upload",
+                                        "type": "file",
+                                        "format": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Picture not found or Image not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return arry product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "product/remove/{productId}": {
+            "delete": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Remove product",
+                "operationId": "App\\Controller\\ProductController::removeProductAction",
+                "parameters": [
+                    {
+                        "name": "productId",
+                        "in": "path",
+                        "description": "Id of product to remove",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return array product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductDTO"
                                 }
                             }
                         }
@@ -505,6 +944,42 @@
                 ]
             }
         },
+        "/suppliers": {
+            "get": {
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Get a list of choice supplier",
+                "operationId": "supplier",
+                "responses": {
+                    "404": {
+                        "description": "No found suppliers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return a list of Supplier",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuppliersChoiceDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/create": {
             "post": {
                 "tags": [
@@ -545,7 +1020,7 @@
                         }
                     },
                     "200": {
-                        "description": "Retur user created",
+                        "description": "Retur an array of user created",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -588,7 +1063,7 @@
                         }
                     },
                     "200": {
-                        "description": "Return user",
+                        "description": "Return an array of user",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -636,7 +1111,7 @@
                         }
                     },
                     "200": {
-                        "description": "Return user",
+                        "description": "Return user an array of user",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -715,7 +1190,7 @@
                         }
                     },
                     "200": {
-                        "description": "User is updated",
+                        "description": "array of user updated",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -763,7 +1238,7 @@
                         }
                     },
                     "200": {
-                        "description": "Return User",
+                        "description": "Return an array of  User",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -842,7 +1317,7 @@
                         }
                     },
                     "200": {
-                        "description": "Groupe has been add for user",
+                        "description": "array of user returned with the groupe added",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -921,7 +1396,7 @@
                         }
                     },
                     "200": {
-                        "description": "Role has been added",
+                        "description": "Role has been added return array of user",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -987,7 +1462,7 @@
                         }
                     },
                     "200": {
-                        "description": "Groupe removed for user",
+                        "description": "return an user array with role added",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1115,6 +1590,21 @@
                 },
                 "type": "object"
             },
+            "CategoriesChoiceDTO": {
+                "title": "Category model",
+                "description": "Category model",
+                "properties": {
+                    "id": {
+                        "description": "Category Id",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "Category Name",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "GroupeDetailsDTO": {
                 "title": "Groupe model",
                 "description": "Groupe model",
@@ -1145,6 +1635,49 @@
                 },
                 "type": "object"
             },
+            "ProductDTO": {
+                "title": "Product Model",
+                "description": "Product Model",
+                "properties": {
+                    "id": {
+                        "description": "Product id",
+                        "type": "integer"
+                    },
+                    "product": {
+                        "description": "Product name",
+                        "type": "string"
+                    },
+                    "description": {
+                        "description": "Product's description",
+                        "type": "string"
+                    },
+                    "price": {
+                        "description": "Price of product",
+                        "type": "integer"
+                    },
+                    "category": {
+                        "description": "Product Category",
+                        "type": "string"
+                    },
+                    "picture": {
+                        "description": "Picture of product",
+                        "type": "string"
+                    },
+                    "supplier": {
+                        "description": "Supplier of product",
+                        "type": "string"
+                    },
+                    "avaibility": {
+                        "description": "Stock available for the product",
+                        "type": "boolean"
+                    },
+                    "deleteAt": {
+                        "description": "Delete date",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "RoleDetailsDTO": {
                 "title": "Role model",
                 "description": "Role model",
@@ -1171,6 +1704,21 @@
                         "description": "Delete date for a new role",
                         "type": "string",
                         "format": "date"
+                    }
+                },
+                "type": "object"
+            },
+            "SuppliersChoiceDTO": {
+                "title": "Supplier Model",
+                "description": "Supplier Model",
+                "properties": {
+                    "id": {
+                        "description": "Product id",
+                        "type": "integer"
+                    },
+                    "name": {
+                        "description": "Product Name",
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -1271,12 +1819,65 @@
                 },
                 "type": "object"
             },
+            "CategoryForm": {
+                "title": "Category form model",
+                "description": "Category form Model",
+                "properties": {
+                    "name": {
+                        "description": "name of category to update",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "GroupeForm": {
                 "title": "Groupe Form Model",
                 "description": "Groupe Form Model",
                 "properties": {
                     "groupe": {
                         "description": "Groupe to update",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductForm": {
+                "title": "Product Form Model",
+                "description": "Product Form Model",
+                "properties": {
+                    "product": {
+                        "description": "Product name",
+                        "type": "string"
+                    },
+                    "price": {
+                        "description": "Price of product",
+                        "type": "integer"
+                    },
+                    "description": {
+                        "description": "Description of product",
+                        "type": "string"
+                    },
+                    "avaibility": {
+                        "description": "Boolean of product",
+                        "type": "boolean"
+                    },
+                    "category": {
+                        "description": "Category of user",
+                        "type": "object"
+                    },
+                    "supplier": {
+                        "description": "Supplier of product",
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductSearchForm": {
+                "title": "Form Search Model",
+                "description": "Form to search",
+                "properties": {
+                    "keyWord": {
+                        "description": "keyWord to found a product",
                         "type": "string"
                     }
                 },
@@ -1299,6 +1900,52 @@
                 "properties": {
                     "groupe": {
                         "description": "Role to update",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "SupplierAddForm": {
+                "title": "Supplier form model",
+                "description": "Supplier form model to add for product",
+                "properties": {
+                    "name": {
+                        "description": "Nom of supplier",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "SupplierForm": {
+                "title": "Supplier form model",
+                "description": "Supplier form model",
+                "properties": {
+                    "nom": {
+                        "description": "Nom of supplier",
+                        "type": "string"
+                    },
+                    "street": {
+                        "description": "Street of supplier",
+                        "type": "string"
+                    },
+                    "number": {
+                        "description": "Number of supplier",
+                        "type": "string"
+                    },
+                    "postalCode": {
+                        "description": "Postal code of supplier",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Email of supplier",
+                        "type": "string"
+                    },
+                    "city": {
+                        "description": "City of supplier",
+                        "type": "string"
+                    },
+                    "country": {
+                        "description": "Country of supplier",
                         "type": "string"
                     }
                 },

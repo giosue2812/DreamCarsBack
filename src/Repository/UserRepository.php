@@ -50,7 +50,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     /**
      * @param $user
-     * @return array
+     * @return array if array.length > 0
      */
     public function searchUser($user): array
     {

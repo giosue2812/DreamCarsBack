@@ -28,6 +28,11 @@ security:
             stateless: true
             anonymous: true
 
+        product:
+            pattern: ^/api/product/list
+            stateless: true
+            anonymous: true
+
         api:
             pattern: ^/api
             stateless: true
@@ -45,5 +50,6 @@ security:
     access_control:
          - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
          - { path: ^/api/create, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+         - { path: ^/api/product/list, roles: IS_AUTHENTICATED_ANONYMOUSLY}
          - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
