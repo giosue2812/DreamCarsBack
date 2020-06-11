@@ -60,4 +60,24 @@ class CategoryService
             throw new Exception('No category found',404);
         }
     }
+
+    /**
+     * @param $categoryId
+     * @return array if Array.lenght > 0
+     * @throws Exception if Array.lenght <= 0
+     */
+    public function getCategoryId($categoryId)
+    {
+        $arrayCategory = [];
+        $category = $this->repository->find($categoryId);
+        if($category)
+        {
+            $arrayCategory[] =  $category;
+            return $arrayCategory;
+        }
+        else
+        {
+            throw new Exception('No category found',404);
+        }
+    }
 }
