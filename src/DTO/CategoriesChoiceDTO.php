@@ -36,11 +36,21 @@ class CategoriesChoiceDTO
      * )
      */
     private $name;
+    /**
+     * @var boolean $active
+     * @OA\Property(
+     *     property="active",
+     *     type="boolean",
+     *     description="Active Category"
+     * )
+     */
+    private $active;
 
     public function __construct(Category $category)
     {
         $this->id = $category->getId();
         $this->name = $category->getName();
+        $this->active = $category->getIsActive();
     }
 
     /**
@@ -58,6 +68,15 @@ class CategoriesChoiceDTO
     {
         return $this->name;
     }
+
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
 
 
 }

@@ -18,6 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class CategoryForm
 {
     /**
+     * @Assert\Type("string")
      * @var string $name
      * @OA\Property(
      *     property="name",
