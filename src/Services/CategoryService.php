@@ -122,6 +122,36 @@ class CategoryService
     }
 
     /**
+     * @param $categoryId
+     * @return Category[] if Category.lenght > 0 and category != null
+     * @throws \Exception if PDOException is rise or Category.lenght <=0 or category == null
+     */
+    public function removeCategory($categoryId)
+    {
+        $date = new \DateTime();
+        $category = $this->getCategoryById($categoryId);
+        if($category)
+        {
+            try {
+                $category
+                    ->setDeleteAt($date)
+                    ->setUpdateAt($date)
+                    ->setIsActive(false);
+                $this->manager->flush();
+                return $this->getCategoriesList();
+            }
+            catch (PDOException $exception)
+            {
+                throw new Exception('Unexpected Error',500);
+            }
+        }
+        else
+        {
+            throw new Exception('Category not found',404);
+        }
+    }
+
+    /**
      * @param integer $categoryId
      * @return Category|null
      */

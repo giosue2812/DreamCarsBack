@@ -185,4 +185,54 @@ class CategoriesController extends AbstractFOSRestController
             throw new HttpException($exception->getCode(),$exception->getMessage());
         }
     }
+
+    /**
+     * @Rest\Delete(path="/api/category/remove/{categoryId}")
+     * @Rest\View()
+     * @OA\Delete(
+     *     tags={"Category"},
+     *     path="/category/remove/{categoryId}",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Delete on category",
+     *     operationId="categoryId",
+     *     @OA\Parameter(
+     *          name="categoryId",
+     *          in="path",
+     *          description="Id of category to remove",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Category not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="500",
+     *          description="Unexpected Error",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return an array of category",
+     *          @OA\JsonContent(ref="#/components/schemas/CategoriesChoiceDTO")
+     *     )
+     * )
+     * @param Request $request
+     * @return array
+     * @throws \Exception
+     */
+    public function removeCategoryAction(Request $request)
+    {
+        try {
+            $category = $this->service->removeCategory($request->get('categoryId'));
+            return DataManipulation::arrayMap(CategoriesChoiceDTO::class,$category);
+        }
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
+    }
 }
