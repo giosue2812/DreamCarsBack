@@ -5,7 +5,9 @@ namespace App\Services;
 
 
 use App\Entity\Category;
+use App\Models\Forms\CategoryForm;
 use App\Repository\CategoryRepository;
+use Doctrine\DBAL\Driver\PDOException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
@@ -79,5 +81,52 @@ class CategoryService
         {
             throw new Exception('No category found',404);
         }
+    }
+
+    /**
+     * @param CategoryForm $categoryForm
+     * @param  integer $categoryId
+     * @return Category[] if Category.lenght > 0 and category != null
+     * @throws \Exception if Category.lenght <= 0 or PDOException is rise or category == null
+     */
+    public function editCategory(CategoryForm $categoryForm, $categoryId)
+    {
+        $date = new \DateTime();
+        $category = $this->getCategoryById($categoryId);
+        if($category)
+        {
+            $category
+                ->setName($categoryForm->getName())
+                ->setUpdateAt($date);
+            $categoryCheck = $this->repository->findOneBy(['name'=>$category->getName()]);
+            if(!$categoryCheck)
+            {
+                try {
+                    $this->manager->flush();
+                    return $this->getCategoriesList();
+                }
+                catch (PDOException $exception)
+                {
+                    throw new Exception('Unexpected Error',500);
+                }
+            }
+            else
+            {
+                throw new Exception('Category already exist',404);
+            }
+        }
+        else
+        {
+            throw new Exception('No found category',404);
+        }
+    }
+
+    /**
+     * @param integer $categoryId
+     * @return Category|null
+     */
+    private function getCategoryById($categoryId)
+    {
+        return $this->repository->find($categoryId);
     }
 }
