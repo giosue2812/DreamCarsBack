@@ -54,4 +54,24 @@ class SupplierService
             }
 
     }
+
+    /**
+     * @param $supplierId
+     * @return array if array.lenght > 0 and $supplier != null
+     * @throws Exception if array.lenght <= 0 or $supplier == null
+     */
+    public function getSupplierId($supplierId)
+    {
+        $arraySupplier = [];
+        $supplier = $this->repository->find($supplierId);
+        if($supplier)
+        {
+            $arraySupplier[] = $supplier;
+            return $arraySupplier;
+        }
+        else
+        {
+            throw new Exception('Supplier not found',404);
+        }
+    }
 }

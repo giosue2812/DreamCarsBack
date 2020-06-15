@@ -1231,6 +1231,64 @@
                 ]
             }
         },
+        "/supplier/{supplierId}": {
+            "get": {
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Get a supplier",
+                "operationId": "supplier",
+                "parameters": [
+                    {
+                        "name": "supplierId",
+                        "in": "path",
+                        "description": "Id of supplier",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "Supplier not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return a supplier",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuppliersDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/create": {
             "post": {
                 "tags": [
@@ -1964,6 +2022,25 @@
                 "type": "object"
             },
             "SuppliersChoiceDTO": {
+                "title": "Supplier Choice Model",
+                "description": "Supplier Choice Model",
+                "properties": {
+                    "id": {
+                        "description": "Product id",
+                        "type": "integer"
+                    },
+                    "name": {
+                        "description": "Product Name",
+                        "type": "string"
+                    },
+                    "active": {
+                        "description": "Supplier is active",
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "SuppliersDTO": {
                 "title": "Supplier Model",
                 "description": "Supplier Model",
                 "properties": {
@@ -1974,6 +2051,38 @@
                     "name": {
                         "description": "Product Name",
                         "type": "string"
+                    },
+                    "street": {
+                        "description": "Supplier street",
+                        "type": "string"
+                    },
+                    "number": {
+                        "description": "Supplier number",
+                        "type": "integer"
+                    },
+                    "postal_code": {
+                        "description": "Supplier postal_code",
+                        "type": "string"
+                    },
+                    "tel": {
+                        "description": "Supplier tel",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Supplier Email",
+                        "type": "string"
+                    },
+                    "city": {
+                        "description": "Supplier city",
+                        "type": "string"
+                    },
+                    "country": {
+                        "description": "Supplier country",
+                        "type": "string"
+                    },
+                    "active": {
+                        "description": "Supplier is active",
+                        "type": "boolean"
                     }
                 },
                 "type": "object"
