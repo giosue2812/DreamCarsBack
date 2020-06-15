@@ -152,6 +152,35 @@ class CategoryService
     }
 
     /**
+     * @param CategoryForm $categoryForm
+     * @return array array.lenght > 0 if PDOException is not rise
+     * @throws Exception if $categoryCheck == null or PDOException is rise
+     */
+    public function newCategory(CategoryForm $categoryForm)
+    {
+        $arrayCategory = [];
+        $categoryCheck = $this->repository->findOneBy(['name'=>$categoryForm->getName()]);
+        if($categoryCheck)
+        {
+            throw new Exception('Category already exist in the database',404);
+        }
+        else
+        {
+            $category = new Category();
+            $category->setName($categoryForm->getName());
+            try {
+                $this->manager->persist($category);
+                $this->manager->flush();
+                $arrayCategory[] = $category;
+                return $arrayCategory;
+            }
+            catch (PDOException $exception)
+            {
+                throw new Exception('Unexpected Error',500);
+            }
+        }
+    }
+    /**
      * @param integer $categoryId
      * @return Category|null
      */

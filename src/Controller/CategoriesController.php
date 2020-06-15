@@ -12,6 +12,7 @@ use App\Utils\DataManipulation;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use OpenApi\Annotations as OA;
@@ -229,6 +230,73 @@ class CategoriesController extends AbstractFOSRestController
         try {
             $category = $this->service->removeCategory($request->get('categoryId'));
             return DataManipulation::arrayMap(CategoriesChoiceDTO::class,$category);
+        }
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
+    }
+
+    /**
+     * @Rest\Post(path="/api/category/newCategory")
+     * @Rest\View()
+     * @OA\Post(
+     *     tags={"Category"},
+     *     path="/category/newCategory",
+     *     security={{"bearerAuth":{}}},
+     *     summary="New Category",
+     *     @OA\RequestBody(
+     *          required=true,
+     *          description="New Category",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  ref="#/components/schemas/CategoryForm"
+     *              )
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="400",
+     *          description="Form is invalid",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Category already present in data base",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="500",
+     *          description="Unexpected Error",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return a new Category",
+     *          @OA\JsonContent(ref="#/components/schemas/CategoriesChoiceDTO")
+     *     )    
+     * )
+     * @param Request $request
+     * @return array
+     */
+    public function newCategoryAction(Request $request)
+    {
+        try {
+            $categoryForm = new CategoryForm();
+            $data = json_decode($request->getContent(),true);
+            $form = $this->createForm(CategoryType::class,$categoryForm,[
+                'csrf_protection'=>false
+            ]);
+            $form->handleRequest($request);
+            $form->submit($data);
+            if($form->isSubmitted() && $form->isValid()){
+                $category = $this->service->newCategory($form->getData());
+                return DataManipulation::arrayMap(CategoriesChoiceDTO::class,$category);
+            }
+            else
+            {
+                throw new Exception('Form is invalid',400);
+            }
         }
         catch (Exception $exception)
         {

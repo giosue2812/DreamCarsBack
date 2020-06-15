@@ -231,6 +231,73 @@
                 ]
             }
         },
+        "/category/newCategory": {
+            "post": {
+                "tags": [
+                    "Category"
+                ],
+                "summary": "New Category",
+                "operationId": "App\\Controller\\CategoriesController::newCategoryAction",
+                "requestBody": {
+                    "description": "New Category",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CategoryForm"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Category already present in data base",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return a new Category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoriesChoiceDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/groupe": {
             "get": {
                 "tags": [
@@ -1785,6 +1852,10 @@
                     "name": {
                         "description": "Category Name",
                         "type": "string"
+                    },
+                    "active": {
+                        "description": "Active Category",
+                        "type": "boolean"
                     }
                 },
                 "type": "object"
