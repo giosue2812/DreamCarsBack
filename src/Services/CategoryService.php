@@ -154,11 +154,10 @@ class CategoryService
     /**
      * @param CategoryForm $categoryForm
      * @return array array.lenght > 0 if PDOException is not rise
-     * @throws Exception if $categoryCheck == null or PDOException is rise
+     * @throws \Exception if $categoryCheck == null or PDOException is rise
      */
     public function newCategory(CategoryForm $categoryForm)
     {
-        $arrayCategory = [];
         $categoryCheck = $this->repository->findOneBy(['name'=>$categoryForm->getName()]);
         if($categoryCheck)
         {
@@ -171,8 +170,7 @@ class CategoryService
             try {
                 $this->manager->persist($category);
                 $this->manager->flush();
-                $arrayCategory[] = $category;
-                return $arrayCategory;
+                return $this->getCategoriesList();
             }
             catch (PDOException $exception)
             {

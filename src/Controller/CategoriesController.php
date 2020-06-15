@@ -274,10 +274,11 @@ class CategoriesController extends AbstractFOSRestController
      *          response="200",
      *          description="Return a new Category",
      *          @OA\JsonContent(ref="#/components/schemas/CategoriesChoiceDTO")
-     *     )    
+     *     )
      * )
      * @param Request $request
      * @return array
+     * @throws \Exception
      */
     public function newCategoryAction(Request $request)
     {
@@ -295,7 +296,7 @@ class CategoriesController extends AbstractFOSRestController
             }
             else
             {
-                throw new Exception('Form is invalid',400);
+                throw new \Exception('Form is invalid',400);
             }
         }
         catch (Exception $exception)
