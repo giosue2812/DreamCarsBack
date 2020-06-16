@@ -238,11 +238,11 @@ class CategoriesController extends AbstractFOSRestController
     }
 
     /**
-     * @Rest\Post(path="/api/category/newCategory")
+     * @Rest\Post(path="/api/category/new")
      * @Rest\View()
      * @OA\Post(
      *     tags={"Category"},
-     *     path="/category/newCategory",
+     *     path="/category/new",
      *     security={{"bearerAuth":{}}},
      *     summary="New Category",
      *     @OA\RequestBody(

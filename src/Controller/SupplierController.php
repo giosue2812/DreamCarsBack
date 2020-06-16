@@ -247,11 +247,11 @@ class SupplierController extends AbstractFOSRestController
     }
 
     /**
-     * @Rest\Post(path="/api/supplier/newSupplier")
+     * @Rest\Post(path="/api/supplier/new")
      * @Rest\View()
      * @OA\Post(
      *     tags={"Supplier"},
-     *     path="/supplier/newSupplier",
+     *     path="/supplier/new",
      *     security={{"bearerAuth":{}}},
      *     summary="New Supplier",
      *     @OA\RequestBody(

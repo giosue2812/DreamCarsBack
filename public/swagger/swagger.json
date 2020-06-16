@@ -231,7 +231,7 @@
                 ]
             }
         },
-        "/category/newCategory": {
+        "/category/new": {
             "post": {
                 "tags": [
                     "Category"
