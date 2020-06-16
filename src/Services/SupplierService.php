@@ -155,4 +155,40 @@ class SupplierService
             throw new Exception('Supplier not found',404);
         }
     }
+
+    /**
+     * @param SupplierForm $supplierForm
+     * @return Supplier[] Supplier.lenght > 0 and supplier == null
+     * @throws Exception if Supploer.lenght <= 0 or supplier != null
+     */
+    public function newSupplier(SupplierForm $supplierForm)
+    {
+        $supplierCheck = $this->repository->findOneBy(['name'=>$supplierForm->getName()]);
+        if($supplierCheck)
+        {
+            throw new Exception('Supplier already exist in the database',404);
+        }
+        else
+        {
+            $supplier = new Supplier();
+            $supplier
+                    ->setName($supplierForm->getName())
+                    ->setStreet($supplierForm->getStreet())
+                    ->setNumber($supplierForm->getNumber())
+                    ->setPostalCode($supplierForm->getPostalCode())
+                    ->setTel($supplierForm->getTel())
+                    ->setCity($supplierForm->getCity())
+                    ->setCountry($supplierForm->getCountry())
+                    ->setEmail($supplierForm->getEmail());
+            try {
+                $this->manager->persist($supplier);
+                $this->manager->flush();
+                return $this->getSuppliers();
+            }
+            catch (PDOException $exception)
+            {
+                throw new Exception('Unexpected Error',500);
+            }
+        }
+    }
 }

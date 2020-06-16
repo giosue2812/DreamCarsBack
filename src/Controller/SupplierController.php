@@ -245,4 +245,67 @@ class SupplierController extends AbstractFOSRestController
             throw new HttpException($exception->getCode(),$exception->getMessage());
         }
     }
+
+    /**
+     * @Rest\Post(path="/api/supplier/newSupplier")
+     * @Rest\View()
+     * @OA\Post(
+     *     tags={"Supplier"},
+     *     path="/supplier/newSupplier",
+     *     security={{"bearerAuth":{}}},
+     *     summary="New Supplier",
+     *     @OA\RequestBody(
+     *          required=true,
+     *          description="New Supplier",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  ref="#/components/schemas/SupplierForm"
+     *              )
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="400",
+     *          description="Form is invalid",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Supplier already exist",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return list of suppliers",
+     *          @OA\JsonContent(ref="#/components/schemas/SuppliersDTO")
+     *     )
+     * )
+     * @param Request $request
+     * @return array
+     */
+    public function newSupplierAction(Request $request)
+    {
+        try {
+            $supplierForm = new SupplierForm();
+            $data = json_decode($request->getContent(),true);
+            $form = $this->createForm(SupplierType::class,$supplierForm,[
+                'csrf_protection'=>false
+            ]);
+            $form->handleRequest($request);
+            $form->submit($data);
+            if($form->isSubmitted() && $form->isValid())
+            {
+                $supplier = $this->service->newSupplier($form->getData());
+                return DataManipulation::arrayMap(SuppliersDTO::class,$supplier);
+            }
+            else
+            {
+                throw new Exception('Form is invalid',400);
+            }
+        }
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
+    }
 }
