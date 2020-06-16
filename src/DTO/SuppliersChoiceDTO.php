@@ -11,9 +11,9 @@ use OpenApi\Annotations as OA;
  * Class SuppliersChoiceDTO
  * @package App\DTO
  * @OA\Schema(
- *      description="Supplier Model",
+ *      description="Supplier Choice Model",
  *      type="object",
- *      title="Supplier Model"
+ *      title="Supplier Choice Model"
  * )
  */
 class SuppliersChoiceDTO
@@ -37,10 +37,21 @@ class SuppliersChoiceDTO
      */
     private $name;
 
+    /**
+     * @var boolean $active
+     * @OA\Property(
+     *     property="active",
+     *     type="boolean",
+     *     description="Supplier is active"
+     * )
+     */
+    private $active;
+
     public function __construct(Supplier $supplier)
     {
         $this->id = $supplier->getId();
         $this->name = $supplier->getName();
+        $this->active = $supplier->getIsActive();
     }
 
     /**
@@ -58,4 +69,13 @@ class SuppliersChoiceDTO
     {
         return $this->name;
     }
+
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
 }
