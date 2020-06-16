@@ -195,4 +195,54 @@ class SupplierController extends AbstractFOSRestController
             throw new HttpException($exception->getCode(),$exception->getMessage());
         }
     }
+
+    /**
+     * @Rest\Delete(path="/api/supplier/remove/{supplierId}")
+     * @Rest\View()
+     * @OA\Delete(
+     *     tags={"Supplier"},
+     *     path="/supplier/remove/{supplierId}",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Remove Supplier",
+     *     operationId="supplierId",
+     *     @OA\Parameter(
+     *          name="supplierId",
+     *          in="path",
+     *          description="Id of supplier to remove",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Supplier not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="500",
+     *          description="Unexepected Error",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return remove supplier",
+     *          @OA\JsonContent(ref="#/components/schemas/SuppliersDTO")
+     *     )
+     * )
+     * @param Request $request
+     * @return array
+     * @throws \Exception
+     */
+    public function removeSupplierAction(Request $request)
+    {
+        try {
+            $supplier = $this->service->removeSupplier($request->get('supplierId'));
+            return DataManipulation::arrayMap(SuppliersDTO::class,$supplier);
+        }
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
+    }
 }

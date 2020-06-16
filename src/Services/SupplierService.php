@@ -90,26 +90,26 @@ class SupplierService
     }
 
     /**
-     * @param SupplierForm $categoryForm
-     * @param $categoryId
+     * @param SupplierForm $supplierForm
+     * @param $supplierId
      * @return Supplier[] Supplier.lenght > 0 and if supplier != null
      * @throws \Exception Supplier.lenght <= 0 or if supplier == null or PDOException is rise
      */
-    public function editSupplier(SupplierForm $categoryForm, $categoryId)
+    public function editSupplier(SupplierForm $supplierForm, $supplierId)
     {
         $date = new \DateTime();
-        $supplier = $this->repository->find($categoryId);
+        $supplier = $this->repository->find($supplierId);
         if($supplier)
         {
             $supplier
-                ->setName($categoryForm->getName())
-                ->setStreet($categoryForm->getStreet())
-                ->setNumber($categoryForm->getNumber())
-                ->setPostalCode($categoryForm->getPostalCode())
-                ->setTel($categoryForm->getTel())
-                ->setEmail($categoryForm->getEmail())
-                ->setCity($categoryForm->getCity())
-                ->setCountry($categoryForm->getCountry())
+                ->setName($supplierForm->getName())
+                ->setStreet($supplierForm->getStreet())
+                ->setNumber($supplierForm->getNumber())
+                ->setPostalCode($supplierForm->getPostalCode())
+                ->setTel($supplierForm->getTel())
+                ->setEmail($supplierForm->getEmail())
+                ->setCity($supplierForm->getCity())
+                ->setCountry($supplierForm->getCountry())
                 ->setUpdateAt($date);
                 try {
                     $this->manager->flush();
@@ -120,6 +120,36 @@ class SupplierService
                     throw new Exception('Unexpected Error',500);
                 }
             }
+        else
+        {
+            throw new Exception('Supplier not found',404);
+        }
+    }
+
+    /**
+     * @param $supplierId
+     * @return Supplier[] Supplier.lenght > 0 and supplier != null
+     * @throws \Exception Supplier.lenght <= 0 or if supplier == null or PDOException is rise
+     */
+    public function removeSupplier($supplierId)
+    {
+        $date = new \DateTime();
+        $supplier = $this->repository->find($supplierId);
+        if($supplier)
+        {
+            $supplier
+                ->setUpdateAt($date)
+                ->setDeleteAt($date)
+                ->setIsActive(false);
+            try {
+                $this->manager->flush();
+                return $this->getSuppliers();
+            }
+            catch (PDOException $exception)
+            {
+                throw new Exception('Unexpected Error',500);
+            }
+        }
         else
         {
             throw new Exception('Supplier not found',404);
