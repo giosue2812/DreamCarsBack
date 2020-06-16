@@ -1289,6 +1289,84 @@
                 ]
             }
         },
+        "/supplier/edit/{supplierId}": {
+            "put": {
+                "tags": [
+                    "Supplier"
+                ],
+                "summary": "Edit supplier",
+                "operationId": "supplierId",
+                "parameters": [
+                    {
+                        "name": "supplierId",
+                        "in": "path",
+                        "description": "Id of supplier to edit",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Edit supplier",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SupplierForm"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Form is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Supplier not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return a array of suppliers",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuppliersDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/create": {
             "post": {
                 "tags": [
@@ -2284,8 +2362,8 @@
                 "title": "Supplier form model",
                 "description": "Supplier form model",
                 "properties": {
-                    "nom": {
-                        "description": "Nom of supplier",
+                    "name": {
+                        "description": "Name of supplier",
                         "type": "string"
                     },
                     "street": {
@@ -2298,6 +2376,10 @@
                     },
                     "postalCode": {
                         "description": "Postal code of supplier",
+                        "type": "string"
+                    },
+                    "tel": {
+                        "description": "Tel of supplier",
                         "type": "string"
                     },
                     "email": {

@@ -23,9 +23,9 @@ class SupplierForm
      * @Assert\NotBlank()
      * @Assert\NotNull()
      * @OA\Property(
-     *     property="nom",
+     *     property="name",
      *     type="string",
-     *     description="Nom of supplier"
+     *     description="Name of supplier"
      * )
      */
     private $name;
@@ -64,6 +64,13 @@ class SupplierForm
     private $postalCode;
     /**
      * @var string $tel
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
+     * @OA\Property(
+     *     property="tel",
+     *     type="string",
+     *     description="Tel of supplier"
+     * )
      */
     private $tel;
     /**
@@ -104,7 +111,7 @@ class SupplierForm
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -122,7 +129,7 @@ class SupplierForm
     /**
      * @return string
      */
-    public function getStreet(): string
+    public function getStreet(): ?string
     {
         return $this->street;
     }
@@ -140,7 +147,7 @@ class SupplierForm
     /**
      * @return string
      */
-    public function getNumber(): string
+    public function getNumber(): ?string
     {
         return $this->number;
     }
@@ -158,7 +165,7 @@ class SupplierForm
     /**
      * @return string
      */
-    public function getPostalCode(): string
+    public function getPostalCode(): ?string
     {
         return $this->postalCode;
     }
@@ -176,7 +183,7 @@ class SupplierForm
     /**
      * @return string
      */
-    public function getTel(): string
+    public function getTel(): ?string
     {
         return $this->tel;
     }
@@ -194,7 +201,7 @@ class SupplierForm
     /**
      * @return string
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -212,7 +219,7 @@ class SupplierForm
     /**
      * @return string
      */
-    public function getCity(): string
+    public function getCity(): ?string
     {
         return $this->city;
     }
@@ -230,7 +237,7 @@ class SupplierForm
     /**
      * @return string
      */
-    public function getCountry(): string
+    public function getCountry(): ?string
     {
         return $this->country;
     }

@@ -5,19 +5,33 @@ namespace App\Services;
 
 
 use App\Entity\Supplier;
+use App\Models\Forms\CategoryForm;
+use App\Models\Forms\SupplierForm;
 use App\Repository\SupplierRepository;
+use Doctrine\DBAL\Driver\PDOException;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
 class SupplierService
 {
     /**
+     * @var EntityManagerInterface $manager
+     */
+    private $manager;
+    /**
      * @var SupplierRepository $repository
      */
     private $repository;
 
-    public function __construct(SupplierRepository $supplierRepository)
+    /**
+     * SupplierService constructor.
+     * @param SupplierRepository $supplierRepository
+     * @param EntityManagerInterface $manager
+     */
+    public function __construct(SupplierRepository $supplierRepository,EntityManagerInterface $manager)
     {
         $this->repository = $supplierRepository;
+        $this->manager = $manager;
     }
 
     /**
@@ -69,6 +83,43 @@ class SupplierService
             $arraySupplier[] = $supplier;
             return $arraySupplier;
         }
+        else
+        {
+            throw new Exception('Supplier not found',404);
+        }
+    }
+
+    /**
+     * @param SupplierForm $categoryForm
+     * @param $categoryId
+     * @return Supplier[] Supplier.lenght > 0 and if supplier != null
+     * @throws \Exception Supplier.lenght <= 0 or if supplier == null or PDOException is rise
+     */
+    public function editSupplier(SupplierForm $categoryForm, $categoryId)
+    {
+        $date = new \DateTime();
+        $supplier = $this->repository->find($categoryId);
+        if($supplier)
+        {
+            $supplier
+                ->setName($categoryForm->getName())
+                ->setStreet($categoryForm->getStreet())
+                ->setNumber($categoryForm->getNumber())
+                ->setPostalCode($categoryForm->getPostalCode())
+                ->setTel($categoryForm->getTel())
+                ->setEmail($categoryForm->getEmail())
+                ->setCity($categoryForm->getCity())
+                ->setCountry($categoryForm->getCountry())
+                ->setUpdateAt($date);
+                try {
+                    $this->manager->flush();
+                    return $this->getSuppliers();
+                }
+                catch (PDOException $exception)
+                {
+                    throw new Exception('Unexpected Error',500);
+                }
+            }
         else
         {
             throw new Exception('Supplier not found',404);
