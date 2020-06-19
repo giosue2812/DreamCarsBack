@@ -3,17 +3,11 @@
 namespace App\Controller;
 
 use App\DTO\ProductDTO;
-use App\Entity\Category;
-use App\Form\CategoryType;
 use App\Form\ProductType;
 use App\Form\SearchType;
-use App\Form\UploadFileType;
-use App\Models\Forms\CategoryForm;
 use App\Models\Forms\ProductForm;
 use App\Models\Forms\ProductSearchForm;
-use App\Models\Forms\UploadFileForm;
 use App\Services\ProductService;
-use App\Services\UploadService;
 use App\Utils\DataManipulation;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -21,8 +15,7 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use OpenApi\Annotations as OA;
-use Symfony\Component\Validator\Constraints as Assert;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\ref;
+
 
 class ProductController extends AbstractFOSRestController
 {
@@ -215,7 +208,7 @@ class ProductController extends AbstractFOSRestController
      *     path="/product/{productId}",
      *     security={{"bearerAuth":{}}},
      *     summary="Get a product",
-     *     operationId="product",
+     *     operationId="productId",
      *     @OA\Parameter(
      *          parameter="productId",
      *          name="productId",

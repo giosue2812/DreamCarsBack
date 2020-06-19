@@ -716,7 +716,7 @@
                     "Product"
                 ],
                 "summary": "Get a product",
-                "operationId": "product",
+                "operationId": "productId",
                 "parameters": [
                     {
                         "parameter": "productId",
@@ -1195,6 +1195,67 @@
                 ]
             }
         },
+        "/sales/addCard/{productId}/{userId}": {
+            "get": {
+                "tags": [
+                    "Card"
+                ],
+                "summary": "Add product on the card",
+                "operationId": "productId,userId",
+                "parameters": [
+                    {
+                        "parameter": "productId",
+                        "name": "productId",
+                        "in": "path",
+                        "description": "Id for found a Product",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "parameter": "userId",
+                        "name": "userId",
+                        "in": "path",
+                        "description": "Id for found a User",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "No found user or Not found product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Eror",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return true"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/suppliers": {
             "get": {
                 "tags": [
@@ -1424,7 +1485,7 @@
                 ]
             }
         },
-        "/supplier/newSupplier": {
+        "/supplier/new": {
             "post": {
                 "tags": [
                     "Supplier"

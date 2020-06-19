@@ -89,7 +89,6 @@ class ProductService
         $product
             ->setProduct($productForm->getProduct())
             ->setPrice($productForm->getPrice())
-            ->setPicture($productForm->getPicture())
             ->setDescription($productForm->getDescription())
             ->setAvaibility($productForm->isAvaibility())
             ->setCategory($category)
