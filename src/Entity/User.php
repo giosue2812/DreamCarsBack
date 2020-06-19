@@ -71,10 +71,16 @@ class User extends BaseEntity implements UserInterface
      */
     private $userRoles;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Sale::class, mappedBy="User")
+     */
+    private $sales;
+
     public function __construct()
     {
         $this->groups = new ArrayCollection();
         $this->userRoles = new ArrayCollection();
+        $this->sales = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -354,6 +360,37 @@ class User extends BaseEntity implements UserInterface
             // set the owning side to null (unless already changed)
             if ($userRole->getUsers() === $this) {
                 $userRole->setUsers(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Sale[]
+     */
+    public function getSales(): Collection
+    {
+        return $this->sales;
+    }
+
+    public function addSale(Sale $sale): self
+    {
+        if (!$this->sales->contains($sale)) {
+            $this->sales[] = $sale;
+            $sale->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSale(Sale $sale): self
+    {
+        if ($this->sales->contains($sale)) {
+            $this->sales->removeElement($sale);
+            // set the owning side to null (unless already changed)
+            if ($sale->getUser() === $this) {
+                $sale->setUser(null);
             }
         }
 

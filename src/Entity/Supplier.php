@@ -200,5 +200,4 @@ class Supplier extends BaseEntity
 
         return $this;
     }
-
 }

@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200527124649 extends AbstractMigration
+final class Version20200618141359 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,11 +22,14 @@ final class Version20200527124649 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE category DROP FOREIGN KEY FK_64C19C14584665A');
-        $this->addSql('DROP INDEX IDX_64C19C14584665A ON category');
-        $this->addSql('ALTER TABLE category DROP product_id, CHANGE id_category id_category INT DEFAULT NULL, CHANGE update_at update_at DATE DEFAULT NULL, CHANGE delete_at delete_at DATE DEFAULT NULL');
+        $this->addSql('ALTER TABLE category CHANGE update_at update_at DATE DEFAULT NULL, CHANGE delete_at delete_at DATE DEFAULT NULL');
         $this->addSql('ALTER TABLE groupe CHANGE update_at update_at DATE DEFAULT NULL, CHANGE delete_at delete_at DATE DEFAULT NULL');
         $this->addSql('ALTER TABLE product CHANGE id_supplier id_supplier INT DEFAULT NULL, CHANGE id_category id_category INT DEFAULT NULL, CHANGE picture picture VARCHAR(255) DEFAULT NULL, CHANGE update_at update_at DATE DEFAULT NULL, CHANGE delete_at delete_at DATE DEFAULT NULL');
+        $this->addSql('ALTER TABLE product_sale DROP FOREIGN KEY FK_68A3E2A4868C0609');
+        $this->addSql('DROP INDEX IDX_68A3E2A4868C0609 ON product_sale');
+        $this->addSql('ALTER TABLE product_sale ADD id_payement INT DEFAULT NULL, DROP payement_id, CHANGE id_user id_user INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE product_sale ADD CONSTRAINT FK_68A3E2A4E2D19410 FOREIGN KEY (id_payement) REFERENCES payement_type (id)');
+        $this->addSql('CREATE INDEX IDX_68A3E2A4E2D19410 ON product_sale (id_payement)');
         $this->addSql('ALTER TABLE role CHANGE update_at update_at DATE DEFAULT NULL, CHANGE delete_at delete_at DATE DEFAULT NULL');
         $this->addSql('ALTER TABLE supplier CHANGE update_at update_at DATE DEFAULT NULL, CHANGE delete_at delete_at DATE DEFAULT NULL');
         $this->addSql('ALTER TABLE user CHANGE update_at update_at DATE DEFAULT NULL, CHANGE delete_at delete_at DATE DEFAULT NULL');
@@ -38,11 +41,14 @@ final class Version20200527124649 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE category ADD product_id INT DEFAULT NULL, CHANGE id_category id_category INT DEFAULT NULL, CHANGE update_at update_at DATE DEFAULT \'NULL\', CHANGE delete_at delete_at DATE DEFAULT \'NULL\'');
-        $this->addSql('ALTER TABLE category ADD CONSTRAINT FK_64C19C14584665A FOREIGN KEY (product_id) REFERENCES product (id)');
-        $this->addSql('CREATE INDEX IDX_64C19C14584665A ON category (product_id)');
+        $this->addSql('ALTER TABLE category CHANGE update_at update_at DATE DEFAULT \'NULL\', CHANGE delete_at delete_at DATE DEFAULT \'NULL\'');
         $this->addSql('ALTER TABLE groupe CHANGE update_at update_at DATE DEFAULT \'NULL\', CHANGE delete_at delete_at DATE DEFAULT \'NULL\'');
         $this->addSql('ALTER TABLE product CHANGE id_supplier id_supplier INT DEFAULT NULL, CHANGE id_category id_category INT DEFAULT NULL, CHANGE update_at update_at DATE DEFAULT \'NULL\', CHANGE delete_at delete_at DATE DEFAULT \'NULL\', CHANGE picture picture VARCHAR(255) CHARACTER SET utf8mb4 DEFAULT \'NULL\' COLLATE `utf8mb4_unicode_ci`');
+        $this->addSql('ALTER TABLE product_sale DROP FOREIGN KEY FK_68A3E2A4E2D19410');
+        $this->addSql('DROP INDEX IDX_68A3E2A4E2D19410 ON product_sale');
+        $this->addSql('ALTER TABLE product_sale ADD payement_id INT DEFAULT NULL, DROP id_payement, CHANGE id_user id_user INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE product_sale ADD CONSTRAINT FK_68A3E2A4868C0609 FOREIGN KEY (payement_id) REFERENCES payement_type (id)');
+        $this->addSql('CREATE INDEX IDX_68A3E2A4868C0609 ON product_sale (payement_id)');
         $this->addSql('ALTER TABLE role CHANGE update_at update_at DATE DEFAULT \'NULL\', CHANGE delete_at delete_at DATE DEFAULT \'NULL\'');
         $this->addSql('ALTER TABLE supplier CHANGE update_at update_at DATE DEFAULT \'NULL\', CHANGE delete_at delete_at DATE DEFAULT \'NULL\'');
         $this->addSql('ALTER TABLE user CHANGE update_at update_at DATE DEFAULT \'NULL\', CHANGE delete_at delete_at DATE DEFAULT \'NULL\'');

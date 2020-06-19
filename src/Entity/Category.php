@@ -30,21 +30,10 @@ class Category extends BaseEntity
      */
     private $products;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="categories")
-     * @ORM\JoinColumn(name="id_category")
-     */
-    private $sub_Category;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Category::class, mappedBy="sub_Category")
-     */
-    private $categories;
 
     public function __construct()
     {
         $this->products = new ArrayCollection();
-        $this->categories = new ArrayCollection();
     }
 
 
@@ -96,46 +85,4 @@ class Category extends BaseEntity
         return $this;
     }
 
-    public function getSubCategory(): ?self
-    {
-        return $this->sub_Category;
-    }
-
-    public function setSubCategory(?self $sub_Category): self
-    {
-        $this->sub_Category = $sub_Category;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|self[]
-     */
-    public function getCategories(): Collection
-    {
-        return $this->categories;
-    }
-
-    public function addCategory(self $category): self
-    {
-        if (!$this->categories->contains($category)) {
-            $this->categories[] = $category;
-            $category->setSubCategory($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCategory(self $category): self
-    {
-        if ($this->categories->contains($category)) {
-            $this->categories->removeElement($category);
-            // set the owning side to null (unless already changed)
-            if ($category->getSubCategory() === $this) {
-                $category->setSubCategory(null);
-            }
-        }
-
-        return $this;
-    }
 }
