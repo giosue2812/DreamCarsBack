@@ -1201,7 +1201,7 @@
                     "Card"
                 ],
                 "summary": "Add product on the card",
-                "operationId": "productId,userId",
+                "operationId": "productId,username",
                 "parameters": [
                     {
                         "parameter": "productId",
@@ -1214,13 +1214,13 @@
                         }
                     },
                     {
-                        "parameter": "userId",
-                        "name": "userId",
+                        "parameter": "username",
+                        "name": "username",
                         "in": "path",
                         "description": "Id for found a User",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -1237,6 +1237,47 @@
                     },
                     "500": {
                         "description": "Unexpected Eror",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return true"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/sales/card/{userId}": {
+            "get": {
+                "tags": [
+                    "Card"
+                ],
+                "summary": "Get card user",
+                "operationId": "userId",
+                "parameters": [
+                    {
+                        "parameter": "userId",
+                        "name": "userId",
+                        "in": "path",
+                        "description": "Id for user to get card",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "User not found or Product sale not found",
                         "content": {
                             "application/json": {
                                 "schema": {
