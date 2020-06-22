@@ -1226,7 +1226,7 @@
                 ],
                 "responses": {
                     "404": {
-                        "description": "No found user or Not found product",
+                        "description": "No found user",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1256,7 +1256,7 @@
                 ]
             }
         },
-        "/sales/card/{userId}": {
+        "/sales/card/{username}": {
             "get": {
                 "tags": [
                     "Card"
@@ -1265,13 +1265,13 @@
                 "operationId": "userId",
                 "parameters": [
                     {
-                        "parameter": "userId",
-                        "name": "userId",
+                        "parameter": "username",
+                        "name": "username",
                         "in": "path",
-                        "description": "Id for user to get card",
+                        "description": "username to get card",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -1288,6 +1288,54 @@
                     },
                     "200": {
                         "description": "Return true"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/sales/cardList/{username}": {
+            "get": {
+                "tags": [
+                    "Card"
+                ],
+                "summary": "Get details card's",
+                "operationId": "username",
+                "parameters": [
+                    {
+                        "parameter": "username",
+                        "name": "username",
+                        "in": "path",
+                        "description": "Username to get details",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "User not found or Product Sale not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return an array of product sale",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductSaleDTO"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -2281,6 +2329,37 @@
                     "deleteAt": {
                         "description": "Delete date",
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "ProductSaleDTO": {
+                "title": "Product sale Model",
+                "description": "Product Sale Model",
+                "properties": {
+                    "user": {
+                        "description": "User id",
+                        "type": "integer"
+                    },
+                    "date": {
+                        "description": "Date Time of sold product",
+                        "type": "string"
+                    },
+                    "product": {
+                        "description": "Product sold",
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "description": "Quantity sold",
+                        "type": "integer"
+                    },
+                    "picture": {
+                        "description": "Picture of sold product",
+                        "type": "string"
+                    },
+                    "price": {
+                        "description": "Price of product",
+                        "type": "integer"
                     }
                 },
                 "type": "object"

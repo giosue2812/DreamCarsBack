@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\DTO\ProductSaleDTO;
+use App\Entity\ProductSale;
 use App\Services\SaleService;
+use App\Utils\DataManipulation;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -57,7 +60,7 @@ class SaleController extends AbstractFOSRestController
      *     ),
      *     @OA\Response(
      *          response="404",
-     *          description="No found user or Not found product",
+     *          description="No found user",
      *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
      *     ),
      *     @OA\Response(
@@ -86,22 +89,22 @@ class SaleController extends AbstractFOSRestController
     }
 
     /**
-     * @Rest\Get(path="/api/sales/card/{userId}")
+     * @Rest\Get(path="/api/sales/card/{username}")
      * @Rest\View()
      * @OA\Get(
      *     tags={"Card"},
      *     summary="Get card user",
-     *     path="/sales/card/{userId}",
+     *     path="/sales/card/{username}",
      *     security={{"bearerAuth":{}}},
      *     operationId="userId",
      *     @OA\Parameter(
-     *         parameter="userId",
-     *         name="userId",
+     *         parameter="username",
+     *         name="username",
      *         in="path",
-     *         description="Id for user to get card",
+     *         description="username to get card",
      *         required=true,
      *         @OA\Schema(
-     *              type="integer"
+     *              type="string"
      *         )
      *     ),
      *     @OA\Response(
@@ -120,11 +123,56 @@ class SaleController extends AbstractFOSRestController
     public function getCartAction(Request $request)
     {
         try {
-            return $this->saleService->getCard($request->get('userId'));
+            return $this->saleService->getCard($request->get('username'));
         }
         catch (Exception $exception)
         {
             throw new HttpException($exception->getCode(), $exception->getMessage());
+        }
+    }
+
+    /**
+     * @Rest\Get(path="/api/sales/cardList/{username}")
+     * @Rest\View()
+     * @OA\Get(
+     *     tags={"Card"},
+     *     summary="Get details card's",
+     *     path="/sales/cardList/{username}",
+     *     security={{"bearerAuth":{}}},
+     *     operationId="username",
+     *     @OA\Parameter(
+     *          parameter="username",
+     *          name="username",
+     *          in="path",
+     *          description="Username to get details",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="User not found or Product Sale not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return an array of product sale",
+     *          @OA\JsonContent(ref="#/components/schemas/ProductSaleDTO")
+     *     )
+     * )
+     * @param Request $request
+     * @return array
+     */
+    public function getCardDetailAction(Request $request)
+    {
+        try {
+            $beSale = $this->saleService->gatCardDetail($request->get('username'));
+            return DataManipulation::arrayMap(ProductSaleDTO::class,$beSale);
+        }
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
         }
     }
 }
