@@ -1287,7 +1287,14 @@
                         }
                     },
                     "200": {
-                        "description": "Return true"
+                        "description": "Return count",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CountCardSaleDTO"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -2259,6 +2266,17 @@
                     }
                 },
                 "type": "object"
+            },
+            "CountCardSaleDTO": {
+                "title": "Card Count model",
+                "description": "Count card sale",
+                "properties": {
+                    "count": {
+                        "description": "Count card's sale",
+                        "type": "integer"
+                    }
+                },
+                "type": "integer"
             },
             "GroupeDetailsDTO": {
                 "title": "Groupe model",

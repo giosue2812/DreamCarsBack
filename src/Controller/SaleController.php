@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DTO\CountCardSaleDTO;
 use App\DTO\ProductSaleDTO;
 use App\Entity\ProductSale;
 use App\Services\SaleService;
@@ -114,16 +115,18 @@ class SaleController extends AbstractFOSRestController
      *     ),
      *     @OA\Response(
      *          response="200",
-     *          description="Return true"
+     *          description="Return count",
+     *          @OA\JsonContent(ref="#/components/schemas/CountCardSaleDTO")
      *     )
      * )
      * @param Request $request
-     * @return bool
+     * @return CountCardSaleDTO
      */
     public function getCartAction(Request $request)
     {
         try {
-            return $this->saleService->getCard($request->get('username'));
+            $count = $this->saleService->getCard($request->get('username'));
+            return new CountCardSaleDTO($count);
         }
         catch (Exception $exception)
         {
@@ -173,6 +176,24 @@ class SaleController extends AbstractFOSRestController
         catch (Exception $exception)
         {
             throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
+    }
+
+    /**
+     * @Rest\Get(path="/api/sales/confirmCard/{username}/{payementId}")
+     * @Rest\View()
+     * @param Request $request
+     * @return array
+     */
+    public function confirmCardAction(Request $request)
+    {
+        try {
+            $productSale = $this->saleService->confirmCard($request->get('username'),$request->get('payementId'));
+            return DataManipulation::arrayMap(ProductSaleDTO::class,$productSale);
+        }
+        catch (Exception $exception)
+        {
+            throw new Exception($exception->getCode(),$exception->getMessage());
         }
     }
 }
