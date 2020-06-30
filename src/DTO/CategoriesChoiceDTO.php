@@ -46,6 +46,10 @@ class CategoriesChoiceDTO
      */
     private $active;
 
+    /**
+     * CategoriesChoiceDTO constructor.
+     * @param Category $category
+     */
     public function __construct(Category $category)
     {
         $this->id = $category->getId();

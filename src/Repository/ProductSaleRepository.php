@@ -28,6 +28,7 @@ class ProductSaleRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->where('p.User = :val')
+            ->andWhere('p.Payement IS NULL')
             ->setParameter('val',$userID)
             ->getQuery()
             ->getResult();
@@ -39,9 +40,20 @@ class ProductSaleRepository extends ServiceEntityRepository
         return $qb
             ->select('count(p.id)')
             ->where('p.User = :val')
+            ->andWhere('p.Payement IS NULL')
             ->setParameter('val',$userID)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function summaryOrder($userID):array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.User = :val')
+            ->andWhere('p.Payement IS NOT    NULL')
+            ->setParameter('val',$userID)
+            ->getQuery()
+            ->getResult();
     }
     // /**
     //  * @return ProductSale[] Returns an array of ProductSale objects

@@ -104,6 +104,10 @@ class ProductDTO
      */
     private $deleteAt;
 
+    /**
+     * ProductDTO constructor.
+     * @param Product $product
+     */
     public function __construct(Product $product)
     {
         $this->id = $product->getId();

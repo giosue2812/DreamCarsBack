@@ -31,6 +31,23 @@ class PayementController extends AbstractFOSRestController
     /**
      * @Rest\Get(path="/api/payement")
      * @Rest\View()
+     * @OA\Get(
+     *     tags={"Payement"},
+     *     summary="Get payements list",
+     *     path="/payement",
+     *     security={{"bearerAuth":{}}},
+     *     operationId="payement",
+     *     @OA\Response(
+     *          response="404",
+     *          description="Payements not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return a list of payement",
+     *          @OA\JsonContent(ref="#/components/schemas/PayementDTO")
+     *     )
+     * )
      * @return array
      */
     public function getPayementsAction()
@@ -43,7 +60,5 @@ class PayementController extends AbstractFOSRestController
         {
             throw new Exception($exception->getCode(),$exception->getMessage());
         }
-
-
     }
 }

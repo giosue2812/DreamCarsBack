@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Sale
 {
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date",nullable=true)
      */
     private $date;
 

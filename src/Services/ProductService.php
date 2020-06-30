@@ -64,7 +64,7 @@ class ProductService
      */
     public function productList()
     {
-        $products = $this->repository->findAll();
+        $products = $this->repository->findAllProduct();
         if($products)
         {
             return $products;

@@ -75,12 +75,12 @@ class SaleService
     /**
      * @param $productId integer
      * @param $username string
+     * @param $qty
      * @return bool if user !=null and if product != null
      * @throws \Exception if user == null or product == null or PDOException is rise
      */
-    public function addCard($productId, $username)
+    public function addCard($productId, $username,$qty)
     {
-        $date = new \DateTime();
         $productSale = new ProductSale();
         $beSale = new BeSales();
         $user = $this->userRepository->findOneBy(['email'=>$username]);
@@ -88,7 +88,6 @@ class SaleService
 
         if($user)
         {
-            $productSale->setDate($date);
             $productSale->setSold(false);
             $productSale->setUser($user);
             $productSale->setIsOnline(true);
@@ -96,7 +95,7 @@ class SaleService
             {
                 $beSale->setProductSale($productSale);
                 $beSale->setProduct($product);
-                $beSale->setQuantity(20);
+                $beSale->setQuantity($qty);
                 try {
                     $this->manager->persist($beSale);
                     $this->manager->persist($productSale);
@@ -144,7 +143,8 @@ class SaleService
     /**
      * @param $username String
      * @return BeSales[] Array.lenght > 0 and if user != null and if productSale != null
-     * @throws Exception Array.lenght <= 0 or if user == null and  id productSale == null
+     * @return array if not productSale found
+     * @throws Exception if user == null and  id productSale == null
      */
     public function gatCardDetail($username)
     {
@@ -158,7 +158,7 @@ class SaleService
             }
             else
             {
-                throw new Exception('Product Sale not found',404);
+                return [];
             }
         }
         else
@@ -171,11 +171,12 @@ class SaleService
     /**
      * @param $username string
      * @param $payementId int
-     * @throws Exception if username == null or payement == null or PDOException is rise or array.lenght <= 0
-     * @return array if array.lenght > 0 and username != null or payement != null
+     * @return boolean true if username != null or payement != null
+     * @throws \Exception if username == null or payement == null or PDOException is rise
      */
     public function confirmCard($username,$payementId)
     {
+        $date = new \DateTime();
         $user = $this->userRepository->findOneBy(['email'=>$username]);
         if($user)
         {
@@ -185,7 +186,7 @@ class SaleService
                 $payment = $this->payementRepository->find($payementId);
                 foreach ($productSale as $item)
                 {
-                    $item->setSold(true);
+                    $item->setDate($date);
                     $item->setPayement($payment);
                     try {
                         $this->manager->flush();
@@ -205,6 +206,53 @@ class SaleService
         {
             throw new Exception('User not found',404);
         }
-        return $productSale;
+        return true;
+    }
+
+    /**
+     * @param $username
+     * @return array
+     */
+    public function getSummaryOrder($username)
+    {
+        $user = $this->userRepository->findOneBy(['email'=>$username]);
+        $productSaleId = $this->productSaleRepository->summaryOrder($user->getId());
+        $beSale = $this->beSaleRepository->findBy(['ProductSale'=>$productSaleId]);
+        if($user and $productSaleId and $beSale)
+        {
+            return $beSale;
+        }
+        else
+        {
+            throw new Exception('Not found product sale',404);
+        }
+    }
+
+    /**
+     * @param $productSaleId integer
+     * @return array if true and $beSale != null and $productSale != null
+     * @throws Exception if false or $beSale == null and $productSale == null or PDOException is rise
+     */
+    public function removeProductFromCard($productSaleId,$username)
+    {
+        $beSale = $this->beSaleRepository->findOneBy(['ProductSale'=>$productSaleId]);
+        $productSale = $this->productSaleRepository->findOneBy(['id'=>$productSaleId]);
+        if($beSale and $productSaleId)
+        {
+            try {
+                $this->manager->remove($beSale);
+                $this->manager->remove($productSale);
+                $this->manager->flush();
+                return $this->gatCardDetail($username);
+            }
+            catch (PDOException $exception)
+            {
+                throw new Exception('Unexpected Error',500);
+            }
+        }
+        else
+        {
+            throw new Exception('No found product on card',404);
+        }
     }
 }

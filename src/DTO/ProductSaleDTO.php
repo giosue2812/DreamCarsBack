@@ -36,6 +36,15 @@ class ProductSaleDTO
      */
     private $date;
     /**
+     * @var $idProductSale integer
+     * @OA\Property(
+     *     property="idProductSale",
+     *     type="integer",
+     *     description="Id of ProductSale"
+     * )
+     */
+    private $idProductSale;
+    /**
      * @var $product string|null
      * @OA\Property(
      *     property="product",
@@ -81,6 +90,7 @@ class ProductSaleDTO
     {
         $this->user = $beSales->getProductSale()->getUser()->getEmail();
         $this->date = $beSales->getProductSale()->getDate();
+        $this->idProductSale = $beSales->getProductSale()->getId();
         $this->product = $beSales->getProduct()->getProduct();
         $this->quantity = $beSales->getQuantity();
         $this->picture = $beSales->getProduct()->getPicture();
@@ -135,5 +145,12 @@ class ProductSaleDTO
         return $this->price;
     }
 
+    /**
+     * @return int
+     */
+    public function getIdProductSale(): int
+    {
+        return $this->idProductSale;
+    }
 
 }

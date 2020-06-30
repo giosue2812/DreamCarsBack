@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\DTO\CountCardSaleDTO;
 use App\DTO\ProductSaleDTO;
+use App\DTO\SummaryOfProductSaleDTO;
 use App\Entity\ProductSale;
 use App\Services\SaleService;
 use App\Utils\DataManipulation;
@@ -13,6 +14,7 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use OpenApi\Annotations as OA;
+use Symfony\Component\VarDumper\Cloner\Data;
 
 class SaleController extends AbstractFOSRestController
 {
@@ -31,12 +33,12 @@ class SaleController extends AbstractFOSRestController
     }
 
     /**
-     * @Rest\Get(path="/api/sales/addCard/{productId}/{username}")
+     * @Rest\Get(path="/api/sales/addCard/{productId}/{username}/{qty}")
      * @Rest\View()
      * @OA\Get(
      *     tags={"Card"},
      *     summary="Add product on the card",
-     *     path="/sales/addCard/{productId}/{userId}",
+     *     path="/sales/addCard/{productId}/{userId}/{qty}",
      *     security={{"bearerAuth":{}}},
      *     operationId="productId,username",
      *     @OA\Parameter(
@@ -81,7 +83,7 @@ class SaleController extends AbstractFOSRestController
     public function addCardAction(Request $request)
     {
         try {
-                return $this->saleService->addCard($request->get('productId'),$request->get('username'));
+                return $this->saleService->addCard($request->get('productId'),$request->get('username'),$request->get('qty'));
         }
         catch (Exception $exception)
         {
@@ -182,18 +184,166 @@ class SaleController extends AbstractFOSRestController
     /**
      * @Rest\Get(path="/api/sales/confirmCard/{username}/{payementId}")
      * @Rest\View()
+     * @OA\Get(
+     *     tags={"Card"},
+     *     summary="Confirm card",
+     *     path="/sales/confirmCard/{username}/{payementId}",
+     *     security={{"bearerAuth":{}}},
+     *     operationId="username, payementId",
+     *     @OA\Parameter(
+     *          parameter="username",
+     *          name="username",
+     *          in="path",
+     *          description="Username to get the card",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          parameter="payementId",
+     *          name="payementId",
+     *          in="path",
+     *          description="Payement id of pay pal",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="500",
+     *          description="Unexpected Error",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="Payement not found or User not found",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return an boolean"
+     *     )
+     * )
      * @param Request $request
-     * @return array
+     * @return bool
+     * @throws \Exception
      */
     public function confirmCardAction(Request $request)
     {
         try {
-            $productSale = $this->saleService->confirmCard($request->get('username'),$request->get('payementId'));
-            return DataManipulation::arrayMap(ProductSaleDTO::class,$productSale);
+            return $this->saleService->confirmCard($request->get('username'),$request->get('payementId'));
         }
         catch (Exception $exception)
         {
             throw new Exception($exception->getCode(),$exception->getMessage());
         }
+
+    }
+
+    /**
+     * @Rest\Get(path="/api/sales/summaryOrder/{username}")
+     * @Rest\View()
+     * @OA\Get(
+     *     tags={"Card"},
+     *     summary="Summary Order",
+     *     path="/sales/summaryOrder/{username}",
+     *     security={{"bearerAuth":{}}},
+     *     operationId="username",
+     *     @OA\Parameter(
+     *          parameter="username",
+     *          name="username",
+     *          in="path",
+     *          description="Username to get the card",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="No found product sale",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return an array of sale",
+     *          @OA\JsonContent(ref="#/components/schemas/SummaryOfProductSaleDTO")
+     *     )
+     * )
+     * @param Request $request
+     * @return array
+     */
+    public function getSummaryOrderAction(Request $request)
+    {
+        try {
+            $summaryOrder = $this->saleService->getSummaryOrder($request->get('username'));
+            return DataManipulation::arrayMap(SummaryOfProductSaleDTO::class,$summaryOrder);
+        }
+        catch (Exception $exception)
+        {
+            throw new Exception($exception->getCode(),$exception->getMessage());
+        }
+    }
+
+    /**
+     * @Rest\Delete(path="/api/sales/removeProduct/{username}/{productSale}")
+     * @Rest\View()
+     * @OA\Get(
+     *     tags={"Card"},
+     *     summary="Remove product",
+     *     path="/sales/summaryOrder/{username}/{productSale}",
+     *     security={{"bearerAuth":{}}},
+     *     operationId="username,productSale",
+     *     @OA\Parameter(
+     *          parameter="username",
+     *          name="username",
+     *          in="path",
+     *          description="Username to get card",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="string"
+     *          )
+     *     ),
+     *     @OA\Parameter(
+     *          parameter="productSale",
+     *          name="productSale",
+     *          in="path",
+     *          description="ProductSale to get product sale",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="integer"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response="500",
+     *          description="Unexpected Error",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="404",
+     *          description="No found product on card",
+     *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Return a card detail",
+     *          @OA\JsonContent(ref="#/components/schemas/ProductSaleDTO")
+     *     )
+     * )
+     * @param Request $request
+     * @return array
+     */
+    public function removeProductFromCardAction(Request $request)
+    {
+        try {
+                $beSale = $this->saleService->removeProductFromCard($request->get('productSale'),$request->get('username'));
+                return DataManipulation::arrayMap(ProductSaleDTO::class,$beSale);
+        }
+        catch (Exception $exception)
+        {
+            throw new HttpException($exception->getCode(),$exception->getMessage());
+        }
+
     }
 }
