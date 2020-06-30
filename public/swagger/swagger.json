@@ -16,11 +16,11 @@
                 "tags": [
                     "Category"
                 ],
-                "summary": "Get a list of category",
+                "summary": "Get a list of categories",
                 "operationId": "category",
                 "responses": {
                     "404": {
-                        "description": "No found category",
+                        "description": "No found categories",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -30,7 +30,7 @@
                         }
                     },
                     "200": {
-                        "description": "Return a list of category",
+                        "description": "Return a list of categories",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -545,6 +545,42 @@
                 ]
             }
         },
+        "/payement": {
+            "get": {
+                "tags": [
+                    "Payement"
+                ],
+                "summary": "Get payements list",
+                "operationId": "payement",
+                "responses": {
+                    "404": {
+                        "description": "Payements not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return a list of payement",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PayementDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/product/list": {
             "get": {
                 "tags": [
@@ -716,7 +752,7 @@
                     "Product"
                 ],
                 "summary": "Get a product",
-                "operationId": "product",
+                "operationId": "productId",
                 "parameters": [
                     {
                         "parameter": "productId",
@@ -1195,6 +1231,340 @@
                 ]
             }
         },
+        "/sales/addCard/{productId}/{userId}/{qty}": {
+            "get": {
+                "tags": [
+                    "Card"
+                ],
+                "summary": "Add product on the card",
+                "operationId": "productId,username",
+                "parameters": [
+                    {
+                        "parameter": "productId",
+                        "name": "productId",
+                        "in": "path",
+                        "description": "Id for found a Product",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "parameter": "username",
+                        "name": "username",
+                        "in": "path",
+                        "description": "Id for found a User",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "No found user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected Eror",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return true"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/sales/card/{username}": {
+            "get": {
+                "tags": [
+                    "Card"
+                ],
+                "summary": "Get card user",
+                "operationId": "userId",
+                "parameters": [
+                    {
+                        "parameter": "username",
+                        "name": "username",
+                        "in": "path",
+                        "description": "username to get card",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "User not found or Product sale not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return count",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CountCardSaleDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/sales/cardList/{username}": {
+            "get": {
+                "tags": [
+                    "Card"
+                ],
+                "summary": "Get details card's",
+                "operationId": "username",
+                "parameters": [
+                    {
+                        "parameter": "username",
+                        "name": "username",
+                        "in": "path",
+                        "description": "Username to get details",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "User not found or Product Sale not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return an array of product sale",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductSaleDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/sales/confirmCard/{username}/{payementId}": {
+            "get": {
+                "tags": [
+                    "Card"
+                ],
+                "summary": "Confirm card",
+                "operationId": "username, payementId",
+                "parameters": [
+                    {
+                        "parameter": "username",
+                        "name": "username",
+                        "in": "path",
+                        "description": "Username to get the card",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "parameter": "payementId",
+                        "name": "payementId",
+                        "in": "path",
+                        "description": "Payement id of pay pal",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Payement not found or User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return an boolean"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/sales/summaryOrder/{username}": {
+            "get": {
+                "tags": [
+                    "Card"
+                ],
+                "summary": "Summary Order",
+                "operationId": "username",
+                "parameters": [
+                    {
+                        "parameter": "username",
+                        "name": "username",
+                        "in": "path",
+                        "description": "Username to get the card",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "404": {
+                        "description": "No found product sale",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return an array of sale",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SummaryOfProductSaleDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/sales/summaryOrder/{username}/{productSale}": {
+            "get": {
+                "tags": [
+                    "Card"
+                ],
+                "summary": "Remove product",
+                "operationId": "username,productSale",
+                "parameters": [
+                    {
+                        "parameter": "username",
+                        "name": "username",
+                        "in": "path",
+                        "description": "Username to get card",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "parameter": "productSale",
+                        "name": "productSale",
+                        "in": "path",
+                        "description": "ProductSale to get product sale",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "500": {
+                        "description": "Unexpected Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No found product on card",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiErrorResponseDTO"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Return a card detail",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProductSaleDTO"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/suppliers": {
             "get": {
                 "tags": [
@@ -1424,7 +1794,7 @@
                 ]
             }
         },
-        "/supplier/newSupplier": {
+        "/supplier/new": {
             "post": {
                 "tags": [
                     "Supplier"
@@ -2110,6 +2480,17 @@
                 },
                 "type": "object"
             },
+            "CountCardSaleDTO": {
+                "title": "Card Count model",
+                "description": "Count card sale",
+                "properties": {
+                    "count": {
+                        "description": "Count card's sale",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "GroupeDetailsDTO": {
                 "title": "Groupe model",
                 "description": "Groupe model",
@@ -2136,6 +2517,21 @@
                         "description": "Delete date for removing groupe",
                         "type": "string",
                         "format": "date"
+                    }
+                },
+                "type": "object"
+            },
+            "PayementDTO": {
+                "title": "Payement Model",
+                "description": "Payement model",
+                "properties": {
+                    "id": {
+                        "description": "Id of payement",
+                        "type": "integer"
+                    },
+                    "name_payement": {
+                        "description": "name of payement",
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -2183,6 +2579,41 @@
                 },
                 "type": "object"
             },
+            "ProductSaleDTO": {
+                "title": "Product sale Model",
+                "description": "Product Sale Model",
+                "properties": {
+                    "user": {
+                        "description": "User id",
+                        "type": "integer"
+                    },
+                    "date": {
+                        "description": "Date Time of sold product",
+                        "type": "string"
+                    },
+                    "idProductSale": {
+                        "description": "Id of ProductSale",
+                        "type": "integer"
+                    },
+                    "product": {
+                        "description": "Product sold",
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "description": "Quantity sold",
+                        "type": "integer"
+                    },
+                    "picture": {
+                        "description": "Picture of sold product",
+                        "type": "string"
+                    },
+                    "price": {
+                        "description": "Price of product",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "RoleDetailsDTO": {
                 "title": "Role model",
                 "description": "Role model",
@@ -2209,6 +2640,37 @@
                         "description": "Delete date for a new role",
                         "type": "string",
                         "format": "date"
+                    }
+                },
+                "type": "object"
+            },
+            "SummaryOfProductSaleDTO": {
+                "title": "Summary of product",
+                "description": "Summary of product sale model",
+                "properties": {
+                    "product": {
+                        "description": "Product name",
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "description": "Product qty ordered",
+                        "type": "integer"
+                    },
+                    "Unit price": {
+                        "description": "Product unit price",
+                        "type": "integer"
+                    },
+                    "totalPrice": {
+                        "description": "Total Price of product ordered",
+                        "type": "float"
+                    },
+                    "date": {
+                        "description": "Date of order",
+                        "type": "string"
+                    },
+                    "typePayement": {
+                        "description": "Type of payement of order",
+                        "type": "integer"
                     }
                 },
                 "type": "object"

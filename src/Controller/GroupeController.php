@@ -65,12 +65,8 @@ class GroupeController extends AbstractFOSRestController
     {
         try
         {
-            //Get groupes from service
             $groupes = $this->groupeService->getGroupeAll();
-            //Use utilis to manipulation of data
-            //Return GroupeDetailsDTO
             return DataManipulation::arrayMap(GroupeDetailsDTO::class,$groupes);
-            //In case of error
         }
         catch (Exception $exception)
         {
@@ -128,36 +124,27 @@ class GroupeController extends AbstractFOSRestController
     {
         try
         {
-            //New groupeForm
             $groupeForm = new GroupeForm();
-            //Deserialization of body content
             $data = json_decode($request->getContent(),true);
-            //Form to add new groupe in the data base
             $form = $this->createForm(GroupeType::class,$groupeForm,[
                 'csrf_protection' => false
             ]);
-            //Submition of form with the deserialization
             $form->submit($data);
-            //Test if the form is valid or not
 
             if($form->isSubmitted() && $form->isValid())
             {
-                //Call groupe service to add new groupe
                 $groupe = $this->groupeService->addNewGroupe($form->getData());
-                //Array groupe is returned. ArrayMap to create a new Response DTO
                 return DataManipulation::arrayMap(GroupeDetailsDTO::class,$groupe);
             }
 
             else
             {
-                //Is the form is not valid. Message error.
                 throw new \Exception("Form is Invalid",400);
             }
 
         }
         catch (\Exception $exception)
         {
-            //In case no form valid we send a error 405
             throw new HttpException($exception->getCode(),$exception->getMessage());
         }
     }

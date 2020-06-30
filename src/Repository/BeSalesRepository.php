@@ -19,6 +19,18 @@ class BeSalesRepository extends ServiceEntityRepository
         parent::__construct($registry, BeSales::class);
     }
 
+    /**
+     * @param $productSaleId
+     * @return array
+     */
+    public function beSaleByProductSale($productSaleId): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.ProductSale = :val')
+            ->setParameter('val',$productSaleId)
+            ->getQuery()
+            ->getResult();
+    }
     // /**
     //  * @return BeSales[] Returns an array of BeSales objects
     //  */

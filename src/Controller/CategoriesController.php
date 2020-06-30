@@ -37,16 +37,16 @@ class CategoriesController extends AbstractFOSRestController
      *     tags={"Category"},
      *     path="/categories",
      *     security={{"bearerAuth":{}}},
-     *     summary="Get a list of category",
+     *     summary="Get a list of categories",
      *     operationId="category",
      *     @OA\Response(
      *          response="404",
-     *          description="No found category",
+     *          description="No found categories",
      *          @OA\JsonContent(ref="#/components/schemas/ApiErrorResponseDTO")
      *     ),
      *     @OA\Response(
      *          response="200",
-     *          description="Return a list of category",
+     *          description="Return a list of categories",
      *          @OA\JsonContent(ref="#/components/schemas/CategoriesChoiceDTO")
      *     )
      * )

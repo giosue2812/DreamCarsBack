@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\ProductSale;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,6 +20,41 @@ class ProductSaleRepository extends ServiceEntityRepository
         parent::__construct($registry, ProductSale::class);
     }
 
+    /**
+     * @param $userID
+     * @return array
+     */
+    public function productSaleByUser($userID): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.User = :val')
+            ->andWhere('p.Payement IS NULL')
+            ->setParameter('val',$userID)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countSaleByUser($userID):int
+    {
+        $qb = $this->createQueryBuilder('p');
+        return $qb
+            ->select('count(p.id)')
+            ->where('p.User = :val')
+            ->andWhere('p.Payement IS NULL')
+            ->setParameter('val',$userID)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function summaryOrder($userID):array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.User = :val')
+            ->andWhere('p.Payement IS NOT    NULL')
+            ->setParameter('val',$userID)
+            ->getQuery()
+            ->getResult();
+    }
     // /**
     //  * @return ProductSale[] Returns an array of ProductSale objects
     //  */
